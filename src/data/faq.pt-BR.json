@@ -1,0 +1,52 @@
+{
+  "faq": [
+    {
+      "id": 1,
+      "question": "O que é trauma dentário?",
+      "answer": "Trauma dentário é qualquer lesão que afeta os dentes, gengivas, lábios ou ossos da boca. Pode ocorrer por quedas, acidentes esportivos, brigas ou outros impactos na região facial.",
+      "keywords": ["trauma", "lesão", "dente", "gengiva", "boca"]
+    },
+    {
+      "id": 2,
+      "question": "Quais são os locais de maior risco?",
+      "answer": "Os locais mais comuns de trauma dentário são: escolas, parques, quadras esportivas, piscinas, playgrounds e durante atividades físicas sem proteção adequada.",
+      "keywords": ["escola", "parque", "esporte", "piscina", "risco", "local"]
+    },
+    {
+      "id": 3,
+      "question": "Como prevenir traumas dentários?",
+      "answer": "Use protetores bucais durante esportes, evite morder objetos duros, mantenha a casa segura para crianças, use cintos de segurança e capacetes quando necessário.",
+      "keywords": ["prevenção", "protetor", "segurança", "capacete", "cinto"]
+    },
+    {
+      "id": 4,
+      "question": "Quando devo chamar o SAMU?",
+      "answer": "Chame o SAMU (192) imediatamente se houver: sangramento intenso, perda de consciência, fraturas faciais, dificuldade para respirar ou engolir, ou se o trauma for muito grave.",
+      "keywords": ["SAMU", "192", "emergência", "sangramento", "consciência", "fratura"]
+    },
+    {
+      "id": 5,
+      "question": "Qual o acompanhamento após trauma?",
+      "answer": "Após o trauma, é essencial: consulta com dentista em até 24h, exames radiográficos, acompanhamento por 6-12 meses, observação de sintomas e retorno ao dentista se houver mudanças.",
+      "keywords": ["acompanhamento", "consulta", "radiografia", "sintomas", "retorno"]
+    },
+    {
+      "id": 6,
+      "question": "Dente de leite caiu, o que fazer?",
+      "answer": "Para dentes de leite avulsionados: não recolocar na boca, controlar sangramento com gaze, levar a criança ao dentista imediatamente. Dentes de leite não são reimplantados.",
+      "keywords": ["dente leite", "avulsão", "criança", "sangramento", "dentista"]
+    },
+    {
+      "id": 7,
+      "question": "Como armazenar um dente quebrado?",
+      "answer": "Colete todos os fragmentos, lave com água limpa, armazene em leite, soro fisiológico ou saliva. Não use água da torneira, álcool ou sabão. Vá ao dentista o quanto antes.",
+      "keywords": ["fragmento", "leite", "soro", "saliva", "armazenamento"]
+    },
+    {
+      "id": 8,
+      "question": "Dente permanente saiu, posso recolocar?",
+      "answer": "Sim, para dentes permanentes: segure pela coroa (parte branca), enxágue rapidamente com água (≤10 segundos), tente recolocar no local. Se não conseguir, armazene em leite/soro/saliva e vá ao dentista em até 30 minutos.",
+      "keywords": ["permanente", "recolocar", "coroa", "enxágue", "30 minutos"]
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "traumaTypes": {
+    "fracture": {
+      "title": "Dente Quebrado (Fratura)",
+      "instructions": [
+        "Enxágue a boca com água limpa",
+        "Procure por fragmentos do dente",
+        "Armazene fragmentos em leite ou soro fisiológico",
+        "Procure um dentista o quanto antes"
+      ],
+      "dontDo": [
+        "Não toque na raiz do dente",
+        "Não deixe o fragmento seco",
+        "Não use sabão ou álcool",
+        "Não tente colar o dente"
+      ],
+      "urgency": "Urgente - procure dentista em até 24h"
+    },
+    "avulsion": {
+      "title": "Dente Caiu (Avulsão)",
+      "instructions": [
+        "Segure o dente pela coroa (parte branca)",
+        "Enxágue rapidamente com água (≤10 segundos)",
+        "Tente recolocar o dente no local",
+        "Se não conseguir, armazene em leite/soro/saliva",
+        "Procure dentista em até 30 minutos"
+      ],
+      "dontDo": [
+        "Não toque na raiz do dente",
+        "Não deixe o dente seco",
+        "Não use sabão ou álcool",
+        "Não guarde em água da torneira"
+      ],
+      "urgency": "Muito urgente - procure dentista em até 30 min",
+      "note": "Apenas para dentes permanentes"
+    },
+    "luxation": {
+      "title": "Dente Deslocado (Luxação)",
+      "instructions": [
+        "Não tente recolocar o dente",
+        "Evite morder com o dente afetado",
+        "Procure um dentista urgentemente",
+        "Mantenha a boca limpa"
+      ],
+      "dontDo": [
+        "Não force o dente de volta",
+        "Não mastigue com o dente afetado",
+        "Não ignore a situação",
+        "Não demore para procurar ajuda"
+      ],
+      "urgency": "Urgente - procure dentista imediatamente"
+    }
+  },
+  "storageMethods": {
+    "milk": {
+      "title": "Leite",
+      "description": "Ideal para preservar células do dente",
+      "instructions": "Coloque o dente/fragmento em um copo com leite fresco"
+    },
+    "saline": {
+      "title": "Soro Fisiológico",
+      "description": "Solução isotônica que mantém o dente hidratado",
+      "instructions": "Use soro fisiológico 0,9% em um recipiente limpo"
+    },
+    "saliva": {
+      "title": "Saliva",
+      "description": "Alternativa quando não há leite ou soro",
+      "instructions": "Mantenha o dente na boca, entre a bochecha e os dentes"
+    }
+  }
+}

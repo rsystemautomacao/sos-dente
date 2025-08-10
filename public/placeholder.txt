@@ -1,0 +1,11 @@
+COLOCAR AQUI O ARQUIVO PDF DO E-BOOK
+
+Nome do arquivo: ebook-amanda-vidal.pdf
+
+Este arquivo deve ser colocado nesta pasta (/public/) para que o visualizador PDF funcione corretamente.
+
+O arquivo será automaticamente:
+- Servido pelo servidor
+- Cacheado pelo service worker
+- Disponível offline após primeiro acesso
+- Baixável através do botão "Baixar PDF"

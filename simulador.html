@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador SOS Dente</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/4108/4108023.png">
+  <style>
+    * { transition: all 0.4s ease-in-out; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .phone-frame {
+      width: 390px;
+      max-width: 100vw;
+      background: #f0f4f8;
+      border-radius: 28px;
+      overflow-y: auto;
+      box-shadow: 0 0 0 10px #000, 0 0 30px rgba(0,0,0,0.5);
+    }
+    .app-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 20px;
+    }
+    .question, .result, .start-screen {
+      margin-bottom: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .question.show, .result.show, .start-screen.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .option-button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      text-align: left;
+    }
+    .option-button img {
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .option-button:hover {
+      background-color: #2563eb;
+    }
+    .back-button {
+      background-color: #94a3b8;
+    }
+    .result-box {
+      background-color: #e0f2fe;
+      border-left: 5px solid #0284c7;
+      padding: 15px;
+      border-radius: 8px;
+      color: #0c4a6e;
+      margin-bottom: 15px;
+    }
+    .final-alert {
+      font-size: 14px;
+      background: #fffbe6;
+      border-left: 5px solid #facc15;
+      padding: 12px;
+      color: #78350f;
+      border-radius: 6px;
+    }
+    .dente-ajuda {
+      display: flex;
+      justify-content: space-around;
+      margin: 16px 0 8px 0;
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 8px 0;
+    }
+    .dente-ilustra {
+      text-align: center;
+    }
+    .dente-legenda {
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .dente-info {
+      color: #555;
+      font-size: 12px;
+    }
+    .dente-perguntas {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <div class="app-container" id="app">
+      <div class="start-screen show" id="start">
+        <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" width="80" style="display:block;margin:0 auto 16px;">
+        <h2>SOS Dente - Primeiros Socorros Odontológicos</h2>
+        <button class="option-button" onclick="startApp()">INICIAR</button>
+      </div>
+
+      <h2 class="hidden" id="title">SOS Dente - Avaliação de Traumatismo</h2>
+
+      <div class="question" id="q1">
+        <strong>
+          <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" width="28"> Qual o tipo do dente?
+        </strong><br>
+        <button class="option-button" onclick="nextQuestion('q2')">
+          <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" width="22"> Permanente
+        </button>
+        <button class="option-button" onclick="nextQuestion('q2')">
+          <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" width="22" style="filter:grayscale(1) brightness(1.5);"> Leite
+        </button>
+        <button class="option-button" onclick="nextQuestion('identificar-dente')">
+          <img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" width="22"> Não sei identificar
+        </button>
+      </div>
+
+      <div class="question" id="identificar-dente">
+        <strong>Vamos te ajudar a identificar o tipo de dente!</strong>
+        <div class="dente-ajuda">
+          <div class="dente-ilustra">
+            <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Dente de leite" width="60" height="60">
+            <div class="dente-legenda">Dente de leite<br><span class="dente-info">Menor, mais branco, bordas arredondadas.<br>Comum em crianças até 12 anos.</span></div>
+          </div>
+          <div class="dente-ilustra">
+            <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" style="filter: brightness(0.8) sepia(0.5);" alt="Dente permanente" width="60" height="60">
+            <div class="dente-legenda">Dente permanente<br><span class="dente-info">Maior, mais amarelado, bordas retas.<br>Comum a partir dos 6 anos.</span></div>
+          </div>
+        </div>
+        <div id="pergunta-idade">
+          <p><strong>Quantos anos tem a pessoa?</strong></p>
+          <button class="option-button" onclick="identificarResposta('leite')">Menos de 6 anos</button>
+          <button class="option-button" onclick="identificarResposta('permanente')">Mais de 12 anos</button>
+          <button class="option-button" onclick="mostrarPerguntaDente()">Entre 6 e 12 anos</button>
+        </div>
+        <div id="pergunta-tipo" style="display:none">
+          <p><strong>O dente é pequeno e bem branco?</strong></p>
+          <button class="option-button" onclick="identificarResposta('leite')">Sim</button>
+          <button class="option-button" onclick="identificarResposta('permanente')">Não, é maior e amarelado</button>
+          <button class="option-button" onclick="nextQuestion('q2')">Não sei dizer</button>
+          <button class="option-button" onclick="nextQuestion('q2')">Continuar sem identificar</button>
+        </div>
+        <button class="option-button back-button" onclick="goBack()">Voltar</button>
+      </div>
+
+      <div class="question" id="q2">
+        <strong>
+          <img src="https://cdn-icons-png.flaticon.com/512/942/942748.png" width="24"> O que aconteceu com o dente?
+        </strong><br>
+        <button class="option-button" onclick="nextQuestion('q3')">
+          <img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" width="20"> O dente quebrou
+        </button>
+        <button class="option-button" onclick="nextQuestion('q4')">
+          <img src="https://cdn-icons-png.flaticon.com/512/942/942748.png" width="20"> O dente saiu inteiro
+        </button>
+        <button class="option-button" onclick="nextQuestion('q5')">
+          <img src="https://cdn-icons-png.flaticon.com/512/3524/3524752.png" width="20"> Está mole ou deslocado
+        </button>
+        <button class="option-button" onclick="nextQuestion('q6')">
+          <img src="https://cdn-icons-png.flaticon.com/512/2917/2917995.png" width="20"> Sangramento na gengiva/lábios
+        </button>
+        <button class="option-button" onclick='showResult("Procure um dentista para avaliação detalhada.<br><img src=\"https://cdn-icons-png.flaticon.com/512/942/942748.png\" width=\"40\">")'>
+          <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png" width="20"> Outro
+        </button>
+        <button class="option-button back-button" onclick="goBack()">
+          <img src="https://cdn-icons-png.flaticon.com/512/271/271220.png" width="18"> Voltar
+        </button>
+      </div>
+
+      <div class="question" id="q3">
+        <strong>Você encontrou o pedaço do dente?</strong><br>
+        <button class="option-button" onclick="nextQuestion('q3a')">Sim</button>
+        <button class="option-button" onclick='showResult("Mesmo sem o fragmento, procure um dentista para avaliação completa.<br><img src=\"https://cdn-icons-png.flaticon.com/512/942/942748.png\" width=\"40\">")'>Não</button>
+        <button class="option-button back-button" onclick="goBack()">Voltar</button>
+      </div>
+
+      <div class="question" id="q3a">
+        <strong>Onde guardou o pedaço?</strong><br>
+        <button class="option-button" onclick='showResult("Boa escolha! Leve o fragmento ao dentista o quanto antes.<br><img src=\"https://cdn-icons-png.flaticon.com/512/616/616494.png\" width=\"40\">")'>Leite</button>
+        <button class="option-button" onclick='showResult("Boa escolha! Leve o fragmento ao dentista o quanto antes.<br><img src=\"https://cdn-icons-png.flaticon.com/512/616/616494.png\" width=\"40\">")'>Soro</button>
+        <button class="option-button" onclick='showResult("Boa escolha! Leve o fragmento ao dentista o quanto antes.<br><img src=\"https://cdn-icons-png.flaticon.com/512/616/616494.png\" width=\"40\">")'>Saliva (na boca)</button>
+        <button class="option-button" onclick='showResult("Água não é ideal. Vá ao dentista urgentemente.<br><img src=\"https://cdn-icons-png.flaticon.com/512/2917/2917995.png\" width=\"40\">")'>Água</button>
+        <button class="option-button" onclick='showResult("Evite pano ou papel seco. Leve ao dentista mesmo assim.<br><img src=\"https://cdn-icons-png.flaticon.com/512/1828/1828843.png\" width=\"40\">")'>Papel/Pano</button>
+        <button class="option-button back-button" onclick="goBack()">Voltar</button>
+      </div>
+
+      <div class="question" id="q4">
+        <strong>Você encontrou o dente?</strong><br>
+        <button class="option-button" onclick="nextQuestion('q4a')">Sim</button>
+        <button class="option-button" onclick='showResult("Leve a criança imediatamente ao dentista.<br><img src=\"https://cdn-icons-png.flaticon.com/512/942/942748.png\" width=\"40\">")'>Não</button>
+        <button class="option-button back-button" onclick="goBack()">Voltar</button>
+      </div>
+
+      <div class="question" id="q4a">
+        <strong>Onde foi armazenado?</strong><br>
+        <button class="option-button" onclick='showResult("Boa conduta! Vá ao dentista imediatamente.<br><img src=\"https://cdn-icons-png.flaticon.com/512/616/616494.png\" width=\"40\">")'>Leite</button>
+        <button class="option-button" onclick='showResult("Boa conduta! Vá ao dentista imediatamente.<br><img src=\"https://cdn-icons-png.flaticon.com/512/616/616494.png\" width=\"40\">")'>Saliva</button>
+        <button class="option-button" onclick='showResult("Boa conduta! Vá ao dentista imediatamente.<br><img src=\"https://cdn-icons-png.flaticon.com/512/616/616494.png\" width=\"40\">")'>Soro</button>
+        <button class="option-button" onclick='showResult("Água não é recomendada. Vá ao dentista agora.<br><img src=\"https://cdn-icons-png.flaticon.com/512/2917/2917995.png\" width=\"40\">")'>Água</button>
+        <button class="option-button" onclick='showResult("Evite pano ou papel seco. Vá ao dentista imediatamente.<br><img src=\"https://cdn-icons-png.flaticon.com/512/1828/1828843.png\" width=\"40\">")'>Papel/Pano</button>
+        <button class="option-button back-button" onclick="goBack()">Voltar</button>
+      </div>
+
+      <div class="question" id="q5">
+        <strong>O dente está mole ou deslocado?</strong><br>
+        <button class="option-button" onclick='showResult("Pode haver lesão no osso ou gengiva. Vá ao dentista para reposicionamento.<br><img src=\"https://cdn-icons-png.flaticon.com/512/3524/3524752.png\" width=\"40\">")'>Sim</button>
+        <button class="option-button" onclick='showResult("Observe sintomas e procure um dentista assim que possível.<br><img src=\"https://cdn-icons-png.flaticon.com/512/942/942748.png\" width=\"40\">")'>Não</button>
+        <button class="option-button back-button" onclick="goBack()">Voltar</button>
+      </div>
+
+      <div class="question" id="q6">
+        <strong>Há sangramento?</strong><br>
+        <button class="option-button" onclick='showResult("Lave a região com água limpa, comprima com gaze e vá ao dentista/médico.<br><img src=\"https://cdn-icons-png.flaticon.com/512/2917/2917995.png\" width=\"40\">")'>Sim</button>
+        <button class="option-button" onclick='showResult("Mesmo sem sangramento, lesões internas podem existir. Avaliação profissional é essencial.<br><img src=\"https://cdn-icons-png.flaticon.com/512/942/942748.png\" width=\"40\">")'>Não</button>
+        <button class="option-button back-button" onclick="goBack()">Voltar</button>
+      </div>
+
+      <div class="result" id="resultado">
+        <div class="result-box" id="mensagem"></div>
+        <div class="final-alert">
+          <strong>Orientação Final do Aplicativo:</strong><br>
+          Atenção! Toda situação de traumatismo dentário requer avaliação profissional o mais rápido possível. As condutas de emergência aumentam muito as chances de sucesso no tratamento.
+        </div>
+        <button class="option-button" onclick="restartApp()">Reiniciar</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const historyStack = [];
+    function showElement(id) {
+      document.querySelectorAll(".question, .result, .start-screen").forEach(el => el.classList.remove("show"));
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.add("show");
+        if(id === 'identificar-dente') {
+          document.getElementById('pergunta-idade').style.display = '';
+          document.getElementById('pergunta-tipo').style.display = 'none';
+        }
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 10);
+      }
+    }
+    function startApp() {
+      showElement("q1");
+      document.getElementById("start").classList.remove("show");
+      document.getElementById("title").classList.remove("hidden");
+    }
+    function nextQuestion(id) {
+      const current = document.querySelector(".question.show");
+      if (current) {
+        historyStack.push(current.id);
+      }
+      showElement(id);
+    }
+    function showResult(texto) {
+      const current = document.querySelector(".question.show");
+      if (current) {
+        historyStack.push(current.id);
+      }
+      document.getElementById("mensagem").innerHTML = texto;
+      showElement("resultado");
+    }
+    function goBack() {
+      if (historyStack.length === 0) {
+        showElement("start");
+        document.getElementById("title").classList.add("hidden");
+      } else {
+        const previous = historyStack.pop();
+        showElement(previous);
+      }
+    }
+    function restartApp() {
+      historyStack.length = 0;
+      showElement("start");
+      document.getElementById("title").classList.add("hidden");
+    }
+    function mostrarPerguntaDente() {
+      document.getElementById('pergunta-idade').style.display = 'none';
+      document.getElementById('pergunta-tipo').style.display = '';
+    }
+    function identificarResposta(tipo) {
+      if (tipo === 'leite') {
+        showResult('Provavelmente é um dente de leite. Mesmo assim, siga as orientações do simulador! <br><img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" width="40" style="vertical-align:middle">');
+      } else if (tipo === 'permanente') {
+        showResult('Provavelmente é um dente permanente. Siga as orientações do simulador! <br><img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" width="40" style="filter:brightness(0.8) sepia(0.5);vertical-align:middle">');
+      } else {
+        nextQuestion('q2');
+      }
+    }
+  </script>
+</body>
+</html>
