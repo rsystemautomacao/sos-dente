@@ -2,7 +2,7 @@ import { IconMilk, IconDroplet, IconUser, IconDropletFilled, IconFileText } from
 import useWizardStore, { StorageMethod } from '../../store/useWizardStore'
 import Card from '../../components/Card'
 
-const StorageStep = () => {
+const ToothStorageStep = () => {
   const { setStorageMethod } = useWizardStore()
 
   const handleStorageSelect = (method: StorageMethod) => {
@@ -12,9 +12,9 @@ const StorageStep = () => {
   return (
     <div className="step-container">
       <div className="step-header">
-        <h2 className="step-title">Onde guardou o pedaço?</h2>
+        <h2 className="step-title">Onde foi armazenado?</h2>
         <p className="step-description">
-          Como preservar o fragmento até chegar ao dentista
+          Como o dente foi preservado até chegar ao dentista
         </p>
       </div>
 
@@ -27,7 +27,20 @@ const StorageStep = () => {
             <IconMilk size={48} className="storage-icon" />
             <h3 className="storage-title">Leite</h3>
             <p className="storage-description">
-              Meio ideal para preservar o fragmento
+              Meio ideal para preservar o dente
+            </p>
+          </div>
+        </Card>
+
+        <Card 
+          className="storage-card"
+          onClick={() => handleStorageSelect('saliva')}
+        >
+          <div className="storage-method">
+            <IconUser size={48} className="storage-icon" />
+            <h3 className="storage-title">Saliva</h3>
+            <p className="storage-description">
+              Manter na boca até chegar ao dentista
             </p>
           </div>
         </Card>
@@ -47,26 +60,13 @@ const StorageStep = () => {
 
         <Card 
           className="storage-card"
-          onClick={() => handleStorageSelect('saliva')}
-        >
-          <div className="storage-method">
-            <IconUser size={48} className="storage-icon" />
-            <h3 className="storage-title">Saliva (na boca)</h3>
-            <p className="storage-description">
-              Manter na boca até chegar ao dentista
-            </p>
-          </div>
-        </Card>
-
-        <Card 
-          className="storage-card"
           onClick={() => handleStorageSelect('water')}
         >
           <div className="storage-method">
             <IconDropletFilled size={48} className="storage-icon" />
             <h3 className="storage-title">Água</h3>
             <p className="storage-description">
-              Não é ideal, mas melhor que nada
+              Não é recomendada, mas melhor que nada
             </p>
           </div>
         </Card>
@@ -88,4 +88,4 @@ const StorageStep = () => {
   )
 }
 
-export default StorageStep
+export default ToothStorageStep

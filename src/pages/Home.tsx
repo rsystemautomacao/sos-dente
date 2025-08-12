@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import { IconAlertTriangle, IconBook, IconTool } from '@tabler/icons-react'
 import Button from '../components/Button'
 import Card from '../components/Card'
+import CustomImage from '../components/CustomImage'
+import DentalIcon from '../components/DentalIcon'
 
 const Home = () => {
   const navigate = useNavigate()
@@ -10,7 +11,7 @@ const Home = () => {
     <div className="container">
       <div className="home-hero">
         <div className="hero-content">
-          <IconTool size={80} className="hero-icon" />
+          <DentalIcon size={80} className="hero-icon" />
           <h1 className="hero-title">SOS Dente</h1>
           <p className="hero-subtitle">
             Primeiros Socorros Odontológicos
@@ -25,7 +26,18 @@ const Home = () => {
       <div className="action-buttons">
         <Card className="action-card">
           <div className="action-content">
-            <IconAlertTriangle size={48} className="action-icon" />
+            <img 
+              src="/novo trauma.png" 
+              alt="Novo Trauma" 
+              className="action-image"
+              style={{
+                width: '48px',
+                height: '48px',
+                objectFit: 'cover',
+                borderRadius: '8px',
+                marginBottom: '16px'
+              }}
+            />
             <h2 className="action-title">Houve um Trauma</h2>
             <p className="action-description">
               Inicie o wizard de avaliação para receber orientações específicas
@@ -43,7 +55,18 @@ const Home = () => {
 
         <Card className="action-card">
           <div className="action-content">
-            <IconBook size={48} className="action-icon" />
+            <img 
+              src="/faqs.png" 
+              alt="FAQs" 
+              className="action-image"
+              style={{
+                width: '48px',
+                height: '48px',
+                objectFit: 'cover',
+                borderRadius: '8px',
+                marginBottom: '16px'
+              }}
+            />
             <h2 className="action-title">Dúvidas Frequentes</h2>
             <p className="action-description">
               Acesse o FAQ e o e-book com informações completas

@@ -1,19 +1,21 @@
 import { IconUser } from '@tabler/icons-react'
 import useWizardStore, { AgeGroup } from '../../store/useWizardStore'
-import Button from '../../components/Button'
 import Card from '../../components/Card'
+import CustomImage from '../../components/CustomImage'
 
 const AgeStep = () => {
-  const { ageGroup, setAgeGroup, nextStep } = useWizardStore()
+  const { ageGroup, setAgeGroup } = useWizardStore()
 
   const handleAgeSelect = (selectedAge: AgeGroup) => {
     setAgeGroup(selectedAge)
-    nextStep()
   }
 
   return (
     <div className="step-container">
       <div className="step-header">
+        <div className="step-icon-wrapper">
+          <IconUser size={48} className="step-icon" />
+        </div>
         <h2 className="step-title">Qual a idade da pessoa?</h2>
         <p className="step-description">
           Selecione a faixa etária para receber orientações específicas
@@ -22,27 +24,41 @@ const AgeStep = () => {
 
       <div className="selection-grid">
         <Card
-          className="selection-card"
-          selected={ageGroup === 'child'}
+          className={`selection-card ${ageGroup === 'child' ? 'selected' : ''}`}
           onClick={() => handleAgeSelect('child')}
         >
-                      <IconUser size={48} className="selection-card-icon" />
-          <h3 className="selection-card-title">Criança (0-11 anos)</h3>
-          <p className="selection-card-description">
-            Dentes de leite e início da troca dentária
-          </p>
+          <div className="card-content">
+            <div className="icon-wrapper">
+              <CustomImage type="child" size={64} className="selection-card-image" alt="Criança" />
+            </div>
+            <h3 className="selection-card-title">Criança (0-11 anos)</h3>
+            <p className="selection-card-description">
+              Dentes de leite e início da troca dentária
+            </p>
+            <div className="card-features">
+              <span className="feature-tag">Dentes de Leite</span>
+              <span className="feature-tag">Troca Dentária</span>
+            </div>
+          </div>
         </Card>
 
         <Card
-          className="selection-card"
-          selected={ageGroup === 'adolescent'}
+          className={`selection-card ${ageGroup === 'adolescent' ? 'selected' : ''}`}
           onClick={() => handleAgeSelect('adolescent')}
         >
-          <IconUser size={48} className="selection-card-icon" />
-          <h3 className="selection-card-title">Adolescente (12-17 anos)</h3>
-          <p className="selection-card-description">
-            Dentes permanentes em desenvolvimento
-          </p>
+          <div className="card-content">
+            <div className="icon-wrapper">
+              <CustomImage type="adolescent" size={64} className="selection-card-image" alt="Adolescente" />
+            </div>
+            <h3 className="selection-card-title">Adolescente (12-17 anos)</h3>
+            <p className="selection-card-description">
+              Dentes permanentes em desenvolvimento
+            </p>
+            <div className="card-features">
+              <span className="feature-tag">Dentes Permanentes</span>
+              <span className="feature-tag">Desenvolvimento</span>
+            </div>
+          </div>
         </Card>
       </div>
     </div>

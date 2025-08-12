@@ -2,7 +2,8 @@ import { create } from 'zustand'
 
 export type AgeGroup = 'child' | 'adolescent'
 export type Gender = 'female' | 'male' | 'prefer-not-to-say'
-export type TraumaType = 'fracture' | 'avulsion' | 'luxation'
+export type TraumaType = 'fracture' | 'avulsion' | 'luxation' | 'bleeding' | 'other'
+export type StorageMethod = 'milk' | 'saline' | 'saliva' | 'water' | 'paper'
 
 interface WizardState {
   // Dados do paciente
@@ -10,18 +11,32 @@ interface WizardState {
   gender: Gender | null
   traumaType: TraumaType | null
   
-  // Progresso do wizard
-  currentStep: number
-  totalSteps: number
+  // Perguntas específicas por trauma
+  foundPiece: boolean | null // Para fratura
+  foundTooth: boolean | null // Para avulsão
+  isLoose: boolean | null // Para luxação
+  hasBleeding: boolean | null // Para sangramento
+  
+  // Armazenamento
+  storageMethod: StorageMethod | null
   
   // Dados do encaminhamento
   accidentLocation: string
   observations: string
   
+  // Navegação
+  currentStep: number
+  totalSteps: number
+  
   // Ações
   setAgeGroup: (ageGroup: AgeGroup) => void
   setGender: (gender: Gender) => void
   setTraumaType: (traumaType: TraumaType) => void
+  setFoundPiece: (found: boolean) => void
+  setFoundTooth: (found: boolean) => void
+  setIsLoose: (loose: boolean) => void
+  setHasBleeding: (bleeding: boolean) => void
+  setStorageMethod: (method: StorageMethod) => void
   nextStep: () => void
   prevStep: () => void
   setStep: (step: number) => void
@@ -35,15 +50,56 @@ const useWizardStore = create<WizardState>((set, get) => ({
   ageGroup: null,
   gender: null,
   traumaType: null,
+  foundPiece: null,
+  foundTooth: null,
+  isLoose: null,
+  hasBleeding: null,
+  storageMethod: null,
   currentStep: 0,
-  totalSteps: 6, // 0-5
+  totalSteps: 7, // Idade, Sexo, Trauma, Perguntas específicas, Resultado, Dados, Maps
   accidentLocation: '',
   observations: '',
   
   // Ações
-  setAgeGroup: (ageGroup) => set({ ageGroup }),
-  setGender: (gender) => set({ gender }),
-  setTraumaType: (traumaType) => set({ traumaType }),
+  setAgeGroup: (ageGroup) => {
+    set({ ageGroup })
+    get().nextStep()
+  },
+  
+  setGender: (gender) => {
+    set({ gender })
+    get().nextStep()
+  },
+  
+  setTraumaType: (traumaType) => {
+    set({ traumaType })
+    get().nextStep()
+  },
+  
+  setFoundPiece: (found) => {
+    set({ foundPiece: found })
+    // Não chama nextStep() aqui - o componente controla o fluxo
+  },
+  
+  setFoundTooth: (found) => {
+    set({ foundTooth: found })
+    // Não chama nextStep() aqui - o componente controla o fluxo
+  },
+  
+  setIsLoose: (loose) => {
+    set({ isLoose: loose })
+    get().nextStep()
+  },
+  
+  setHasBleeding: (bleeding) => {
+    set({ hasBleeding: bleeding })
+    get().nextStep()
+  },
+  
+  setStorageMethod: (method) => {
+    set({ storageMethod: method })
+    get().nextStep()
+  },
   
   nextStep: () => {
     const { currentStep, totalSteps } = get()
@@ -64,14 +120,21 @@ const useWizardStore = create<WizardState>((set, get) => ({
   setAccidentLocation: (accidentLocation) => set({ accidentLocation }),
   setObservations: (observations) => set({ observations }),
   
-  reset: () => set({
-    ageGroup: null,
-    gender: null,
-    traumaType: null,
-    currentStep: 0,
-    accidentLocation: '',
-    observations: ''
-  })
+  reset: () => {
+    set({
+      ageGroup: null,
+      gender: null,
+      traumaType: null,
+      foundPiece: null,
+      foundTooth: null,
+      isLoose: null,
+      hasBleeding: null,
+      storageMethod: null,
+      currentStep: 0,
+      accidentLocation: '',
+      observations: ''
+    })
+  }
 }))
 
 export default useWizardStore

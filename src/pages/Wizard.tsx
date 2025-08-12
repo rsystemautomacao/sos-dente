@@ -1,29 +1,28 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import useWizardStore from '../store/useWizardStore'
 import Stepper from '../components/Stepper'
 import AgeStep from './wizard/AgeStep'
 import GenderStep from './wizard/GenderStep'
 import TraumaTypeStep from './wizard/TraumaTypeStep'
-import InstructionsStep from './wizard/InstructionsStep'
-import StorageStep from './wizard/StorageStep'
-import ReferralStep from './wizard/ReferralStep'
+import TraumaQuestionsStep from './wizard/TraumaQuestionsStep'
+import ResultStep from './wizard/ResultStep'
+import DataCollectionStep from './wizard/DataCollectionStep'
+import MapsStep from './wizard/MapsStep'
 
 const Wizard = () => {
-  const navigate = useNavigate()
   const { currentStep, totalSteps, reset } = useWizardStore()
 
   const steps = [
     'Idade',
     'Sexo', 
     'Tipo de Trauma',
-    'Instruções',
-    'Armazenamento',
-    'Encaminhamento'
+    'Perguntas Específicas',
+    'Resultado',
+    'Dados',
+    'Localização'
   ]
 
   useEffect(() => {
-    // Reset wizard quando entrar na página
     reset()
   }, [reset])
 
@@ -36,11 +35,13 @@ const Wizard = () => {
       case 2:
         return <TraumaTypeStep />
       case 3:
-        return <InstructionsStep />
+        return <TraumaQuestionsStep />
       case 4:
-        return <StorageStep />
+        return <ResultStep />
       case 5:
-        return <ReferralStep />
+        return <DataCollectionStep />
+      case 6:
+        return <MapsStep />
       default:
         return <AgeStep />
     }

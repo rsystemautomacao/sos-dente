@@ -15,12 +15,23 @@ const Stepper = ({ currentStep, totalSteps, steps }: StepperProps) => {
         return (
           <div
             key={index}
-            className={`step ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+            className={`step ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''} ${isFuture ? 'future' : ''}`}
           >
-            <div className="step-number">
-              {isCompleted ? '✓' : index + 1}
+            <div className={`step-number ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''} ${isFuture ? 'future' : ''}`}>
+              {isCompleted ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+              ) : (
+                index + 1
+              )}
             </div>
-            <span className="step-label">{step}</span>
+            <span className={`step-label ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''} ${isFuture ? 'future' : ''}`}>
+              {step}
+            </span>
+            {index < steps.length - 1 && (
+              <div className={`step-connector ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}`} />
+            )}
           </div>
         )
       })}
