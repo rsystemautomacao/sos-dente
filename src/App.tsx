@@ -1,15 +1,16 @@
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import Header from './components/Header'
+import SOSButton from './components/SOSButton'
+import InstallPWA from './components/InstallPWA'
 import Home from './pages/Home'
 import Wizard from './pages/Wizard'
 import FAQ from './pages/FAQ'
 import Ebook from './pages/Ebook'
-import SOSButton from './components/SOSButton'
 
 function App() {
   return (
-    <div className="app-layout">
+    <div className="app">
       <Header />
       <main className="main-content">
         <Routes>
@@ -20,27 +21,14 @@ function App() {
         </Routes>
       </main>
       <SOSButton />
-      <Toaster
-        position="top-right"
+      <InstallPWA />
+      <Toaster 
+        position="top-center"
         toastOptions={{
           duration: 4000,
           style: {
-            background: 'var(--color-white)',
-            color: 'var(--color-gray-800)',
-            borderRadius: 'var(--border-radius)',
-            boxShadow: 'var(--shadow-lg)',
-          },
-          success: {
-            iconTheme: {
-              primary: 'var(--color-success)',
-              secondary: 'var(--color-white)',
-            },
-          },
-          error: {
-            iconTheme: {
-              primary: 'var(--color-error)',
-              secondary: 'var(--color-white)',
-            },
+            background: '#363636',
+            color: '#fff',
           },
         }}
       />

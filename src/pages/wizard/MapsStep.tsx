@@ -1,13 +1,18 @@
-import { IconMapPin, IconBuildingHospital } from '@tabler/icons-react'
+import { useState } from 'react'
+import { IconMapPin, IconBuildingHospital, IconLoader } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
 import useWizardStore from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import CustomImage from '../../components/CustomImage'
 import { openNearbyDentists, openNearbyUPAs } from '../../services/maps'
+import toast from 'react-hot-toast'
 
 const MapsStep = () => {
   const navigate = useNavigate()
+  const [isLoadingDentists, setIsLoadingDentists] = useState(false)
+  const [isLoadingUPAs, setIsLoadingUPAs] = useState(false)
+  
   const { 
     ageGroup, 
     gender, 
@@ -16,12 +21,30 @@ const MapsStep = () => {
     observations 
   } = useWizardStore()
 
-  const handleFindDentists = () => {
-    openNearbyDentists()
+  const handleFindDentists = async () => {
+    setIsLoadingDentists(true)
+    try {
+      await openNearbyDentists()
+      toast.success('Abrindo Google Maps para dentistas próximos...')
+    } catch (error) {
+      console.error('Erro ao abrir maps:', error)
+      toast.error('Erro ao abrir o mapa. Tente novamente.')
+    } finally {
+      setIsLoadingDentists(false)
+    }
   }
 
-  const handleFindUPAs = () => {
-    openNearbyUPAs()
+  const handleFindUPAs = async () => {
+    setIsLoadingUPAs(true)
+    try {
+      await openNearbyUPAs()
+      toast.success('Abrindo Google Maps para UPAs próximas...')
+    } catch (error) {
+      console.error('Erro ao abrir maps:', error)
+      toast.error('Erro ao abrir o mapa. Tente novamente.')
+    } finally {
+      setIsLoadingUPAs(false)
+    }
   }
 
   const handleCallSAMU = () => {
@@ -90,9 +113,17 @@ const MapsStep = () => {
                 variant="primary"
                 size="lg"
                 onClick={handleFindDentists}
+                disabled={isLoadingDentists}
                 className="action-button"
               >
-                Buscar Dentistas
+                {isLoadingDentists ? (
+                  <>
+                    <IconLoader size={20} className="loading-icon" />
+                    Localizando...
+                  </>
+                ) : (
+                  'Buscar Dentistas'
+                )}
               </Button>
             </div>
           </Card>
@@ -108,9 +139,17 @@ const MapsStep = () => {
                 variant="outline"
                 size="lg"
                 onClick={handleFindUPAs}
+                disabled={isLoadingUPAs}
                 className="action-button"
               >
-                Buscar UPAs
+                {isLoadingUPAs ? (
+                  <>
+                    <IconLoader size={20} className="loading-icon" />
+                    Localizando...
+                  </>
+                ) : (
+                  'Buscar UPAs'
+                )}
               </Button>
             </div>
           </Card>
