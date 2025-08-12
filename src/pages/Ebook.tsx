@@ -1,25 +1,48 @@
 import { useState } from 'react'
-import { IconDownload, IconBook, IconArrowLeft } from '@tabler/icons-react'
-import { Link } from 'react-router-dom'
+import { Document, Page, pdfjs } from 'react-pdf'
+import { IconDownload, IconArrowLeft, IconLoader } from '@tabler/icons-react'
+import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import Card from '../components/Card'
 
-const Ebook = () => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [hasError, setHasError] = useState(false)
+// Configurar o worker do PDF.js
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
 
-  const handleLoad = () => {
-    setIsLoading(false)
+const Ebook = () => {
+  const navigate = useNavigate()
+  const [numPages, setNumPages] = useState<number | null>(null)
+  const [pageNumber, setPageNumber] = useState(1)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+
+  const pdfUrl = '/ebook-amanda-vidal.pdf'
+
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    setNumPages(numPages)
+    setLoading(false)
+    setError(false)
   }
 
-  const handleError = () => {
-    setIsLoading(false)
-    setHasError(true)
+  const onDocumentLoadError = () => {
+    setLoading(false)
+    setError(true)
+  }
+
+  const changePage = (offset: number) => {
+    setPageNumber(prevPageNumber => prevPageNumber + offset)
+  }
+
+  const previousPage = () => {
+    changePage(-1)
+  }
+
+  const nextPage = () => {
+    changePage(1)
   }
 
   const handleDownload = () => {
     const link = document.createElement('a')
-    link.href = '/ebook-amanda-vidal.pdf'
+    link.href = pdfUrl
     link.download = 'SOS-Dente-Ebook.pdf'
     document.body.appendChild(link)
     link.click()
@@ -28,14 +51,22 @@ const Ebook = () => {
 
   return (
     <div className="container">
-      <div className="ebook-header">
-        <Link to="/faq" className="back-link">
+      {/* Botão Voltar */}
+      <div className="back-arrow-container">
+        <button
+          onClick={() => navigate('/faq')}
+          className="back-arrow"
+          aria-label="Voltar ao FAQ"
+        >
           <IconArrowLeft size={20} />
-          Voltar ao FAQ
-        </Link>
-        
+        </button>
+      </div>
+
+      <div className="ebook-header">
         <div className="ebook-hero">
-          <IconBook size={64} className="ebook-icon" />
+          <div className="ebook-icon">
+            <IconDownload size={48} />
+          </div>
           <h1 className="ebook-title">E-book SOS Dente</h1>
           <p className="ebook-subtitle">
             Guia completo sobre trauma dentário e primeiros socorros
@@ -55,59 +86,94 @@ const Ebook = () => {
         </div>
       </div>
 
-      <div className="ebook-content">
-        <Card className="pdf-container">
-          {isLoading && (
-            <div className="loading">
-              <div className="spinner"></div>
+      <div className="pdf-viewer-container">
+        <Card className="pdf-card">
+          {loading && (
+            <div className="pdf-loading">
+              <IconLoader size={32} className="loading-icon" />
               <p>Carregando PDF...</p>
             </div>
           )}
 
-          {hasError && (
-            <div className="error-state">
-              <IconBook size={64} className="error-icon" />
-              <h3>Erro ao carregar o PDF</h3>
-              <p>O arquivo pode estar indisponível ou corrompido.</p>
+          {error && (
+            <div className="pdf-error">
+              <p>Erro ao carregar o PDF. Tente baixar o arquivo.</p>
               <Button
                 variant="outline"
-                onClick={() => window.location.reload()}
+                size="md"
+                onClick={handleDownload}
+                className="download-fallback"
               >
-                Tentar novamente
+                <IconDownload size={16} />
+                Baixar PDF
               </Button>
             </div>
           )}
 
-          <object
-            data="/ebook-amanda-vidal.pdf"
-            type="application/pdf"
-            className="pdf-viewer"
-            onLoad={handleLoad}
-            onError={handleError}
-          >
-            <div className="pdf-fallback">
-              <p>Seu navegador não suporta visualização de PDF.</p>
-              <Button
-                variant="primary"
-                onClick={handleDownload}
+          {!loading && !error && (
+            <div className="pdf-content">
+              <Document
+                file={pdfUrl}
+                onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={onDocumentLoadError}
+                loading={
+                  <div className="pdf-loading">
+                    <IconLoader size={32} className="loading-icon" />
+                    <p>Carregando PDF...</p>
+                  </div>
+                }
+                error={
+                  <div className="pdf-error">
+                    <p>Erro ao carregar o PDF. Tente baixar o arquivo.</p>
+                    <Button
+                      variant="outline"
+                      size="md"
+                      onClick={handleDownload}
+                      className="download-fallback"
+                    >
+                      <IconDownload size={16} />
+                      Baixar PDF
+                    </Button>
+                  </div>
+                }
               >
-                <IconDownload size={20} />
-                Baixar PDF
-              </Button>
-            </div>
-          </object>
-        </Card>
-      </div>
+                <Page
+                  pageNumber={pageNumber}
+                  width={Math.min(window.innerWidth - 64, 600)}
+                  renderTextLayer={false}
+                  renderAnnotationLayer={false}
+                />
+              </Document>
 
-      <div className="ebook-info">
-        <Card className="info-card">
-          <h3>Informações do E-book</h3>
-          <ul className="info-list">
-            <li>Autor: Amanda Vidal</li>
-            <li>Tema: Trauma Dentário e Primeiros Socorros</li>
-            <li>Formato: PDF</li>
-            <li>Idioma: Português</li>
-          </ul>
+              {numPages && (
+                <div className="pdf-navigation">
+                  <div className="page-info">
+                    Página {pageNumber} de {numPages}
+                  </div>
+                  <div className="page-controls">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={previousPage}
+                      disabled={pageNumber <= 1}
+                      className="page-button"
+                    >
+                      Anterior
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={nextPage}
+                      disabled={pageNumber >= numPages}
+                      className="page-button"
+                    >
+                      Próxima
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </Card>
       </div>
     </div>

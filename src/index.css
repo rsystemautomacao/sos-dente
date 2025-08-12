@@ -1787,6 +1787,227 @@ body {
   transform: scale(1.05);
 }
 
+/* PDF Viewer Styles */
+.pdf-viewer-container {
+  margin-top: var(--spacing-6);
+}
+
+.pdf-card {
+  background: var(--color-background);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.pdf-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-8);
+  color: var(--color-text-secondary);
+}
+
+.pdf-loading .loading-icon {
+  margin-bottom: var(--spacing-3);
+  animation: spin 1s linear infinite;
+}
+
+.pdf-loading p {
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+.pdf-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-6);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.pdf-error p {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--spacing-4);
+  line-height: 1.5;
+}
+
+.download-fallback {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.pdf-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-4);
+}
+
+/* React-PDF Document Container */
+.react-pdf__Document {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.react-pdf__Page {
+  margin-bottom: var(--spacing-4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.react-pdf__Page__canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* PDF Navigation */
+.pdf-navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+  width: 100%;
+  padding: var(--spacing-4);
+  background: var(--color-background-light);
+  border-top: 1px solid var(--color-border);
+}
+
+.page-info {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.page-controls {
+  display: flex;
+  gap: var(--spacing-3);
+}
+
+.page-button {
+  min-width: 80px;
+}
+
+.page-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Ebook Header */
+.ebook-header {
+  margin-bottom: var(--spacing-6);
+  padding-top: var(--spacing-8);
+}
+
+.ebook-hero {
+  text-align: center;
+  margin-bottom: var(--spacing-6);
+}
+
+.ebook-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  border-radius: 50%;
+  margin: 0 auto var(--spacing-4);
+  color: white;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+}
+
+.ebook-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-2);
+}
+
+.ebook-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--spacing-4);
+}
+
+.ebook-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.download-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)) !important;
+  color: white !important;
+  border: none !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3) !important;
+}
+
+.download-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Mobile adjustments for PDF viewer */
+@media (max-width: 768px) {
+  .pdf-content {
+    padding: var(--spacing-3);
+  }
+  
+  .react-pdf__Page {
+    margin-bottom: var(--spacing-3);
+  }
+  
+  .pdf-navigation {
+    padding: var(--spacing-3);
+    gap: var(--spacing-2);
+  }
+  
+  .page-controls {
+    gap: var(--spacing-2);
+  }
+  
+  .page-button {
+    min-width: 70px;
+    font-size: var(--font-size-xs);
+  }
+  
+  .ebook-title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .ebook-subtitle {
+    font-size: var(--font-size-sm);
+  }
+  
+  .ebook-icon {
+    width: 64px;
+    height: 64px;
+  }
+  
+  .pdf-loading,
+  .pdf-error {
+    padding: var(--spacing-6);
+  }
+  
+  .pdf-loading p,
+  .pdf-error p {
+    font-size: var(--font-size-sm);
+  }
+}
+
 /* Install PWA Banner */
 .install-pwa-banner {
   position: fixed;
