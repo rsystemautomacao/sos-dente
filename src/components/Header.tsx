@@ -1,7 +1,11 @@
 import { useLocation } from 'react-router-dom'
 import DentalIcon from './DentalIcon'
 
-const Header = () => {
+interface HeaderProps {
+  onShowAbout: () => void
+}
+
+const Header = ({ onShowAbout }: HeaderProps) => {
   const location = useLocation()
 
   const getPageTitle = () => {
@@ -25,6 +29,15 @@ const Header = () => {
         <div className="header-left">
           <DentalIcon size={32} className="header-icon" />
           <h1 className="header-title">{getPageTitle()}</h1>
+        </div>
+        <div className="header-right">
+          <button 
+            className="about-link"
+            onClick={onShowAbout}
+            aria-label="Sobre o aplicativo"
+          >
+            Sobre
+          </button>
         </div>
       </div>
     </header>

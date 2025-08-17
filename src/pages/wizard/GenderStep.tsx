@@ -1,9 +1,15 @@
+import { useEffect } from 'react'
 import useWizardStore, { Gender } from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import CustomImage from '../../components/CustomImage'
 
 const GenderStep = () => {
   const { gender, setGender } = useWizardStore()
+
+  useEffect(() => {
+    // Garantir que o step carregue no topo
+    window.scrollTo(0, 0)
+  }, [])
 
   const handleGenderSelect = (selectedGender: Gender) => {
     setGender(selectedGender)

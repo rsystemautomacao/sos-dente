@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import Header from './components/Header'
 import SOSButton from './components/SOSButton'
 import InstallPWA from './components/InstallPWA'
 import AutoUpdate from './components/AutoUpdate'
+import AboutModal from './components/AboutModal'
 import Home from './pages/Home'
 import Wizard from './pages/Wizard'
 import FAQ from './pages/FAQ'
@@ -12,10 +14,11 @@ import { useScrollToTop } from './hooks/useScrollToTop'
 
 function App() {
   useScrollToTop()
+  const [showAboutModal, setShowAboutModal] = useState(false)
 
   return (
     <div className="app">
-      <Header />
+      <Header onShowAbout={() => setShowAboutModal(true)} />
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -27,6 +30,10 @@ function App() {
       <SOSButton />
       <InstallPWA />
       <AutoUpdate />
+      <AboutModal 
+        isOpen={showAboutModal} 
+        onClose={() => setShowAboutModal(false)} 
+      />
       <Toaster 
         position="top-center"
         toastOptions={{

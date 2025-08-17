@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
-import { IconDownload, IconArrowLeft, IconLoader, IconEye } from '@tabler/icons-react'
+import { IconDownload, IconArrowLeft, IconLoader, IconEye, IconBook, IconUser, IconCalendar, IconFileText } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import Card from '../components/Card'
@@ -20,6 +20,9 @@ const Ebook = () => {
   const pdfUrl = '/ebook-amanda-vidal.pdf'
 
   useEffect(() => {
+    // Garantir que a página carregue no topo
+    window.scrollTo(0, 0)
+    
     // Detectar se é dispositivo móvel
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768)
@@ -69,10 +72,6 @@ const Ebook = () => {
     setError(false)
   }
 
-  const handleOpenInNewTab = () => {
-    window.open(pdfUrl, '_blank')
-  }
-
   return (
     <div className="container">
       {/* Botão Voltar */}
@@ -119,19 +118,69 @@ const Ebook = () => {
               Visualizar PDF
             </Button>
           )}
-          
-          {isMobile && (
-            <Button
-              variant="secondary"
-              size="lg"
-              onClick={handleOpenInNewTab}
-              className="view-button"
-            >
-              <IconEye size={20} />
-              Abrir PDF
-            </Button>
-          )}
         </div>
+      </div>
+
+      {/* Card de Resumo do E-book */}
+      <div className="ebook-summary">
+        <Card className="summary-card">
+          <div className="summary-header">
+            <div className="summary-icon">
+              <IconBook size={32} />
+            </div>
+            <h3 className="summary-title">Sobre o E-book</h3>
+          </div>
+          
+          <div className="summary-content">
+            <div className="summary-item">
+              <div className="summary-item-icon">
+                <IconFileText size={20} />
+              </div>
+              <div className="summary-item-content">
+                <span className="summary-item-label">Título:</span>
+                <span className="summary-item-value">SOS Dente - Guia de Primeiros Socorros em Trauma Dentário</span>
+              </div>
+            </div>
+            
+            <div className="summary-item">
+              <div className="summary-item-icon">
+                <IconUser size={20} />
+              </div>
+              <div className="summary-item-content">
+                <span className="summary-item-label">Autor:</span>
+                <span className="summary-item-value">Amanda Vidal</span>
+              </div>
+            </div>
+            
+            <div className="summary-item">
+              <div className="summary-item-icon">
+                <IconCalendar size={20} />
+              </div>
+              <div className="summary-item-content">
+                <span className="summary-item-label">Versão:</span>
+                                        <span className="summary-item-value">1.0 - 2025</span>
+              </div>
+            </div>
+            
+            <div className="summary-item">
+              <div className="summary-item-icon">
+                <IconBook size={20} />
+              </div>
+              <div className="summary-item-content">
+                <span className="summary-item-label">Páginas:</span>
+                <span className="summary-item-value">~25 páginas</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="summary-description">
+            <p>
+              Este e-book contém informações essenciais sobre como proceder em casos de trauma dentário, 
+              incluindo orientações para pais, professores e profissionais de saúde. 
+              Aborda desde identificação do tipo de trauma até procedimentos de emergência e cuidados pós-acidente.
+            </p>
+          </div>
+        </Card>
       </div>
 
       {showPdfViewer && !isMobile && (

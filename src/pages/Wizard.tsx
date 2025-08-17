@@ -27,6 +27,8 @@ const Wizard = () => {
 
   useEffect(() => {
     reset()
+    // Garantir que a página carregue no topo
+    window.scrollTo(0, 0)
   }, [reset])
 
   const handleStepClick = (stepIndex: number) => {

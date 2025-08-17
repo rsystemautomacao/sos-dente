@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { IconSearch, IconArrowLeft } from '@tabler/icons-react'
 import { Link, useNavigate } from 'react-router-dom'
 import Card from '../components/Card'
@@ -9,6 +9,11 @@ const FAQ = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    // Garantir que a página carregue no topo
+    window.scrollTo(0, 0)
+  }, [])
 
   const filteredFAQ = faqData.faq.filter(item =>
     item.question.toLowerCase().includes(searchTerm.toLowerCase()) ||

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { IconMapPin, IconBuildingHospital, IconLoader, IconDownload, IconX, IconHome } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
 import useWizardStore from '../../store/useWizardStore'
@@ -12,20 +12,25 @@ import toast from 'react-hot-toast'
 
 const MapsStep = () => {
   const navigate = useNavigate()
-  const [isLoadingDentists, setIsLoadingDentists] = useState(false)
-  const [isLoadingUPAs, setIsLoadingUPAs] = useState(false)
-  const [isLoadingPDF, setIsLoadingPDF] = useState(false)
-  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null)
-  const [showConfirmModal, setShowConfirmModal] = useState(false)
-  
   const { 
     ageGroup, 
     gender, 
     traumaType, 
     accidentLocation, 
-    observations,
+    observations, 
     photos 
   } = useWizardStore()
+  
+  const [isLoadingDentists, setIsLoadingDentists] = useState(false)
+  const [isLoadingUPAs, setIsLoadingUPAs] = useState(false)
+  const [isLoadingPDF, setIsLoadingPDF] = useState(false)
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+
+  useEffect(() => {
+    // Garantir que o step carregue no topo
+    window.scrollTo(0, 0)
+  }, [])
 
   const handleFindDentists = async () => {
     setIsLoadingDentists(true)

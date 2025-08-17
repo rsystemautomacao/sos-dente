@@ -1,9 +1,15 @@
+import { useEffect } from 'react'
 import useWizardStore, { AgeGroup } from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import CustomImage from '../../components/CustomImage'
 
 const AgeStep = () => {
   const { ageGroup, setAgeGroup } = useWizardStore()
+
+  useEffect(() => {
+    // Garantir que o step carregue no topo
+    window.scrollTo(0, 0)
+  }, [])
 
   const handleAgeSelect = (selectedAge: AgeGroup) => {
     setAgeGroup(selectedAge)

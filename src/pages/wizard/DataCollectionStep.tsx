@@ -1,5 +1,5 @@
-import { IconMapPin, IconNotes, IconCamera, IconPhoto } from '@tabler/icons-react'
-import { useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { IconMapPin, IconFileText, IconCamera, IconPhoto } from '@tabler/icons-react'
 import useWizardStore from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
@@ -7,19 +7,26 @@ import Button from '../../components/Button'
 const DataCollectionStep = () => {
   const { 
     accidentLocation, 
-    observations, 
     setAccidentLocation, 
+    observations, 
     setObservations,
+    photos,
     setPhotos,
-    nextStep 
+    nextStep
   } = useWizardStore()
-
-  const [photos, setLocalPhotos] = useState<File[]>([])
+  
+  const [localPhotos, setLocalPhotos] = useState<File[]>(photos)
+  
   const fileInputRef = useRef<HTMLInputElement>(null)
   const cameraInputRef = useRef<HTMLInputElement>(null)
 
+  useEffect(() => {
+    // Garantir que o step carregue no topo
+    window.scrollTo(0, 0)
+  }, [])
+
   const handleContinue = () => {
-    setPhotos(photos)
+    setPhotos(localPhotos)
     nextStep()
   }
 
@@ -73,7 +80,7 @@ const DataCollectionStep = () => {
 
           <div className="form-group">
             <label htmlFor="observations" className="form-label">
-              <IconNotes size={20} className="form-icon" />
+              <IconFileText size={20} className="form-icon" />
               Observações Adicionais
             </label>
             <textarea
@@ -133,13 +140,13 @@ const DataCollectionStep = () => {
               style={{ display: 'none' }}
             />
 
-            {photos.length > 0 && (
+            {localPhotos.length > 0 && (
               <div className="photo-preview">
                 <h4 className="photo-preview-title">
-                  Fotos Adicionadas ({photos.length})
+                  Fotos Adicionadas ({localPhotos.length})
                 </h4>
                 <div className="photo-grid">
-                  {photos.map((photo, index) => (
+                  {localPhotos.map((photo, index) => (
                     <div key={index} className="photo-item">
                       <img
                         src={URL.createObjectURL(photo)}

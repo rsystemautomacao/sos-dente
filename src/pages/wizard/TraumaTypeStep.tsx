@@ -1,9 +1,15 @@
+import { useEffect } from 'react'
 import useWizardStore, { TraumaType } from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import CustomImage from '../../components/CustomImage'
 
 const TraumaTypeStep = () => {
   const { traumaType, setTraumaType } = useWizardStore()
+
+  useEffect(() => {
+    // Garantir que o step carregue no topo
+    window.scrollTo(0, 0)
+  }, [])
 
   const handleTraumaSelect = (selectedTrauma: TraumaType) => {
     setTraumaType(selectedTrauma)
