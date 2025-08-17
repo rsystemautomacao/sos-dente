@@ -5,6 +5,7 @@ export interface TraumaData {
   ageGroup: string | null
   gender: string | null
   traumaType: string | null
+  accidentTimeRange?: string | null
   accidentLocation?: string
   observations?: string
   photos: File[]
@@ -114,10 +115,21 @@ export class PDFGenerator {
       'adolescent': 'Adolescente (12-17 anos)'
     }
 
+    const timeRangeMap: { [key: string]: string } = {
+      '0-15': '00 à 15 min',
+      '15-30': '15 à 30 min',
+      '30-45': '30 à 45 min',
+      '45-60': '45 à 60 min',
+      '60-90': '01:00 à 01:30 hrs',
+      '90-120': '01:30 à 02:00 hrs',
+      '120+': 'Mais de 2 horas'
+    }
+
     const infoItems = [
       { label: 'Faixa Etária:', value: ageMap[data.ageGroup || ''] || data.ageGroup || 'Não informado' },
       { label: 'Sexo:', value: genderMap[data.gender || ''] || data.gender || 'Não informado' },
       { label: 'Tipo de Trauma:', value: traumaTypeMap[data.traumaType || ''] || data.traumaType || 'Não informado' },
+      ...(data.accidentTimeRange ? [{ label: 'Tempo do Acidente:', value: timeRangeMap[data.accidentTimeRange] || data.accidentTimeRange }] : []),
       ...(data.accidentLocation ? [{ label: 'Local do Acidente:', value: data.accidentLocation }] : []),
       ...(data.observations ? [{ label: 'Observações:', value: data.observations }] : [])
     ]

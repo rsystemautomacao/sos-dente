@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { IconMapPin, IconFileText, IconCamera, IconPhoto } from '@tabler/icons-react'
+import { IconMapPin, IconFileText, IconCamera, IconPhoto, IconClock } from '@tabler/icons-react'
 import useWizardStore from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 
 const DataCollectionStep = () => {
   const { 
+    accidentTimeRange,
+    setAccidentTimeRange,
     accidentLocation, 
     setAccidentLocation, 
     observations, 
@@ -80,6 +82,28 @@ const DataCollectionStep = () => {
 
       <div className="data-collection-content">
         <Card className="form-card">
+          <div className="form-group">
+            <label htmlFor="timeRange" className="form-label">
+              <IconClock size={20} className="form-icon" />
+              Tempo do Acidente
+            </label>
+            <select
+              id="timeRange"
+              className="form-select"
+              value={accidentTimeRange || ''}
+              onChange={(e) => setAccidentTimeRange(e.target.value as any)}
+            >
+              <option value="">Selecione o tempo decorrido</option>
+              <option value="0-15">00 à 15 min</option>
+              <option value="15-30">15 à 30 min</option>
+              <option value="30-45">30 à 45 min</option>
+              <option value="45-60">45 à 60 min</option>
+              <option value="60-90">01:00 à 01:30 hrs</option>
+              <option value="90-120">01:30 à 02:00 hrs</option>
+              <option value="120+">Mais de 2 horas</option>
+            </select>
+          </div>
+
           <div className="form-group">
             <label htmlFor="location" className="form-label">
               <IconMapPin size={20} className="form-icon" />

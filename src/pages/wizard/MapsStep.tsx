@@ -16,6 +16,7 @@ const MapsStep = () => {
     ageGroup, 
     gender, 
     traumaType, 
+    accidentTimeRange,
     accidentLocation, 
     observations, 
     photos 
@@ -80,6 +81,7 @@ const MapsStep = () => {
         ageGroup,
         gender,
         traumaType,
+        accidentTimeRange,
         accidentLocation,
         observations,
         photos,
@@ -150,6 +152,20 @@ const MapsStep = () => {
                  traumaType === 'bleeding' ? 'Sangramento' : 'Outro'}
               </span>
             </div>
+            {accidentTimeRange && (
+              <div className="summary-item">
+                <span className="summary-label">Tempo do Acidente:</span>
+                <span className="summary-value">
+                  {accidentTimeRange === '0-15' ? '00 à 15 min' :
+                   accidentTimeRange === '15-30' ? '15 à 30 min' :
+                   accidentTimeRange === '30-45' ? '30 à 45 min' :
+                   accidentTimeRange === '45-60' ? '45 à 60 min' :
+                   accidentTimeRange === '60-90' ? '01:00 à 01:30 hrs' :
+                   accidentTimeRange === '90-120' ? '01:30 à 02:00 hrs' :
+                   accidentTimeRange === '120+' ? 'Mais de 2 horas' : accidentTimeRange}
+                </span>
+              </div>
+            )}
             {accidentLocation && (
               <div className="summary-item">
                 <span className="summary-label">Local:</span>

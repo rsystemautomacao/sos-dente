@@ -4,6 +4,7 @@ export type AgeGroup = 'child' | 'adolescent'
 export type Gender = 'female' | 'male' | 'prefer-not-to-say'
 export type TraumaType = 'fracture' | 'avulsion' | 'luxation' | 'bleeding' | 'other'
 export type StorageMethod = 'milk' | 'saline' | 'saliva' | 'water' | 'paper'
+export type AccidentTimeRange = '0-15' | '15-30' | '30-45' | '45-60' | '60-90' | '90-120' | '120+'
 
 interface WizardState {
   // Dados do paciente
@@ -21,6 +22,7 @@ interface WizardState {
   storageMethod: StorageMethod | null
   
   // Dados do encaminhamento
+  accidentTimeRange: AccidentTimeRange | null
   accidentLocation: string
   observations: string
   photos: File[]
@@ -38,6 +40,7 @@ interface WizardState {
   setIsLoose: (loose: boolean) => void
   setHasBleeding: (bleeding: boolean) => void
   setStorageMethod: (method: StorageMethod) => void
+  setAccidentTimeRange: (timeRange: AccidentTimeRange) => void
   nextStep: () => void
   prevStep: () => void
   setStep: (step: number) => void
@@ -58,6 +61,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
   isLoose: null,
   hasBleeding: null,
   storageMethod: null,
+  accidentTimeRange: null,
   currentStep: 0,
   totalSteps: 7, // Idade, Sexo, Trauma, Perguntas específicas, Resultado, Dados, Maps
   accidentLocation: '',
@@ -105,6 +109,10 @@ const useWizardStore = create<WizardState>((set, get) => ({
     get().nextStep()
   },
   
+  setAccidentTimeRange: (timeRange) => {
+    set({ accidentTimeRange: timeRange })
+  },
+  
   nextStep: () => {
     const { currentStep, totalSteps } = get()
     if (currentStep < totalSteps - 1) {
@@ -136,6 +144,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
       isLoose: null,
       hasBleeding: null,
       storageMethod: null,
+      accidentTimeRange: null,
       currentStep: 0,
       accidentLocation: '',
       observations: '',
