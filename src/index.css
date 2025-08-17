@@ -908,71 +908,11 @@ body {
 }
 
 /* Home Page Moderna */
-.home-hero {
-  text-align: center;
-  padding: var(--spacing-24) 0;
-  background: linear-gradient(135deg, var(--color-primary-lighter) 0%, var(--color-background-light) 100%);
-  position: relative;
-  overflow: hidden;
-}
-
-.home-hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%236366f1" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%236366f1" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="%236366f1" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-  opacity: 0.3;
-}
-
-.hero-content {
-  max-width: 600px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
-}
-
-.hero-icon {
-  color: var(--color-primary);
-  margin-bottom: var(--spacing-8);
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-.hero-title {
-  font-size: var(--font-size-5xl);
-  font-weight: var(--font-weight-bold);
-  background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-primary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: var(--spacing-6);
-  line-height: var(--line-height-tight);
-}
-
-.hero-subtitle {
-  font-size: var(--font-size-2xl);
-  color: var(--color-primary);
-  font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--spacing-8);
-}
-
-.hero-description {
-  font-size: var(--font-size-xl);
-  color: var(--color-text-secondary);
-  line-height: var(--line-height-relaxed);
-  margin-bottom: var(--spacing-8);
-}
 
 .action-buttons {
   display: grid;
   gap: var(--spacing-8);
+  margin-top: var(--spacing-8);
   margin-bottom: var(--spacing-16);
 }
 
@@ -1544,52 +1484,7 @@ body {
   min-width: 180px;
 }
 
-/* Mobile PDF Info */
-.mobile-pdf-info {
-  margin-top: var(--spacing-8);
-}
 
-.mobile-info-card {
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  border: 2px solid #e2e8f0;
-}
-
-.mobile-info-content {
-  text-align: center;
-  padding: var(--spacing-6);
-}
-
-.mobile-info-icon {
-  color: var(--color-primary);
-  margin-bottom: var(--spacing-4);
-}
-
-.mobile-info-title {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  margin-bottom: var(--spacing-3);
-}
-
-.mobile-info-text {
-  font-size: var(--font-size-base);
-  color: var(--color-text-secondary);
-  line-height: var(--line-height-relaxed);
-  margin-bottom: var(--spacing-6);
-}
-
-.mobile-info-actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-3);
-  align-items: center;
-}
-
-.mobile-download-btn,
-.mobile-open-btn {
-  width: 100%;
-  max-width: 280px;
-}
 
 .ebook-content {
   margin-bottom: var(--spacing-8);

@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'SOS DENTE.png'],
+      includeAssets: ['favicon.ico', 'sos app.png'],
       manifest: {
         name: 'SOS Dente - Primeiros Socorros em Trauma Dentário',
         short_name: 'SOS Dente',
@@ -24,19 +24,19 @@ export default defineConfig({
         dir: 'ltr',
         icons: [
           {
-            src: '/SOS DENTE.png',
+            src: '/sos app.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any maskable'
           },
           {
-            src: '/SOS DENTE.png',
+            src: '/sos app.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
           },
           {
-            src: '/SOS DENTE.png',
+            src: '/sos app.png',
             sizes: '64x64',
             type: 'image/png'
           }

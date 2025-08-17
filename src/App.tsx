@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast'
 import Header from './components/Header'
 import SOSButton from './components/SOSButton'
 import InstallPWA from './components/InstallPWA'
+import AutoUpdate from './components/AutoUpdate'
 import Home from './pages/Home'
 import Wizard from './pages/Wizard'
 import FAQ from './pages/FAQ'
@@ -25,6 +26,7 @@ function App() {
       </main>
       <SOSButton />
       <InstallPWA />
+      <AutoUpdate />
       <Toaster 
         position="top-center"
         toastOptions={{

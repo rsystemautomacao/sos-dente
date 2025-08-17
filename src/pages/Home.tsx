@@ -9,13 +9,6 @@ const Home = () => {
 
   return (
     <div className="container">
-      <div className="home-hero">
-        <div className="hero-content">
-          <DentalIcon size={80} className="hero-icon" />
-          <h1 className="hero-title">SOS Dente</h1>
-        </div>
-      </div>
-
       <div className="action-buttons">
         <Card className="action-card">
           <div className="action-content">

@@ -226,40 +226,6 @@ const Ebook = () => {
           </Card>
         </div>
       )}
-
-      {isMobile && (
-        <div className="mobile-pdf-info">
-          <Card className="mobile-info-card">
-            <div className="mobile-info-content">
-              <IconDownload size={48} className="mobile-info-icon" />
-              <h3 className="mobile-info-title">Visualização no Celular</h3>
-              <p className="mobile-info-text">
-                Para uma melhor experiência de leitura no celular, recomendamos baixar o PDF ou abri-lo em uma nova aba.
-              </p>
-              <div className="mobile-info-actions">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={handleDownload}
-                  className="mobile-download-btn"
-                >
-                  <IconDownload size={20} />
-                  Baixar PDF
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={handleOpenInNewTab}
-                  className="mobile-open-btn"
-                >
-                  <IconEye size={20} />
-                  Abrir em Nova Aba
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-      )}
     </div>
   )
 }
