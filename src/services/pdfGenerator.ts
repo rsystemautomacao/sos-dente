@@ -179,14 +179,21 @@ export class PDFGenerator {
     this.doc.line(20, yPosition, 20 + contentWidth, yPosition)
     yPosition += 15
 
-    const photoSize = 60 // Tamanho da foto em mm
+    // Configurações otimizadas para 2 fotos por linha
     const photosPerRow = 2
-    const spacing = 10
-    const legendHeight = 10 // Altura para a legenda
-    const rowSpacing = 20 // Espaçamento entre linhas
+    const spacing = 15 // Espaçamento entre fotos
+    const legendHeight = 8 // Altura para a legenda
+    const rowSpacing = 15 // Espaçamento entre linhas
+    
+    // Calcular tamanho da foto baseado no espaço disponível
+    const availableWidth = contentWidth - spacing // Largura total menos espaçamento
+    const photoSize = availableWidth / photosPerRow // Tamanho de cada foto
+    
+    // Altura total de uma linha (foto + legenda + espaçamento)
+    const rowHeight = photoSize + legendHeight + rowSpacing
 
     // Limitar o número de fotos para evitar problemas de memória
-    const maxPhotos = 20 // Limite máximo de fotos
+    const maxPhotos = 20
     const photosToProcess = photos.slice(0, maxPhotos)
 
     // Adicionar informação se houver mais fotos que o limite
@@ -203,7 +210,7 @@ export class PDFGenerator {
       const col = i % photosPerRow
       
       // Calcular posição Y para esta linha
-      const rowYPosition = yPosition + (row * (photoSize + legendHeight + rowSpacing))
+      const rowYPosition = yPosition + (row * rowHeight)
       
       // Verificar se precisa de nova página para esta linha
       if (rowYPosition + photoSize + legendHeight > pageHeight - margin - 30) {
@@ -211,21 +218,30 @@ export class PDFGenerator {
         yPosition = 20
         // Recalcular posição Y após nova página
         const newRow = Math.floor(i / photosPerRow)
-        const newRowYPosition = yPosition + (newRow * (photoSize + legendHeight + rowSpacing))
+        const newRowYPosition = yPosition + (newRow * rowHeight)
         yPosition = newRowYPosition
       }
 
-      const xPos = margin + (col * (photoSize + spacing))
-      const yPos = yPosition
+      // Calcular posição X (centralizar se for apenas uma foto na linha)
+      let xPos: number
+      if (col === 0 && i === photosToProcess.length - 1) {
+        // Última foto sozinha na linha - centralizar
+        xPos = margin + (contentWidth - photoSize) / 2
+      } else {
+        // Posição normal para 2 fotos por linha
+        xPos = margin + (col * (photoSize + spacing))
+      }
+
+      const yPos = yPosition + (row * rowHeight)
 
       try {
         // Converter File para base64
         const base64 = await this.fileToBase64(photos[i])
         
-        // Adicionar foto
+        // Adicionar foto com tamanho otimizado
         this.doc.addImage(base64, 'JPEG', xPos, yPos, photoSize, photoSize, `photo_${i}`, 'FAST')
         
-        // Adicionar legenda
+        // Adicionar legenda centralizada
         this.doc.setFontSize(9)
         this.doc.setFont('helvetica', 'normal')
         this.doc.setTextColor(100, 100, 100)
@@ -242,8 +258,8 @@ export class PDFGenerator {
       }
 
       // Atualizar yPosition para a próxima linha
-      if (col === photosPerRow - 1 || i === photos.length - 1) {
-        yPosition += photoSize + legendHeight + rowSpacing
+      if (col === photosPerRow - 1 || i === photosToProcess.length - 1) {
+        yPosition += rowHeight
       }
     }
 
