@@ -205,62 +205,54 @@ export class PDFGenerator {
       yPosition += 8
     }
 
-    for (let i = 0; i < photosToProcess.length; i++) {
-      const row = Math.floor(i / photosPerRow)
-      const col = i % photosPerRow
-      
-      // Calcular posição Y para esta linha
-      const rowYPosition = yPosition + (row * rowHeight)
-      
+    // Processar fotos em linhas
+    for (let row = 0; row < Math.ceil(photosToProcess.length / photosPerRow); row++) {
       // Verificar se precisa de nova página para esta linha
+      const rowYPosition = yPosition + (row * rowHeight)
       if (rowYPosition + photoSize + legendHeight > pageHeight - margin - 30) {
         this.doc.addPage()
         yPosition = 20
-        // Recalcular posição Y após nova página
-        const newRow = Math.floor(i / photosPerRow)
-        const newRowYPosition = yPosition + (newRow * rowHeight)
-        yPosition = newRowYPosition
       }
 
-      // Calcular posição X (centralizar se for apenas uma foto na linha)
-      let xPos: number
-      if (col === 0 && i === photosToProcess.length - 1) {
-        // Última foto sozinha na linha - centralizar
-        xPos = margin + (contentWidth - photoSize) / 2
-      } else {
-        // Posição normal para 2 fotos por linha
-        xPos = margin + (col * (photoSize + spacing))
-      }
-
-      const yPos = yPosition + (row * rowHeight)
-
-      try {
-        // Converter File para base64
-        const base64 = await this.fileToBase64(photos[i])
+      // Processar fotos desta linha
+      for (let col = 0; col < photosPerRow; col++) {
+        const photoIndex = row * photosPerRow + col
         
-        // Adicionar foto com tamanho otimizado
-        this.doc.addImage(base64, 'JPEG', xPos, yPos, photoSize, photoSize, `photo_${i}`, 'FAST')
-        
-        // Adicionar legenda centralizada
-        this.doc.setFontSize(9)
-        this.doc.setFont('helvetica', 'normal')
-        this.doc.setTextColor(100, 100, 100)
-        this.doc.text(`Foto ${i + 1}`, xPos + photoSize/2, yPos + photoSize + 5, { align: 'center' })
+        // Parar se não há mais fotos
+        if (photoIndex >= photosToProcess.length) {
+          break
+        }
 
-      } catch (error) {
-        console.error(`Erro ao processar foto ${i + 1}:`, error)
-        // Adicionar placeholder de erro
-        this.doc.setFillColor(240, 240, 240)
-        this.doc.rect(xPos, yPos, photoSize, photoSize, 'F')
-        this.doc.setFontSize(8)
-        this.doc.setTextColor(150, 150, 150)
-        this.doc.text('Erro ao carregar', xPos + photoSize/2, yPos + photoSize/2, { align: 'center' })
+        // Calcular posição X
+        const xPos = margin + (col * (photoSize + spacing))
+        const yPos = yPosition + (row * rowHeight)
+
+        try {
+          // Converter File para base64
+          const base64 = await this.fileToBase64(photosToProcess[photoIndex])
+          
+          // Adicionar foto com tamanho otimizado
+          this.doc.addImage(base64, 'JPEG', xPos, yPos, photoSize, photoSize, `photo_${photoIndex}`, 'FAST')
+          
+          // Adicionar legenda centralizada
+          this.doc.setFontSize(9)
+          this.doc.setFont('helvetica', 'normal')
+          this.doc.setTextColor(100, 100, 100)
+          this.doc.text(`Foto ${photoIndex + 1}`, xPos + photoSize/2, yPos + photoSize + 5, { align: 'center' })
+
+        } catch (error) {
+          console.error(`Erro ao processar foto ${photoIndex + 1}:`, error)
+          // Adicionar placeholder de erro
+          this.doc.setFillColor(240, 240, 240)
+          this.doc.rect(xPos, yPos, photoSize, photoSize, 'F')
+          this.doc.setFontSize(8)
+          this.doc.setTextColor(150, 150, 150)
+          this.doc.text('Erro ao carregar', xPos + photoSize/2, yPos + photoSize/2, { align: 'center' })
+        }
       }
 
-      // Atualizar yPosition para a próxima linha
-      if (col === photosPerRow - 1 || i === photosToProcess.length - 1) {
-        yPosition += rowHeight
-      }
+      // Avançar para a próxima linha
+      yPosition += rowHeight
     }
 
     return yPosition
