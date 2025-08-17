@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { IconMapPin, IconBuildingHospital, IconLoader, IconDownload, IconX } from '@tabler/icons-react'
+import { IconMapPin, IconBuildingHospital, IconLoader, IconDownload, IconX, IconHome } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
 import useWizardStore from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import CustomImage from '../../components/CustomImage'
+import ConfirmModal from '../../components/ConfirmModal'
 import { openNearbyDentists, openNearbyUPAs } from '../../services/maps'
 import { generateTraumaPDF, TraumaData } from '../../services/pdfGenerator'
 import toast from 'react-hot-toast'
@@ -15,6 +16,7 @@ const MapsStep = () => {
   const [isLoadingUPAs, setIsLoadingUPAs] = useState(false)
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
   
   const { 
     ageGroup, 
@@ -56,6 +58,10 @@ const MapsStep = () => {
   }
 
   const handleFinish = () => {
+    setShowConfirmModal(true)
+  }
+
+  const handleConfirmFinish = () => {
     navigate('/')
   }
 
@@ -281,19 +287,31 @@ const MapsStep = () => {
         </div>
       </div>
 
-      {/* Modal para visualizar fotos */}
-      {selectedPhoto && (
-        <div className="photo-modal-overlay" onClick={closePhotoModal}>
-          <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="photo-modal-close" onClick={closePhotoModal}>
-              <IconX size={24} />
-            </button>
-            <img src={selectedPhoto} alt="Foto ampliada" className="photo-modal-image" />
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
+             {/* Modal para visualizar fotos */}
+       {selectedPhoto && (
+         <div className="photo-modal-overlay" onClick={closePhotoModal}>
+           <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
+             <button className="photo-modal-close" onClick={closePhotoModal}>
+               <IconX size={24} />
+             </button>
+             <img src={selectedPhoto} alt="Foto ampliada" className="photo-modal-image" />
+           </div>
+         </div>
+       )}
+
+       {/* Modal de Confirmação */}
+       <ConfirmModal
+         isOpen={showConfirmModal}
+         onClose={() => setShowConfirmModal(false)}
+         onConfirm={handleConfirmFinish}
+         title="Finalizar Avaliação"
+         message="Tem certeza que deseja finalizar a avaliação? Você será redirecionado para a página inicial."
+         confirmText="Sim, Finalizar"
+         cancelText="Cancelar"
+         icon={<IconHome size={48} />}
+       />
+     </div>
+   )
+ }
 
 export default MapsStep

@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import useWizardStore from '../store/useWizardStore'
 import Stepper from '../components/Stepper'
 import AgeStep from './wizard/AgeStep'
@@ -11,8 +12,10 @@ import MapsStep from './wizard/MapsStep'
 
 const Wizard = () => {
   const { currentStep, totalSteps, reset, setCurrentStep } = useWizardStore()
+  const navigate = useNavigate()
 
   const steps = [
+    'Início',
     'Idade',
     'Sexo', 
     'Tipo de Trauma',
@@ -27,9 +30,17 @@ const Wizard = () => {
   }, [reset])
 
   const handleStepClick = (stepIndex: number) => {
-    // Só permite navegar para etapas já preenchidas
-    if (stepIndex < currentStep) {
-      setCurrentStep(stepIndex)
+    // Se clicar em "Início", volta para a página inicial
+    if (stepIndex === 0) {
+      navigate('/')
+      return
+    }
+    
+    // Para os outros passos, só permite navegar para etapas já preenchidas
+    // Ajusta o índice porque agora temos "Início" como primeiro item
+    const actualStepIndex = stepIndex - 1
+    if (actualStepIndex < currentStep) {
+      setCurrentStep(actualStepIndex)
     }
   }
 
@@ -57,8 +68,8 @@ const Wizard = () => {
   return (
     <div className="container">
       <Stepper 
-        currentStep={currentStep} 
-        totalSteps={totalSteps} 
+        currentStep={currentStep + 1} // +1 porque agora "Início" é o primeiro item
+        totalSteps={totalSteps + 1} // +1 para incluir "Início"
         steps={steps}
         onStepClick={handleStepClick}
       />

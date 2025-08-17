@@ -7,8 +7,11 @@ import Home from './pages/Home'
 import Wizard from './pages/Wizard'
 import FAQ from './pages/FAQ'
 import Ebook from './pages/Ebook'
+import { useScrollToTop } from './hooks/useScrollToTop'
 
 function App() {
+  useScrollToTop()
+
   return (
     <div className="app">
       <Header />

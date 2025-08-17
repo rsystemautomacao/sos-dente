@@ -13,13 +13,6 @@ const Home = () => {
         <div className="hero-content">
           <DentalIcon size={80} className="hero-icon" />
           <h1 className="hero-title">SOS Dente</h1>
-          <p className="hero-subtitle">
-            Primeiros Socorros Odontológicos
-          </p>
-          <p className="hero-description">
-            Guia rápido para situações de trauma dentário. 
-            Saiba o que fazer em emergências odontológicas.
-          </p>
         </div>
       </div>
 
