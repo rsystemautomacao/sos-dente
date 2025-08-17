@@ -218,7 +218,7 @@ const MapsStep = () => {
         </Card>
 
         <div className="action-buttons">
-          <Card className="action-card" onClick={handleFindDentists}>
+          <Card className="action-card">
             <CustomImage type="emergency" size={64} className="action-image" alt="Dentistas" />
             <h3 className="action-title">Dentistas Próximos</h3>
             <p className="action-description">
@@ -227,6 +227,7 @@ const MapsStep = () => {
             <Button
               variant="primary"
               size="lg"
+              onClick={handleFindDentists}
               disabled={isLoadingDentists}
               className="action-button"
             >
@@ -241,7 +242,7 @@ const MapsStep = () => {
             </Button>
           </Card>
 
-          <Card className="action-card" onClick={handleFindUPAs}>
+          <Card className="action-card">
             <IconBuildingHospital size={64} className="action-icon" />
             <h3 className="action-title">UPAs e Hospitais</h3>
             <p className="action-description">
@@ -250,6 +251,7 @@ const MapsStep = () => {
             <Button
               variant="primary"
               size="lg"
+              onClick={handleFindUPAs}
               disabled={isLoadingUPAs}
               className="action-button"
             >
