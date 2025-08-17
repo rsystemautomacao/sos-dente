@@ -106,7 +106,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
   
   setStorageMethod: (method) => {
     set({ storageMethod: method })
-    get().nextStep()
+    // Não chama nextStep() aqui - o componente controla o fluxo
   },
   
   setAccidentTimeRange: (timeRange) => {
