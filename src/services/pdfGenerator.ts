@@ -177,19 +177,19 @@ export class PDFGenerator {
     this.doc.setDrawColor(41, 128, 185)
     this.doc.setLineWidth(0.5)
     this.doc.line(20, yPosition, 20 + contentWidth, yPosition)
-    yPosition += 15
+    yPosition += 10
 
-    // Configurações otimizadas para 2 fotos por linha
+    // Configurações otimizadas para 2 fotos por linha com espaçamento reduzido
     const photosPerRow = 2
-    const spacing = 15 // Espaçamento entre fotos
-    const legendHeight = 8 // Altura para a legenda
-    const rowSpacing = 15 // Espaçamento entre linhas
+    const spacing = 15 // Espaçamento horizontal entre fotos
+    const legendHeight = 6 // Altura reduzida para a legenda
+    const rowSpacing = 8 // Espaçamento vertical reduzido entre linhas
     
     // Calcular tamanho da foto baseado no espaço disponível
     const availableWidth = contentWidth - spacing // Largura total menos espaçamento
     const photoSize = availableWidth / photosPerRow // Tamanho de cada foto
     
-    // Altura total de uma linha (foto + legenda + espaçamento)
+    // Altura total de uma linha (foto + legenda + espaçamento) - otimizada
     const rowHeight = photoSize + legendHeight + rowSpacing
 
     // Limitar o número de fotos para evitar problemas de memória
@@ -202,14 +202,14 @@ export class PDFGenerator {
       this.doc.setFont('helvetica', 'italic')
       this.doc.setTextColor(150, 150, 150)
       this.doc.text(`Nota: Mostrando as primeiras ${maxPhotos} fotos de ${photos.length} total`, 20, yPosition)
-      yPosition += 8
+      yPosition += 6
     }
 
     // Processar fotos em linhas
     for (let row = 0; row < Math.ceil(photosToProcess.length / photosPerRow); row++) {
       // Verificar se precisa de nova página para esta linha
       const rowYPosition = yPosition + (row * rowHeight)
-      if (rowYPosition + photoSize + legendHeight > pageHeight - margin - 30) {
+      if (rowYPosition + photoSize + legendHeight > pageHeight - margin - 20) {
         this.doc.addPage()
         yPosition = 20
       }
@@ -234,11 +234,11 @@ export class PDFGenerator {
           // Adicionar foto com tamanho otimizado
           this.doc.addImage(base64, 'JPEG', xPos, yPos, photoSize, photoSize, `photo_${photoIndex}`, 'FAST')
           
-          // Adicionar legenda centralizada
-          this.doc.setFontSize(9)
+          // Adicionar legenda centralizada com espaçamento reduzido
+          this.doc.setFontSize(8)
           this.doc.setFont('helvetica', 'normal')
           this.doc.setTextColor(100, 100, 100)
-          this.doc.text(`Foto ${photoIndex + 1}`, xPos + photoSize/2, yPos + photoSize + 5, { align: 'center' })
+          this.doc.text(`Foto ${photoIndex + 1}`, xPos + photoSize/2, yPos + photoSize + 3, { align: 'center' })
 
         } catch (error) {
           console.error(`Erro ao processar foto ${photoIndex + 1}:`, error)
