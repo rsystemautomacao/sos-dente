@@ -19,29 +19,69 @@ export class PDFGenerator {
     this.doc = new jsPDF('p', 'mm', 'a4')
   }
 
+  // Função para redimensionar imagem para tamanho padrão
+  private resizeImage(file: File, maxWidth: number, maxHeight: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      const img = new Image()
+      
+      img.onload = () => {
+        // Calcular proporções para manter aspect ratio
+        const ratio = Math.min(maxWidth / img.width, maxHeight / img.height)
+        const newWidth = img.width * ratio
+        const newHeight = img.height * ratio
+        
+        // Configurar canvas com tamanho padrão
+        canvas.width = maxWidth
+        canvas.height = maxHeight
+        
+        if (ctx) {
+          // Preencher fundo branco
+          ctx.fillStyle = '#FFFFFF'
+          ctx.fillRect(0, 0, maxWidth, maxHeight)
+          
+          // Centralizar e redimensionar imagem
+          const x = (maxWidth - newWidth) / 2
+          const y = (maxHeight - newHeight) / 2
+          ctx.drawImage(img, x, y, newWidth, newHeight)
+          
+          // Converter para base64
+          const base64 = canvas.toDataURL('image/jpeg', 0.8)
+          resolve(base64.split(',')[1]) // Remover prefixo data:image/jpeg;base64,
+        } else {
+          reject(new Error('Não foi possível obter contexto do canvas'))
+        }
+      }
+      
+      img.onerror = () => reject(new Error('Erro ao carregar imagem'))
+      img.src = URL.createObjectURL(file)
+    })
+  }
+
   async generateTraumaReport(data: TraumaData): Promise<Blob> {
     // Configurações iniciais
     const pageWidth = this.doc.internal.pageSize.getWidth()
     const pageHeight = this.doc.internal.pageSize.getHeight()
-    const margin = 20
+    const margin = 15 // Reduzido margem para aproveitar mais espaço
     const contentWidth = pageWidth - (margin * 2)
     let yPosition = margin
 
-    // Cabeçalho
+    // Cabeçalho (mais compacto)
     this.addHeader(yPosition, contentWidth)
-    yPosition += 30
+    yPosition += 20 // Reduzido espaçamento
 
-    // Informações do trauma
+    // Informações do trauma (mais compacto)
     yPosition = this.addTraumaInfo(data, yPosition, contentWidth)
-    yPosition += 15
+    yPosition += 8 // Reduzido espaçamento
 
     // Fotos (se houver)
     if (data.photos.length > 0) {
       yPosition = await this.addPhotos(data.photos, yPosition, contentWidth, pageHeight, margin)
     }
 
-    // Adicionar espaço extra antes do rodapé
-    yPosition += 20
+    // Adicionar espaço extra antes do rodapé (mínimo)
+    yPosition += 5
 
     // Rodapé - posicionar dinamicamente
     this.addFooter(yPosition, contentWidth)
@@ -50,24 +90,24 @@ export class PDFGenerator {
   }
 
   private addHeader(yPosition: number, contentWidth: number): void {
-    // Título principal
-    this.doc.setFontSize(24)
+    // Título principal (menor)
+    this.doc.setFontSize(20)
     this.doc.setFont('helvetica', 'bold')
     this.doc.setTextColor(41, 128, 185) // Azul
     this.doc.text('RELATÓRIO DE TRAUMA DENTÁRIO', this.doc.internal.pageSize.getWidth() / 2, yPosition, { align: 'center' })
     
-    yPosition += 10
+    yPosition += 6 // Reduzido espaçamento
     
     // Subtítulo
-    this.doc.setFontSize(12)
+    this.doc.setFontSize(10)
     this.doc.setFont('helvetica', 'normal')
     this.doc.setTextColor(100, 100, 100)
     this.doc.text('SOS Dente - Avaliação de Emergência', this.doc.internal.pageSize.getWidth() / 2, yPosition, { align: 'center' })
     
-    yPosition += 8
+    yPosition += 5 // Reduzido espaçamento
     
     // Data e hora
-    this.doc.setFontSize(10)
+    this.doc.setFontSize(8)
     this.doc.setTextColor(150, 150, 150)
     const now = new Date()
     const dateStr = now.toLocaleDateString('pt-BR', { 
@@ -81,21 +121,21 @@ export class PDFGenerator {
   }
 
   private addTraumaInfo(data: TraumaData, yPosition: number, contentWidth: number): number {
-    // Seção de informações
-    this.doc.setFontSize(16)
+    // Seção de informações (mais compacta)
+    this.doc.setFontSize(14)
     this.doc.setFont('helvetica', 'bold')
     this.doc.setTextColor(41, 128, 185)
-    this.doc.text('INFORMAÇÕES DO TRAUMA', 20, yPosition)
-    yPosition += 8
+    this.doc.text('INFORMAÇÕES DO TRAUMA', 15, yPosition)
+    yPosition += 5 // Reduzido espaçamento
 
     // Linha separadora
     this.doc.setDrawColor(41, 128, 185)
     this.doc.setLineWidth(0.5)
-    this.doc.line(20, yPosition, 20 + contentWidth, yPosition)
-    yPosition += 10
+    this.doc.line(15, yPosition, 15 + contentWidth, yPosition)
+    yPosition += 6 // Reduzido espaçamento
 
     // Dados do trauma
-    this.doc.setFontSize(11)
+    this.doc.setFontSize(10)
     this.doc.setFont('helvetica', 'normal')
     this.doc.setTextColor(50, 50, 50)
 
@@ -145,7 +185,7 @@ export class PDFGenerator {
       }
 
       this.doc.setFont('helvetica', 'bold')
-      this.doc.text(item.label, 20, yPosition)
+      this.doc.text(item.label, 15, yPosition)
       
       const labelWidth = this.doc.getTextWidth(item.label)
       this.doc.setFont('helvetica', 'normal')
@@ -155,61 +195,53 @@ export class PDFGenerator {
       const lines = this.splitTextToSize(item.value, maxWidth)
       
       for (let i = 0; i < lines.length; i++) {
-        const xPos = i === 0 ? 20 + labelWidth + 5 : 20 + labelWidth + 5
-        this.doc.text(lines[i], xPos, yPosition + (i * 5))
+        const xPos = i === 0 ? 15 + labelWidth + 5 : 15 + labelWidth + 5
+        this.doc.text(lines[i], xPos, yPosition + (i * 4)) // Reduzido espaçamento entre linhas
       }
       
-      yPosition += Math.max(8, lines.length * 5) + 5
+      yPosition += Math.max(6, lines.length * 4) + 3 // Reduzido espaçamento
     }
 
     return yPosition
   }
 
   private async addPhotos(photos: File[], yPosition: number, contentWidth: number, pageHeight: number, margin: number): Promise<number> {
-    // Seção de fotos
-    this.doc.setFontSize(16)
+    // Seção de fotos (mais compacta)
+    this.doc.setFontSize(14)
     this.doc.setFont('helvetica', 'bold')
     this.doc.setTextColor(41, 128, 185)
-    this.doc.text('FOTOS DO TRAUMA', 20, yPosition)
-    yPosition += 8
+    this.doc.text('FOTOS DO TRAUMA', 15, yPosition)
+    yPosition += 4 // Reduzido espaçamento
 
     // Linha separadora
     this.doc.setDrawColor(41, 128, 185)
     this.doc.setLineWidth(0.5)
-    this.doc.line(20, yPosition, 20 + contentWidth, yPosition)
-    yPosition += 8
+    this.doc.line(15, yPosition, 15 + contentWidth, yPosition)
+    yPosition += 3 // Reduzido espaçamento
 
-    // Configurações otimizadas para 2 fotos por linha com tamanho reduzido
-    const photosPerRow = 2
-    const spacing = 12 // Espaçamento horizontal reduzido entre fotos
-    const legendHeight = 5 // Altura ainda menor para a legenda
-    const rowSpacing = 6 // Espaçamento vertical ainda menor entre linhas
+    // Configurações para 3 fotos por linha com espaçamento mínimo
+    const photosPerRow = 3
+    const spacing = 2 // Espaçamento horizontal mínimo entre fotos
+    const legendHeight = 1.5 // Altura para a legenda (reduzida)
+    const rowSpacing = 0.5 // Espaçamento vertical mínimo entre linhas
     
-    // Calcular tamanho da foto baseado no espaço disponível - reduzido
-    const availableWidth = contentWidth - spacing // Largura total menos espaçamento
-    const photoSize = (availableWidth / photosPerRow) * 0.85 // Reduzir tamanho em 15%
+    // Calcular tamanho da foto para 3 por linha
+    const availableWidth = contentWidth - (spacing * 2)
+    const photoSize = availableWidth / photosPerRow
     
-    // Altura total de uma linha (foto + legenda + espaçamento) - otimizada
+    // Altura total de uma linha (foto + legenda + espaçamento)
     const rowHeight = photoSize + legendHeight + rowSpacing
 
-    // Limitar o número de fotos para evitar problemas de memória
-    const maxPhotos = 20
+    // Limitar o número de fotos para 6
+    const maxPhotos = 6
     const photosToProcess = photos.slice(0, maxPhotos)
-
-    // Adicionar informação se houver mais fotos que o limite
-    if (photos.length > maxPhotos) {
-      this.doc.setFontSize(10)
-      this.doc.setFont('helvetica', 'italic')
-      this.doc.setTextColor(150, 150, 150)
-      this.doc.text(`Nota: Mostrando as primeiras ${maxPhotos} fotos de ${photos.length} total`, 20, yPosition)
-      yPosition += 5
-    }
 
     // Processar fotos em linhas
     for (let row = 0; row < Math.ceil(photosToProcess.length / photosPerRow); row++) {
       // Verificar se precisa de nova página para esta linha
       const rowYPosition = yPosition + (row * rowHeight)
-      if (rowYPosition + photoSize + legendHeight > pageHeight - margin - 15) {
+      // Margem de segurança reduzida para caber tudo na primeira página
+      if (rowYPosition + photoSize + legendHeight > pageHeight - margin - 30) {
         this.doc.addPage()
         yPosition = 20
       }
@@ -223,36 +255,46 @@ export class PDFGenerator {
           break
         }
 
-        // Calcular posição X
+        // Calcular posição X e Y
         const xPos = margin + (col * (photoSize + spacing))
         const yPos = yPosition + (row * rowHeight)
 
         try {
-          // Converter File para base64
-          const base64 = await this.fileToBase64(photosToProcess[photoIndex])
+          // Redimensionar imagem para tamanho padrão
+          const base64 = await this.resizeImage(photosToProcess[photoIndex], photoSize * 3, photoSize * 3)
           
-          // Adicionar foto com tamanho otimizado
+          // Adicionar foto com tamanho calculado
           this.doc.addImage(base64, 'JPEG', xPos, yPos, photoSize, photoSize, `photo_${photoIndex}`, 'FAST')
           
-          // Adicionar legenda centralizada com espaçamento reduzido
-          this.doc.setFontSize(7)
+          // Adicionar legenda centralizada (menor)
+          this.doc.setFontSize(4)
           this.doc.setFont('helvetica', 'normal')
           this.doc.setTextColor(100, 100, 100)
-          this.doc.text(`Foto ${photoIndex + 1}`, xPos + photoSize/2, yPos + photoSize + 2, { align: 'center' })
+          this.doc.text(`Foto ${photoIndex + 1}`, xPos + photoSize/2, yPos + photoSize + 0.5, { align: 'center' })
 
         } catch (error) {
           console.error(`Erro ao processar foto ${photoIndex + 1}:`, error)
           // Adicionar placeholder de erro
           this.doc.setFillColor(240, 240, 240)
           this.doc.rect(xPos, yPos, photoSize, photoSize, 'F')
-          this.doc.setFontSize(7)
+          this.doc.setFontSize(4)
           this.doc.setTextColor(150, 150, 150)
           this.doc.text('Erro ao carregar', xPos + photoSize/2, yPos + photoSize/2, { align: 'center' })
         }
       }
+    }
 
-      // Avançar para a próxima linha
-      yPosition += rowHeight
+    // Atualizar yPosition para a posição após todas as fotos
+    yPosition += Math.ceil(photosToProcess.length / photosPerRow) * rowHeight
+
+    // Adicionar informação sobre limite de fotos DEPOIS das fotos
+    if (photos.length > maxPhotos) {
+      yPosition += 4 // Espaço mínimo antes do texto
+      this.doc.setFontSize(8)
+      this.doc.setFont('helvetica', 'italic')
+      this.doc.setTextColor(150, 150, 150)
+      this.doc.text(`Nota: Mostrando as primeiras ${maxPhotos} fotos de ${photos.length} total`, 15, yPosition)
+      yPosition += 4
     }
 
     return yPosition
@@ -261,28 +303,32 @@ export class PDFGenerator {
   private addFooter(yPosition: number, contentWidth: number): void {
     // Verificar se há espaço suficiente para o rodapé
     const pageHeight = this.doc.internal.pageSize.getHeight()
-    const footerHeight = 20 // Altura estimada do rodapé
+    const footerHeight = 20 // Altura estimada do rodapé (reduzida)
     
     // Se não há espaço suficiente, adicionar nova página
-    if (yPosition + footerHeight > pageHeight - 20) {
+    if (yPosition + footerHeight > pageHeight - 15) {
       this.doc.addPage()
       yPosition = 20
     }
     
+    // Adicionar espaço extra antes do rodapé para garantir separação
+    yPosition += 5 // Reduzido espaçamento
+    
     // Linha separadora
     this.doc.setDrawColor(200, 200, 200)
     this.doc.setLineWidth(0.3)
-    this.doc.line(20, yPosition - 5, 20 + contentWidth, yPosition - 5)
+    this.doc.line(15, yPosition, 15 + contentWidth, yPosition)
+    yPosition += 5 // Reduzido espaçamento
 
     // Informações do rodapé
-    this.doc.setFontSize(8)
+    this.doc.setFontSize(7)
     this.doc.setFont('helvetica', 'normal')
     this.doc.setTextColor(150, 150, 150)
     
     const footerText = 'SOS Dente - Aplicativo de Emergência Odontológica'
     this.doc.text(footerText, this.doc.internal.pageSize.getWidth() / 2, yPosition, { align: 'center' })
     
-    yPosition += 5
+    yPosition += 4 // Reduzido espaçamento
     this.doc.text('Este relatório foi gerado automaticamente pelo aplicativo', this.doc.internal.pageSize.getWidth() / 2, yPosition, { align: 'center' })
   }
 
