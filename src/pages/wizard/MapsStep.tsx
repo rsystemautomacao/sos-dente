@@ -1,24 +1,28 @@
 import { useState } from 'react'
-import { IconMapPin, IconBuildingHospital, IconLoader } from '@tabler/icons-react'
+import { IconMapPin, IconBuildingHospital, IconLoader, IconDownload, IconX } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
 import useWizardStore from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import CustomImage from '../../components/CustomImage'
 import { openNearbyDentists, openNearbyUPAs } from '../../services/maps'
+import { generateTraumaPDF, TraumaData } from '../../services/pdfGenerator'
 import toast from 'react-hot-toast'
 
 const MapsStep = () => {
   const navigate = useNavigate()
   const [isLoadingDentists, setIsLoadingDentists] = useState(false)
   const [isLoadingUPAs, setIsLoadingUPAs] = useState(false)
+  const [isLoadingPDF, setIsLoadingPDF] = useState(false)
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null)
   
   const { 
     ageGroup, 
     gender, 
     traumaType, 
     accidentLocation, 
-    observations 
+    observations,
+    photos 
   } = useWizardStore()
 
   const handleFindDentists = async () => {
@@ -55,12 +59,55 @@ const MapsStep = () => {
     navigate('/')
   }
 
+  const handleDownloadPDF = async () => {
+    setIsLoadingPDF(true)
+    try {
+      toast.success('Gerando PDF com todos os dados...')
+      
+      // Preparar dados para o PDF
+      const pdfData: TraumaData = {
+        ageGroup,
+        gender,
+        traumaType,
+        accidentLocation,
+        observations,
+        photos,
+        timestamp: new Date()
+      }
+      
+      // Gerar PDF
+      const pdfBlob = await generateTraumaPDF(pdfData)
+      
+      // Criar link para download
+      const url = URL.createObjectURL(pdfBlob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `relatorio-trauma-${new Date().toISOString().split('T')[0]}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+      
+      toast.success('PDF gerado e baixado com sucesso!')
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error)
+      toast.error('Erro ao gerar PDF. Tente novamente.')
+    } finally {
+      setIsLoadingPDF(false)
+    }
+  }
+
+  const openPhotoModal = (photoUrl: string) => {
+    setSelectedPhoto(photoUrl)
+  }
+
+  const closePhotoModal = () => {
+    setSelectedPhoto(null)
+  }
+
   return (
     <div className="step-container">
       <div className="step-header">
-        <div className="step-icon-wrapper">
-          <IconMapPin size={48} className="step-icon" />
-        </div>
         <h2 className="step-title">Encontre Ajuda Próxima</h2>
         <p className="step-description">
           Localize dentistas e unidades de emergência próximas
@@ -98,78 +145,127 @@ const MapsStep = () => {
                 <span className="summary-value">{accidentLocation}</span>
               </div>
             )}
+            {observations && (
+              <div className="summary-item">
+                <span className="summary-label">Observações:</span>
+                <span className="summary-value">{observations}</span>
+              </div>
+            )}
+          </div>
+
+          {photos.length > 0 && (
+            <div className="photos-section">
+              <h4 className="photos-title">Fotos do Trauma ({photos.length})</h4>
+              <div className="photos-grid">
+                {photos.map((photo, index) => (
+                  <div 
+                    key={index} 
+                    className="photo-thumbnail-container"
+                    onClick={() => openPhotoModal(URL.createObjectURL(photo))}
+                  >
+                    <img
+                      src={URL.createObjectURL(photo)}
+                      alt={`Foto ${index + 1}`}
+                      className="photo-thumbnail"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </Card>
+
+        <Card className="download-card">
+          <div className="download-content">
+            <IconDownload size={32} className="download-icon" />
+            <div className="download-text">
+              <h3 className="download-title">Baixar Relatório Completo</h3>
+              <p className="download-description">
+                Gere um PDF com todos os dados e fotos para enviar ao dentista
+              </p>
+            </div>
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={handleDownloadPDF}
+              disabled={isLoadingPDF}
+              className="download-button"
+            >
+              {isLoadingPDF ? (
+                <>
+                  <IconLoader size={20} className="loading-icon" />
+                  Gerando PDF...
+                </>
+              ) : (
+                <>
+                  <IconDownload size={20} />
+                  Baixar PDF
+                </>
+              )}
+            </Button>
           </div>
         </Card>
 
         <div className="action-buttons">
-          <Card className="action-card">
-            <div className="action-content">
-              <IconMapPin size={48} className="action-icon" />
-              <h3 className="action-title">Dentistas Próximos</h3>
-              <p className="action-description">
-                Encontre dentistas e clínicas odontológicas próximas
-              </p>
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={handleFindDentists}
-                disabled={isLoadingDentists}
-                className="action-button"
-              >
-                {isLoadingDentists ? (
-                  <>
-                    <IconLoader size={20} className="loading-icon" />
-                    Localizando...
-                  </>
-                ) : (
-                  'Buscar Dentistas'
-                )}
-              </Button>
-            </div>
+          <Card className="action-card" onClick={handleFindDentists}>
+            <CustomImage type="emergency" size={64} className="action-image" alt="Dentistas" />
+            <h3 className="action-title">Dentistas Próximos</h3>
+            <p className="action-description">
+              Encontre dentistas e clínicas odontológicas próximas
+            </p>
+            <Button
+              variant="primary"
+              size="lg"
+              disabled={isLoadingDentists}
+              className="action-button"
+            >
+              {isLoadingDentists ? (
+                <>
+                  <IconLoader size={20} className="loading-icon" />
+                  Buscando...
+                </>
+              ) : (
+                'Buscar Dentistas'
+              )}
+            </Button>
           </Card>
 
-          <Card className="action-card">
-            <div className="action-content">
-              <IconBuildingHospital size={48} className="action-icon" />
-              <h3 className="action-title">UPAs e Hospitais</h3>
-              <p className="action-description">
-                Localize unidades de emergência próximas
-              </p>
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={handleFindUPAs}
-                disabled={isLoadingUPAs}
-                className="action-button"
-              >
-                {isLoadingUPAs ? (
-                  <>
-                    <IconLoader size={20} className="loading-icon" />
-                    Localizando...
-                  </>
-                ) : (
-                  'Buscar UPAs'
-                )}
-              </Button>
-            </div>
+          <Card className="action-card" onClick={handleFindUPAs}>
+            <IconBuildingHospital size={64} className="action-icon" />
+            <h3 className="action-title">UPAs e Hospitais</h3>
+            <p className="action-description">
+              Encontre unidades de emergência próximas
+            </p>
+            <Button
+              variant="primary"
+              size="lg"
+              disabled={isLoadingUPAs}
+              className="action-button"
+            >
+              {isLoadingUPAs ? (
+                <>
+                  <IconLoader size={20} className="loading-icon" />
+                  Buscando...
+                </>
+              ) : (
+                'Buscar UPAs'
+              )}
+            </Button>
           </Card>
 
-          <Card className="emergency-card">
-            <div className="emergency-content">
-              <CustomImage type="emergency" size={48} className="emergency-image" alt="Emergência" />
-              <h3 className="emergency-title">Emergência?</h3>
-              <p className="emergency-description">
-                Se a situação for grave, ligue para o SAMU
-              </p>
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={handleCallSAMU}
-                className="emergency-button"
-              >
-                Ligar SAMU (192)
-              </Button>
-            </div>
+          <Card className="emergency-card" onClick={handleCallSAMU}>
+            <IconMapPin size={64} className="emergency-icon" />
+            <h3 className="emergency-title">Ligar SAMU</h3>
+            <p className="emergency-description">
+              Em caso de emergência, ligue para o SAMU
+            </p>
+            <Button
+              variant="error"
+              size="lg"
+              className="emergency-button"
+            >
+              Ligar 192
+            </Button>
           </Card>
         </div>
 
@@ -184,6 +280,18 @@ const MapsStep = () => {
           </Button>
         </div>
       </div>
+
+      {/* Modal para visualizar fotos */}
+      {selectedPhoto && (
+        <div className="photo-modal-overlay" onClick={closePhotoModal}>
+          <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="photo-modal-close" onClick={closePhotoModal}>
+              <IconX size={24} />
+            </button>
+            <img src={selectedPhoto} alt="Foto ampliada" className="photo-modal-image" />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

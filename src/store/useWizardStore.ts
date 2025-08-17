@@ -23,6 +23,7 @@ interface WizardState {
   // Dados do encaminhamento
   accidentLocation: string
   observations: string
+  photos: File[]
   
   // Navegação
   currentStep: number
@@ -40,8 +41,10 @@ interface WizardState {
   nextStep: () => void
   prevStep: () => void
   setStep: (step: number) => void
+  setCurrentStep: (step: number) => void
   setAccidentLocation: (location: string) => void
   setObservations: (observations: string) => void
+  setPhotos: (photos: File[]) => void
   reset: () => void
 }
 
@@ -59,6 +62,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
   totalSteps: 7, // Idade, Sexo, Trauma, Perguntas específicas, Resultado, Dados, Maps
   accidentLocation: '',
   observations: '',
+  photos: [],
   
   // Ações
   setAgeGroup: (ageGroup) => {
@@ -116,9 +120,11 @@ const useWizardStore = create<WizardState>((set, get) => ({
   },
   
   setStep: (step) => set({ currentStep: step }),
+  setCurrentStep: (step) => set({ currentStep: step }),
   
   setAccidentLocation: (accidentLocation) => set({ accidentLocation }),
   setObservations: (observations) => set({ observations }),
+  setPhotos: (photos) => set({ photos }),
   
   reset: () => {
     set({
@@ -132,7 +138,8 @@ const useWizardStore = create<WizardState>((set, get) => ({
       storageMethod: null,
       currentStep: 0,
       accidentLocation: '',
-      observations: ''
+      observations: '',
+      photos: []
     })
   }
 }))

@@ -224,9 +224,6 @@ const TraumaQuestionsStep = () => {
   return (
     <div className="step-container">
       <div className="step-header">
-        <div className="step-icon-wrapper">
-          <IconBone size={48} className="step-icon" />
-        </div>
         <h2 className="step-title">Perguntas Específicas</h2>
         <p className="step-description">
           Responda as perguntas para receber orientações precisas

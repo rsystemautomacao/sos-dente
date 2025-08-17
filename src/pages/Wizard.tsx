@@ -10,7 +10,7 @@ import DataCollectionStep from './wizard/DataCollectionStep'
 import MapsStep from './wizard/MapsStep'
 
 const Wizard = () => {
-  const { currentStep, totalSteps, reset } = useWizardStore()
+  const { currentStep, totalSteps, reset, setCurrentStep } = useWizardStore()
 
   const steps = [
     'Idade',
@@ -25,6 +25,13 @@ const Wizard = () => {
   useEffect(() => {
     reset()
   }, [reset])
+
+  const handleStepClick = (stepIndex: number) => {
+    // Só permite navegar para etapas já preenchidas
+    if (stepIndex < currentStep) {
+      setCurrentStep(stepIndex)
+    }
+  }
 
   const renderStep = () => {
     switch (currentStep) {
@@ -52,7 +59,8 @@ const Wizard = () => {
       <Stepper 
         currentStep={currentStep} 
         totalSteps={totalSteps} 
-        steps={steps} 
+        steps={steps}
+        onStepClick={handleStepClick}
       />
       
       <div className="wizard-content">

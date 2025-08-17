@@ -1,4 +1,3 @@
-import { IconUser } from '@tabler/icons-react'
 import useWizardStore, { AgeGroup } from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import CustomImage from '../../components/CustomImage'
@@ -13,9 +12,6 @@ const AgeStep = () => {
   return (
     <div className="step-container">
       <div className="step-header">
-        <div className="step-icon-wrapper">
-          <IconUser size={48} className="step-icon" />
-        </div>
         <h2 className="step-title">Qual a idade da pessoa?</h2>
         <p className="step-description">
           Selecione a faixa etária para receber orientações específicas

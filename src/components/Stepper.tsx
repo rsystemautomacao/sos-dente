@@ -2,20 +2,31 @@ interface StepperProps {
   currentStep: number
   totalSteps: number
   steps: string[]
+  onStepClick?: (stepIndex: number) => void
 }
 
-const Stepper = ({ currentStep, totalSteps, steps }: StepperProps) => {
+const Stepper = ({ currentStep, totalSteps, steps, onStepClick }: StepperProps) => {
+  const handleStepClick = (stepIndex: number) => {
+    // Só permite navegar para etapas já preenchidas (anteriores à atual)
+    if (stepIndex < currentStep && onStepClick) {
+      onStepClick(stepIndex)
+    }
+  }
+
   return (
     <div className="stepper">
       {steps.map((step, index) => {
         const isActive = index === currentStep
         const isCompleted = index < currentStep
         const isFuture = index > currentStep
+        const isClickable = isCompleted && onStepClick
 
         return (
           <div
             key={index}
-            className={`step ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''} ${isFuture ? 'future' : ''}`}
+            className={`step ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''} ${isFuture ? 'future' : ''} ${isClickable ? 'clickable' : ''}`}
+            onClick={() => handleStepClick(index)}
+            style={{ cursor: isClickable ? 'pointer' : 'default' }}
           >
             <div className={`step-number ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''} ${isFuture ? 'future' : ''}`}>
               {isCompleted ? (

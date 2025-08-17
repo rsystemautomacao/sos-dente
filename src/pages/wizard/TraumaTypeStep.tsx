@@ -1,4 +1,3 @@
-import { IconBone } from '@tabler/icons-react'
 import useWizardStore, { TraumaType } from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import CustomImage from '../../components/CustomImage'
@@ -13,9 +12,6 @@ const TraumaTypeStep = () => {
   return (
     <div className="step-container">
       <div className="step-header">
-        <div className="step-icon-wrapper">
-          <IconBone size={48} className="step-icon" />
-        </div>
         <h2 className="step-title">Qual tipo de trauma ocorreu?</h2>
         <p className="step-description">
           Selecione o tipo de trauma para receber orientações específicas

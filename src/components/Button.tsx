@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 interface ButtonProps {
   children: ReactNode
-  variant?: 'primary' | 'secondary' | 'accent' | 'outline'
+  variant?: 'primary' | 'secondary' | 'accent' | 'outline' | 'error'
   size?: 'sm' | 'md' | 'lg'
   onClick?: () => void
   disabled?: boolean
@@ -26,7 +26,8 @@ const Button = ({
     primary: 'btn-primary',
     secondary: 'btn-secondary',
     accent: 'btn-accent',
-    outline: 'btn-outline'
+    outline: 'btn-outline',
+    error: 'btn-error'
   }
   const sizeClasses = {
     sm: 'text-sm py-2 px-4',
