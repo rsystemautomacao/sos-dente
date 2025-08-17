@@ -4455,3 +4455,148 @@ body {
   background: var(--color-secondary-dark);
   color: white;
 }
+
+/* iOS Install Modal */
+.ios-install-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-4);
+}
+
+.ios-install-modal {
+  background: white;
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-8);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: var(--shadow-2xl);
+}
+
+.ios-install-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-6);
+  padding-bottom: var(--spacing-4);
+  border-bottom: 2px solid var(--color-gray-100);
+}
+
+.ios-install-modal-header h3 {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.ios-modal-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-xl);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  padding: var(--spacing-2);
+  border-radius: var(--border-radius-full);
+  transition: all 0.3s ease;
+}
+
+.ios-modal-close:hover {
+  background: var(--color-gray-100);
+  color: var(--color-text-primary);
+}
+
+.ios-install-steps {
+  margin-bottom: var(--spacing-6);
+}
+
+.ios-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+  padding: var(--spacing-4);
+  background: var(--color-gray-50);
+  border-radius: var(--border-radius-lg);
+  border-left: 4px solid var(--color-primary);
+}
+
+.ios-step-icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ios-step-content h4 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-2) 0;
+}
+
+.ios-step-content p {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ios-install-note {
+  background: var(--color-info-light);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+  border-left: 4px solid var(--color-info);
+}
+
+.ios-install-note p {
+  font-size: var(--font-size-sm);
+  color: var(--color-info-dark);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ios-install-actions {
+  text-align: center;
+}
+
+.ios-install-close-btn {
+  min-width: 150px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .ios-install-modal-overlay {
+    padding: var(--spacing-2);
+  }
+  
+  .ios-install-modal {
+    padding: var(--spacing-6);
+    max-height: 95vh;
+  }
+  
+  .ios-install-modal-header h3 {
+    font-size: var(--font-size-lg);
+  }
+  
+  .ios-step {
+    padding: var(--spacing-3);
+  }
+  
+  .ios-step-content h4 {
+    font-size: var(--font-size-base);
+  }
+  
+  .ios-step-content p {
+    font-size: var(--font-size-sm);
+  }
+}

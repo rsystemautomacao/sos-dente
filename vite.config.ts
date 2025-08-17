@@ -39,11 +39,46 @@ export default defineConfig({
             src: '/app sos dente.jpeg',
             sizes: '64x64',
             type: 'image/jpeg'
+          },
+          {
+            src: '/app sos dente.jpeg',
+            sizes: '180x180',
+            type: 'image/jpeg',
+            purpose: 'apple touch'
+          },
+          {
+            src: '/app sos dente.jpeg',
+            sizes: '152x152',
+            type: 'image/jpeg',
+            purpose: 'apple touch'
+          },
+          {
+            src: '/app sos dente.jpeg',
+            sizes: '167x167',
+            type: 'image/jpeg',
+            purpose: 'apple touch'
+          }
+        ],
+        screenshots: [
+          {
+            src: '/app sos dente.jpeg',
+            sizes: '1280x720',
+            type: 'image/jpeg',
+            form_factor: 'wide'
+          },
+          {
+            src: '/app sos dente.jpeg',
+            sizes: '750x1334',
+            type: 'image/jpeg',
+            form_factor: 'narrow'
           }
         ]
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}']
+      },
+      devOptions: {
+        enabled: true
       }
     })
   ],
