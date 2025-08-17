@@ -4,10 +4,13 @@ import useWizardStore, { TraumaType, StorageMethod } from '../../store/useWizard
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import CustomImage from '../../components/CustomImage'
+import StorageAlertModal from '../../components/StorageAlertModal'
 
 const TraumaQuestionsStep = () => {
   const { traumaType, setFoundPiece, setFoundTooth, setIsLoose, setHasBleeding, setStorageMethod, nextStep } = useWizardStore()
   const [currentQuestion, setCurrentQuestion] = useState<'found' | 'storage' | null>(null)
+  const [showStorageAlert, setShowStorageAlert] = useState(false)
+  const [selectedStorageMethod, setSelectedStorageMethod] = useState<StorageMethod | null>(null)
 
   const handleFoundPiece = (found: boolean) => {
     setFoundPiece(found)
@@ -30,9 +33,25 @@ const TraumaQuestionsStep = () => {
   }
 
   const handleStorageSelect = (method: StorageMethod) => {
-    setStorageMethod(method)
-    // SEMPRE vai para a página de resultado (que depois vai para dados)
-    nextStep()
+    setSelectedStorageMethod(method)
+    
+    // Verificar se é um método de armazenamento incorreto
+    const isIncorrectStorage = method === 'water' || method === 'paper'
+    
+    if (isIncorrectStorage) {
+      setShowStorageAlert(true)
+    } else {
+      // Se é um método correto, continuar normalmente
+      setStorageMethod(method)
+      nextStep()
+    }
+  }
+
+  const handleStorageAlertContinue = () => {
+    if (selectedStorageMethod) {
+      setStorageMethod(selectedStorageMethod)
+      nextStep()
+    }
   }
 
   const handleIsLoose = (loose: boolean) => {
@@ -231,6 +250,15 @@ const TraumaQuestionsStep = () => {
       </div>
 
       {renderQuestions()}
+
+      {/* Modal de Alerta de Armazenamento Incorreto */}
+      <StorageAlertModal
+        isOpen={showStorageAlert}
+        onClose={() => setShowStorageAlert(false)}
+        onContinue={handleStorageAlertContinue}
+        storageMethod={selectedStorageMethod || ''}
+        traumaType={traumaType as 'fracture' | 'avulsion'}
+      />
     </div>
   )
 }
