@@ -15,7 +15,7 @@ const DataCollectionStep = () => {
     nextStep
   } = useWizardStore()
   
-  const [localPhotos, setLocalPhotos] = useState<File[]>(photos)
+  const [localPhotos, setLocalPhotos] = useState<File[]>(photos || [])
   
   const fileInputRef = useRef<HTMLInputElement>(null)
   const cameraInputRef = useRef<HTMLInputElement>(null)
@@ -25,6 +25,11 @@ const DataCollectionStep = () => {
     window.scrollTo(0, 0)
   }, [])
 
+  useEffect(() => {
+    // Sincronizar fotos do store com estado local
+    setLocalPhotos(photos || [])
+  }, [photos])
+
   const handleContinue = () => {
     setPhotos(localPhotos)
     nextStep()
@@ -32,11 +37,13 @@ const DataCollectionStep = () => {
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || [])
+    console.log('Arquivos selecionados:', files)
     setLocalPhotos(prev => [...prev, ...files])
   }
 
   const handleTakePhoto = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || [])
+    console.log('Fotos tiradas:', files)
     setLocalPhotos(prev => [...prev, ...files])
   }
 
@@ -45,11 +52,21 @@ const DataCollectionStep = () => {
   }
 
   const openFileSelector = () => {
-    fileInputRef.current?.click()
+    console.log('Abrindo seletor de arquivos...')
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    } else {
+      console.error('Referência do input de arquivo não encontrada')
+    }
   }
 
   const openCamera = () => {
-    cameraInputRef.current?.click()
+    console.log('Abrindo câmera...')
+    if (cameraInputRef.current) {
+      cameraInputRef.current.click()
+    } else {
+      console.error('Referência do input da câmera não encontrada')
+    }
   }
 
   return (
@@ -123,23 +140,6 @@ const DataCollectionStep = () => {
               </Button>
             </div>
 
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleFileSelect}
-              style={{ display: 'none' }}
-            />
-            <input
-              ref={cameraInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={handleTakePhoto}
-              style={{ display: 'none' }}
-            />
-
             {localPhotos.length > 0 && (
               <div className="photo-preview">
                 <h4 className="photo-preview-title">
@@ -180,6 +180,24 @@ const DataCollectionStep = () => {
           </Button>
         </div>
       </div>
+
+      {/* Inputs de arquivo sempre disponíveis */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={handleFileSelect}
+        style={{ display: 'none' }}
+      />
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture
+        onChange={handleTakePhoto}
+        style={{ display: 'none' }}
+      />
     </div>
   )
 }
