@@ -4416,3 +4416,42 @@ body {
     font-size: var(--font-size-sm);
   }
 }
+
+/* PDF Loading e Error States */
+.pdf-loading {
+  text-align: center;
+  padding: var(--spacing-8);
+}
+
+.loading-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-2);
+}
+
+.pdf-error {
+  text-align: center;
+  padding: var(--spacing-8);
+}
+
+.pdf-error p {
+  margin-bottom: var(--spacing-4);
+  color: var(--color-error);
+  font-weight: 500;
+}
+
+.download-fallback,
+.open-new-tab {
+  margin: var(--spacing-2);
+}
+
+.open-new-tab {
+  background: var(--color-secondary);
+  color: var(--color-secondary-dark);
+  border-color: var(--color-secondary);
+}
+
+.open-new-tab:hover {
+  background: var(--color-secondary-dark);
+  color: white;
+}

@@ -35,12 +35,14 @@ const Ebook = () => {
   }, [])
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    console.log('PDF carregado com sucesso:', numPages, 'páginas')
     setNumPages(numPages)
     setLoading(false)
     setError(false)
   }
 
-  const onDocumentLoadError = () => {
+  const onDocumentLoadError = (error: Error) => {
+    console.error('Erro ao carregar PDF:', error)
     setLoading(false)
     setError(true)
   }
@@ -58,18 +60,36 @@ const Ebook = () => {
   }
 
   const handleDownload = () => {
-    const link = document.createElement('a')
-    link.href = pdfUrl
-    link.download = 'SOS-Dente-Ebook.pdf'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    try {
+      const link = document.createElement('a')
+      link.href = pdfUrl
+      link.download = 'SOS-Dente-Ebook.pdf'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (error) {
+      console.error('Erro ao baixar PDF:', error)
+      // Fallback: abrir em nova aba
+      window.open(pdfUrl, '_blank')
+    }
   }
 
   const handleViewPdf = () => {
+    console.log('Iniciando visualização do PDF...')
     setShowPdfViewer(true)
     setLoading(true)
     setError(false)
+    
+    // Timeout para evitar loop infinito
+    const timeout = setTimeout(() => {
+      if (loading) {
+        console.log('Timeout ao carregar PDF')
+        setLoading(false)
+        setError(true)
+      }
+    }, 30000) // 30 segundos
+    
+    return () => clearTimeout(timeout)
   }
 
   return (
@@ -190,6 +210,7 @@ const Ebook = () => {
               <div className="pdf-loading">
                 <IconLoader size={32} className="loading-icon" />
                 <p>Carregando PDF...</p>
+                <p className="loading-subtitle">Isso pode levar alguns segundos</p>
               </div>
             )}
 
@@ -204,6 +225,14 @@ const Ebook = () => {
                 >
                   <IconDownload size={16} />
                   Baixar PDF
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={() => window.open(pdfUrl, '_blank')}
+                  className="open-new-tab"
+                >
+                  Abrir em Nova Aba
                 </Button>
               </div>
             )}
@@ -232,6 +261,14 @@ const Ebook = () => {
                         <IconDownload size={16} />
                         Baixar PDF
                       </Button>
+                      <Button
+                        variant="secondary"
+                        size="md"
+                        onClick={() => window.open(pdfUrl, '_blank')}
+                        className="open-new-tab"
+                      >
+                        Abrir em Nova Aba
+                      </Button>
                     </div>
                   }
                 >
@@ -240,6 +277,10 @@ const Ebook = () => {
                     width={Math.min(window.innerWidth - 64, 600)}
                     renderTextLayer={false}
                     renderAnnotationLayer={false}
+                    onLoadError={(error) => {
+                      console.error('Erro ao carregar página:', error)
+                      setError(true)
+                    }}
                   />
                 </Document>
 
