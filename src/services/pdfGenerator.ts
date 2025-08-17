@@ -40,8 +40,11 @@ export class PDFGenerator {
       yPosition = await this.addPhotos(data.photos, yPosition, contentWidth, pageHeight, margin)
     }
 
-    // Rodapé
-    this.addFooter(pageHeight - 20, contentWidth)
+    // Adicionar espaço extra antes do rodapé
+    yPosition += 20
+
+    // Rodapé - posicionar dinamicamente
+    this.addFooter(yPosition, contentWidth)
 
     return this.doc.output('blob')
   }
@@ -174,23 +177,46 @@ export class PDFGenerator {
     this.doc.setDrawColor(41, 128, 185)
     this.doc.setLineWidth(0.5)
     this.doc.line(20, yPosition, 20 + contentWidth, yPosition)
-    yPosition += 10
+    yPosition += 15
 
     const photoSize = 60 // Tamanho da foto em mm
     const photosPerRow = 2
     const spacing = 10
+    const legendHeight = 10 // Altura para a legenda
+    const rowSpacing = 20 // Espaçamento entre linhas
 
-    for (let i = 0; i < photos.length; i++) {
-      // Verificar se precisa de nova página
-      if (yPosition + photoSize > pageHeight - margin) {
-        this.doc.addPage()
-        yPosition = 20
-      }
+    // Limitar o número de fotos para evitar problemas de memória
+    const maxPhotos = 20 // Limite máximo de fotos
+    const photosToProcess = photos.slice(0, maxPhotos)
 
+    // Adicionar informação se houver mais fotos que o limite
+    if (photos.length > maxPhotos) {
+      this.doc.setFontSize(10)
+      this.doc.setFont('helvetica', 'italic')
+      this.doc.setTextColor(150, 150, 150)
+      this.doc.text(`Nota: Mostrando as primeiras ${maxPhotos} fotos de ${photos.length} total`, 20, yPosition)
+      yPosition += 8
+    }
+
+    for (let i = 0; i < photosToProcess.length; i++) {
       const row = Math.floor(i / photosPerRow)
       const col = i % photosPerRow
+      
+      // Calcular posição Y para esta linha
+      const rowYPosition = yPosition + (row * (photoSize + legendHeight + rowSpacing))
+      
+      // Verificar se precisa de nova página para esta linha
+      if (rowYPosition + photoSize + legendHeight > pageHeight - margin - 30) {
+        this.doc.addPage()
+        yPosition = 20
+        // Recalcular posição Y após nova página
+        const newRow = Math.floor(i / photosPerRow)
+        const newRowYPosition = yPosition + (newRow * (photoSize + legendHeight + rowSpacing))
+        yPosition = newRowYPosition
+      }
+
       const xPos = margin + (col * (photoSize + spacing))
-      const yPos = yPosition + (row * (photoSize + spacing + 15))
+      const yPos = yPosition
 
       try {
         // Converter File para base64
@@ -203,7 +229,7 @@ export class PDFGenerator {
         this.doc.setFontSize(9)
         this.doc.setFont('helvetica', 'normal')
         this.doc.setTextColor(100, 100, 100)
-        this.doc.text(`Foto ${i + 1}`, xPos, yPos + photoSize + 5, { align: 'center' })
+        this.doc.text(`Foto ${i + 1}`, xPos + photoSize/2, yPos + photoSize + 5, { align: 'center' })
 
       } catch (error) {
         console.error(`Erro ao processar foto ${i + 1}:`, error)
@@ -214,12 +240,27 @@ export class PDFGenerator {
         this.doc.setTextColor(150, 150, 150)
         this.doc.text('Erro ao carregar', xPos + photoSize/2, yPos + photoSize/2, { align: 'center' })
       }
+
+      // Atualizar yPosition para a próxima linha
+      if (col === photosPerRow - 1 || i === photos.length - 1) {
+        yPosition += photoSize + legendHeight + rowSpacing
+      }
     }
 
-    return yPosition + (Math.ceil(photos.length / photosPerRow) * (photoSize + spacing + 15))
+    return yPosition
   }
 
   private addFooter(yPosition: number, contentWidth: number): void {
+    // Verificar se há espaço suficiente para o rodapé
+    const pageHeight = this.doc.internal.pageSize.getHeight()
+    const footerHeight = 20 // Altura estimada do rodapé
+    
+    // Se não há espaço suficiente, adicionar nova página
+    if (yPosition + footerHeight > pageHeight - 20) {
+      this.doc.addPage()
+      yPosition = 20
+    }
+    
     // Linha separadora
     this.doc.setDrawColor(200, 200, 200)
     this.doc.setLineWidth(0.3)
