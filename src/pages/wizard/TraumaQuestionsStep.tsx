@@ -11,13 +11,14 @@ const TraumaQuestionsStep = () => {
   const [currentQuestion, setCurrentQuestion] = useState<'found' | 'storage' | null>(null)
   const [showStorageAlert, setShowStorageAlert] = useState(false)
   const [selectedStorageMethod, setSelectedStorageMethod] = useState<StorageMethod | null>(null)
+  const [alertType, setAlertType] = useState<'incorrect' | 'correct'>('incorrect')
 
   const handleFoundPiece = (found: boolean) => {
     setFoundPiece(found)
     if (found) {
       setCurrentQuestion('storage')
     } else {
-      // SEMPRE vai para a página de resultado (que depois vai para dados)
+      // SEMPRE vai para a página de dados do acidente (pulando o resultado)
       nextStep()
     }
   }
@@ -27,7 +28,7 @@ const TraumaQuestionsStep = () => {
     if (found) {
       setCurrentQuestion('storage')
     } else {
-      // SEMPRE vai para a página de resultado (que depois vai para dados)
+      // SEMPRE vai para a página de dados do acidente (pulando o resultado)
       nextStep()
     }
   }
@@ -39,35 +40,37 @@ const TraumaQuestionsStep = () => {
     const isIncorrectStorage = method === 'water' || method === 'paper'
     
     if (isIncorrectStorage) {
+      setAlertType('incorrect')
       setShowStorageAlert(true)
     } else {
-      // Se é um método correto, continuar normalmente
-      setStorageMethod(method)
-      nextStep()
+      // Se é um método correto, mostrar modal de confirmação
+      setAlertType('correct')
+      setShowStorageAlert(true)
     }
   }
 
   const handleStorageAlertContinue = () => {
     if (selectedStorageMethod) {
       setStorageMethod(selectedStorageMethod)
+      // Vai direto para a página de dados do acidente (pulando o resultado)
       nextStep()
     }
   }
 
   const handleIsLoose = (loose: boolean) => {
     setIsLoose(loose)
-    // SEMPRE vai para a página de resultado (que depois vai para dados)
+    // SEMPRE vai para a página de dados do acidente (pulando o resultado)
     nextStep()
   }
 
   const handleHasBleeding = (bleeding: boolean) => {
     setHasBleeding(bleeding)
-    // SEMPRE vai para a página de resultado (que depois vai para dados)
+    // SEMPRE vai para a página de dados do acidente (pulando o resultado)
     nextStep()
   }
 
   const handleContinue = () => {
-    // SEMPRE vai para a página de resultado (que depois vai para dados)
+    // SEMPRE vai para a página de dados do acidente (pulando o resultado)
     nextStep()
   }
 
@@ -251,13 +254,14 @@ const TraumaQuestionsStep = () => {
 
       {renderQuestions()}
 
-      {/* Modal de Alerta de Armazenamento Incorreto */}
+      {/* Modal de Alerta de Armazenamento */}
       <StorageAlertModal
         isOpen={showStorageAlert}
         onClose={() => setShowStorageAlert(false)}
         onContinue={handleStorageAlertContinue}
         storageMethod={selectedStorageMethod || ''}
         traumaType={traumaType as 'fracture' | 'avulsion'}
+        alertType={alertType}
       />
     </div>
   )

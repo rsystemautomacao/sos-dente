@@ -63,7 +63,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
   storageMethod: null,
   accidentTimeRange: null,
   currentStep: 0,
-  totalSteps: 7, // Idade, Sexo, Trauma, Perguntas específicas, Resultado, Dados, Maps
+  totalSteps: 6, // Idade, Sexo, Trauma, Perguntas específicas, Dados, Maps
   accidentLocation: '',
   observations: '',
   photos: [],
