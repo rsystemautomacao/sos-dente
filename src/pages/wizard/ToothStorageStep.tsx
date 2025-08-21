@@ -1,6 +1,7 @@
 import { IconMilk, IconDroplet, IconUser, IconDropletFilled, IconFileText } from '@tabler/icons-react'
 import useWizardStore, { StorageMethod } from '../../store/useWizardStore'
 import Card from '../../components/Card'
+import FixedBottomButtons from '../../components/FixedBottomButtons'
 
 const ToothStorageStep = () => {
   const { setStorageMethod } = useWizardStore()
@@ -13,9 +14,6 @@ const ToothStorageStep = () => {
     <div className="step-container">
       <div className="step-header">
         <h2 className="step-title">Onde foi armazenado?</h2>
-        <p className="step-description">
-          Como o dente foi preservado até chegar ao dentista
-        </p>
       </div>
 
       <div className="storage-content">
@@ -84,6 +82,8 @@ const ToothStorageStep = () => {
           </div>
         </Card>
       </div>
+      
+      <FixedBottomButtons />
     </div>
   )
 }

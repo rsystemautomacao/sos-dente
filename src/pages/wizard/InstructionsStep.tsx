@@ -2,6 +2,7 @@ import { IconCheck, IconX, IconAlertTriangle } from '@tabler/icons-react'
 import useWizardStore from '../../store/useWizardStore'
 import Button from '../../components/Button'
 import Card from '../../components/Card'
+import FixedBottomButtons from '../../components/FixedBottomButtons'
 import * as guidanceData from '../../data/guidance.pt-BR.json'
 
 const InstructionsStep = () => {
@@ -17,9 +18,6 @@ const InstructionsStep = () => {
     <div className="step-container">
       <div className="step-header">
         <h2 className="step-title">{traumaInfo.title}</h2>
-        <p className="step-description">
-          Siga estas orientações específicas para o tipo de trauma
-        </p>
       </div>
 
       <div className="instructions-content">
@@ -81,6 +79,8 @@ const InstructionsStep = () => {
           Continuar
         </Button>
       </div>
+      
+      <FixedBottomButtons />
     </div>
   )
 }

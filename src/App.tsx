@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import Header from './components/Header'
-import SOSButton from './components/SOSButton'
 import InstallPWA from './components/InstallPWA'
 import AutoUpdate from './components/AutoUpdate'
 import AboutModal from './components/AboutModal'
@@ -27,7 +26,6 @@ function App() {
           <Route path="/ebook" element={<Ebook />} />
         </Routes>
       </main>
-      <SOSButton />
       <InstallPWA />
       <AutoUpdate />
       <AboutModal 

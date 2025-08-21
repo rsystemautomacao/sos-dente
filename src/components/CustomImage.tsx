@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 interface CustomImageProps {
-  type: 'child' | 'adolescent' | 'female' | 'male' | 'neutral' | 'fracture' | 'avulsion' | 'luxation' | 'bleeding' | 'other' | 'milk' | 'saline' | 'saliva' | 'water' | 'paper' | 'emergency'
+  type: 'baby' | 'child' | 'adolescent' | 'female' | 'male' | 'neutral' | 'fracture' | 'avulsion' | 'luxation' | 'bleeding' | 'other' | 'milk' | 'saline' | 'saliva' | 'water' | 'paper' | 'emergency'
   size?: number
   className?: string
   alt?: string
@@ -12,7 +12,9 @@ const CustomImage = ({ type, size = 64, className = '', alt = '' }: CustomImageP
 
   const getImageSrc = () => {
     switch (type) {
-      // Idade - usando imagens de gênero que servem para ambos
+      // Idade - usando imagens específicas para cada faixa etária
+      case 'baby':
+        return '/bebe.png.png'
       case 'child':
         return '/feminino.png'
       case 'adolescent':

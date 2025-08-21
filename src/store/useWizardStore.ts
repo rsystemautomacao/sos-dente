@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type AgeGroup = 'child' | 'adolescent'
+export type AgeGroup = 'baby' | 'child' | 'adolescent'
 export type Gender = 'female' | 'male' | 'prefer-not-to-say'
 export type TraumaType = 'fracture' | 'avulsion' | 'luxation' | 'bleeding' | 'other'
 export type StorageMethod = 'milk' | 'saline' | 'saliva' | 'water' | 'paper'

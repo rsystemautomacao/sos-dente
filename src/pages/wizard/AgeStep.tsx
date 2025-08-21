@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import useWizardStore, { AgeGroup } from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import CustomImage from '../../components/CustomImage'
+import FixedBottomButtons from '../../components/FixedBottomButtons'
 
 const AgeStep = () => {
   const { ageGroup, setAgeGroup } = useWizardStore()
@@ -18,28 +19,36 @@ const AgeStep = () => {
   return (
     <div className="step-container">
       <div className="step-header">
-        <h2 className="step-title">Qual a idade da pessoa?</h2>
-        <p className="step-description">
-          Selecione a faixa etária para receber orientações específicas
-        </p>
+        <h2 className="step-title">Qual a faixa etária da pessoa?</h2>
       </div>
 
       <div className="selection-grid">
         <Card
+          className={`selection-card ${ageGroup === 'baby' ? 'selected' : ''}`}
+          onClick={() => handleAgeSelect('baby')}
+        >
+          <div className="card-content-horizontal">
+            <div className="icon-wrapper">
+              <CustomImage type="baby" size={64} className="selection-card-image" alt="0 a 5 anos" />
+            </div>
+            <div className="card-text-content">
+              <h3 className="selection-card-title">0 a 5 anos</h3>
+              <p className="selection-card-description">Dentes de leite</p>
+            </div>
+          </div>
+        </Card>
+
+        <Card
           className={`selection-card ${ageGroup === 'child' ? 'selected' : ''}`}
           onClick={() => handleAgeSelect('child')}
         >
-          <div className="card-content">
+          <div className="card-content-horizontal">
             <div className="icon-wrapper">
-              <CustomImage type="child" size={64} className="selection-card-image" alt="Criança" />
+              <CustomImage type="child" size={64} className="selection-card-image" alt="6 a 12 anos" />
             </div>
-            <h3 className="selection-card-title">Criança (0-11 anos)</h3>
-            <p className="selection-card-description">
-              Dentes de leite e início da troca dentária
-            </p>
-            <div className="card-features">
-              <span className="feature-tag">Dentes de Leite</span>
-              <span className="feature-tag">Troca Dentária</span>
+            <div className="card-text-content">
+              <h3 className="selection-card-title">6 a 12 anos</h3>
+              <p className="selection-card-description">Troca dentária</p>
             </div>
           </div>
         </Card>
@@ -48,21 +57,19 @@ const AgeStep = () => {
           className={`selection-card ${ageGroup === 'adolescent' ? 'selected' : ''}`}
           onClick={() => handleAgeSelect('adolescent')}
         >
-          <div className="card-content">
+          <div className="card-content-horizontal">
             <div className="icon-wrapper">
-              <CustomImage type="adolescent" size={64} className="selection-card-image" alt="Adolescente" />
+              <CustomImage type="adolescent" size={64} className="selection-card-image" alt="Maior que 12 anos" />
             </div>
-            <h3 className="selection-card-title">Adolescente (12-17 anos)</h3>
-            <p className="selection-card-description">
-              Dentes permanentes em desenvolvimento
-            </p>
-            <div className="card-features">
-              <span className="feature-tag">Dentes Permanentes</span>
-              <span className="feature-tag">Desenvolvimento</span>
+            <div className="card-text-content">
+              <h3 className="selection-card-title">Maior que 12 anos</h3>
+              <p className="selection-card-description">Dentes permanentes</p>
             </div>
           </div>
         </Card>
       </div>
+      
+      <FixedBottomButtons showBackButton={false} />
     </div>
   )
 }

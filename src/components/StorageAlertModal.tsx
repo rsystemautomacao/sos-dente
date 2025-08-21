@@ -28,7 +28,6 @@ const StorageAlertModal = ({
         if (storageMethod === 'milk') {
           return {
             title: '✅ EXCELENTE: Armazenamento Correto!',
-            message: 'O fragmento do dente está sendo armazenado em LEITE, que é o meio ideal para preservação.',
             instructions: [
               '✅ Leite mantém as células do dente vivas',
               '✅ Continue usando LEITE FRESCO',
@@ -42,7 +41,6 @@ const StorageAlertModal = ({
         } else if (storageMethod === 'saline') {
           return {
             title: '✅ EXCELENTE: Armazenamento Correto!',
-            message: 'O fragmento do dente está sendo armazenado em SOLUÇÃO FISIOLÓGICA, que é ideal para preservação.',
             instructions: [
               '✅ Soro fisiológico preserva as células',
               '✅ Continue usando SOLUÇÃO FISIOLÓGICA',
@@ -56,7 +54,6 @@ const StorageAlertModal = ({
         } else if (storageMethod === 'saliva') {
           return {
             title: '✅ BOM: Armazenamento Adequado!',
-            message: 'O fragmento do dente está sendo mantido na BOCA, que é uma opção adequada.',
             instructions: [
               '✅ Saliva mantém o fragmento úmido',
               '✅ Continue mantendo na BOCA',
@@ -74,7 +71,6 @@ const StorageAlertModal = ({
         if (storageMethod === 'milk') {
           return {
             title: '✅ EXCELENTE: Armazenamento Correto!',
-            message: 'O dente está sendo armazenado em LEITE, que é o meio ideal para reimplante.',
             instructions: [
               '✅ Leite preserva o ligamento periodontal',
               '✅ Continue usando LEITE FRESCO',
@@ -88,7 +84,6 @@ const StorageAlertModal = ({
         } else if (storageMethod === 'saline') {
           return {
             title: '✅ EXCELENTE: Armazenamento Correto!',
-            message: 'O dente está sendo armazenado em SOLUÇÃO FISIOLÓGICA, que é ideal para reimplante.',
             instructions: [
               '✅ Soro fisiológico preserva o ligamento',
               '✅ Continue usando SOLUÇÃO FISIOLÓGICA',
@@ -102,7 +97,6 @@ const StorageAlertModal = ({
         } else if (storageMethod === 'saliva') {
           return {
             title: '✅ BOM: Armazenamento Adequado!',
-            message: 'O dente está sendo mantido na BOCA, que é uma opção adequada para reimplante.',
             instructions: [
               '✅ Saliva mantém o dente úmido',
               '✅ Continue mantendo na BOCA',
@@ -122,7 +116,6 @@ const StorageAlertModal = ({
       if (storageMethod === 'water') {
         return {
           title: '⚠️ ATENÇÃO: Armazenamento Incorreto!',
-          message: 'O fragmento do dente está sendo armazenado em ÁGUA, que não é o meio ideal.',
           instructions: [
             '❌ Água pode danificar as células do dente',
             '✅ Transfira imediatamente para LEITE FRESCO',
@@ -136,7 +129,6 @@ const StorageAlertModal = ({
       } else if (storageMethod === 'paper') {
         return {
           title: '⚠️ ATENÇÃO: Armazenamento Incorreto!',
-          message: 'O fragmento do dente está sendo armazenado em PAPEL/PANO SECO, que pode danificar o tecido.',
           instructions: [
             '❌ Papel/pano seco desidrata o fragmento',
             '✅ Transfira imediatamente para LEITE FRESCO',
@@ -154,7 +146,6 @@ const StorageAlertModal = ({
       if (storageMethod === 'water') {
         return {
           title: '🚨 EMERGÊNCIA: Armazenamento Incorreto!',
-          message: 'O dente está sendo armazenado em ÁGUA, que pode comprometer o reimplante!',
           instructions: [
             '❌ Água destrói as células do ligamento periodontal',
             '✅ Transfira IMEDIATAMENTE para LEITE FRESCO',
@@ -168,7 +159,6 @@ const StorageAlertModal = ({
       } else if (storageMethod === 'paper') {
         return {
           title: '🚨 EMERGÊNCIA: Armazenamento Incorreto!',
-          message: 'O dente está sendo armazenado em PAPEL/PANO SECO, que pode inviabilizar o reimplante!',
           instructions: [
             '❌ Papel/pano seco desidrata completamente o dente',
             '✅ Transfira IMEDIATAMENTE para LEITE FRESCO',
@@ -225,8 +215,6 @@ const StorageAlertModal = ({
         </div>
         
         <div className="storage-alert-modal-body">
-          <p className="storage-alert-modal-message">{content.message}</p>
-          
           <div className="storage-alert-modal-instructions">
             <h4>{alertType === 'correct' ? 'Continue fazendo:' : 'O que fazer AGORA:'}</h4>
             <ul>

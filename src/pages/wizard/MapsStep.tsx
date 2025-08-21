@@ -6,6 +6,7 @@ import Card from '../../components/Card'
 import Button from '../../components/Button'
 import CustomImage from '../../components/CustomImage'
 import ConfirmModal from '../../components/ConfirmModal'
+import FixedBottomButtons from '../../components/FixedBottomButtons'
 import { openNearbyDentists, openNearbyUPAs } from '../../services/maps'
 import { generateTraumaPDF, TraumaData } from '../../services/pdfGenerator'
 import toast from 'react-hot-toast'
@@ -122,9 +123,6 @@ const MapsStep = () => {
     <div className="step-container">
       <div className="step-header">
         <h2 className="step-title">Encontre Ajuda Próxima</h2>
-        <p className="step-description">
-          Localize dentistas e unidades de emergência próximas
-        </p>
       </div>
 
       <div className="maps-content">
@@ -134,7 +132,9 @@ const MapsStep = () => {
             <div className="summary-item">
               <span className="summary-label">Faixa Etária:</span>
               <span className="summary-value">
-                {ageGroup === 'child' ? 'Criança (0-11 anos)' : 'Adolescente (12-17 anos)'}
+                {ageGroup === 'baby' ? '0 a 5 anos' : 
+                 ageGroup === 'child' ? '6 a 12 anos' : 
+                 ageGroup === 'adolescent' ? 'Maior que 12 anos' : 'Não informado'}
               </span>
             </div>
             <div className="summary-item">
@@ -206,9 +206,9 @@ const MapsStep = () => {
           <div className="download-content">
             <IconDownload size={32} className="download-icon" />
             <div className="download-text">
-              <h3 className="download-title">Baixar Relatório Completo</h3>
+              <h3 className="download-title">Baixar Relatório</h3>
               <p className="download-description">
-                Gere um PDF com todos os dados e fotos para enviar ao dentista
+                PDF com todos os dados para enviar ao dentista
               </p>
             </div>
             <Button
@@ -238,7 +238,7 @@ const MapsStep = () => {
             <CustomImage type="emergency" size={64} className="action-image" alt="Dentistas" />
             <h3 className="action-title">Dentistas Próximos</h3>
             <p className="action-description">
-              Encontre dentistas e clínicas odontológicas próximas
+              Encontre dentistas e clínicas próximas
             </p>
             <Button
               variant="primary"
@@ -286,7 +286,7 @@ const MapsStep = () => {
             <IconMapPin size={64} className="emergency-icon" />
             <h3 className="emergency-title">Ligar SAMU</h3>
             <p className="emergency-description">
-              Em caso de emergência, ligue para o SAMU
+              Em caso de emergência
             </p>
             <Button
               variant="error"
@@ -333,6 +333,8 @@ const MapsStep = () => {
          cancelText="Cancelar"
          icon={<IconHome size={48} />}
        />
+       
+       <FixedBottomButtons showBackButton={false} />
      </div>
    )
  }

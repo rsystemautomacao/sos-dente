@@ -5,6 +5,7 @@ import Card from '../../components/Card'
 import Button from '../../components/Button'
 import CustomImage from '../../components/CustomImage'
 import StorageAlertModal from '../../components/StorageAlertModal'
+import FixedBottomButtons from '../../components/FixedBottomButtons'
 
 const TraumaQuestionsStep = () => {
   const { traumaType, setFoundPiece, setFoundTooth, setIsLoose, setHasBleeding, setStorageMethod, nextStep } = useWizardStore()
@@ -79,7 +80,6 @@ const TraumaQuestionsStep = () => {
       return (
         <div className="question-section">
           <h3 className="question-title">Você encontrou o pedaço do dente?</h3>
-          <p className="question-description">É importante tentar encontrar todos os fragmentos</p>
           <div className="button-group">
             <Button variant="primary" size="lg" onClick={() => handleFoundPiece(true)}>
               Sim
@@ -96,32 +96,26 @@ const TraumaQuestionsStep = () => {
       return (
         <div className="question-section">
           <h3 className="question-title">Onde guardou o pedaço?</h3>
-          <p className="question-description">Como preservar o fragmento até chegar ao dentista</p>
           <div className="storage-options">
             <Card className="storage-option" onClick={() => handleStorageSelect('milk')}>
               <CustomImage type="milk" size={48} className="storage-image" alt="Leite" />
               <h4>Leite</h4>
-              <p>Meio ideal para preservar</p>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('saline')}>
               <CustomImage type="saline" size={48} className="storage-image" alt="Soro" />
               <h4>Soro</h4>
-              <p>Solução fisiológica</p>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('saliva')}>
               <CustomImage type="saliva" size={48} className="storage-image" alt="Saliva" />
               <h4>Saliva</h4>
-              <p>Manter na boca</p>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('water')}>
               <CustomImage type="water" size={48} className="storage-image" alt="Água" />
               <h4>Água</h4>
-              <p>Não é ideal</p>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('paper')}>
               <CustomImage type="paper" size={48} className="storage-image" alt="Papel/Pano" />
               <h4>Papel/Pano</h4>
-              <p>Evitar seco</p>
             </Card>
           </div>
         </div>
@@ -134,7 +128,6 @@ const TraumaQuestionsStep = () => {
       return (
         <div className="question-section">
           <h3 className="question-title">Você encontrou o dente?</h3>
-          <p className="question-description">É crucial encontrar o dente para tentar reimplantá-lo</p>
           <div className="button-group">
             <Button variant="primary" size="lg" onClick={() => handleFoundTooth(true)}>
               Sim
@@ -151,32 +144,26 @@ const TraumaQuestionsStep = () => {
       return (
         <div className="question-section">
           <h3 className="question-title">Onde foi armazenado?</h3>
-          <p className="question-description">Como o dente foi preservado</p>
           <div className="storage-options">
             <Card className="storage-option" onClick={() => handleStorageSelect('milk')}>
               <CustomImage type="milk" size={48} className="storage-image" alt="Leite" />
               <h4>Leite</h4>
-              <p>Meio ideal</p>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('saliva')}>
               <CustomImage type="saliva" size={48} className="storage-image" alt="Saliva" />
               <h4>Saliva</h4>
-              <p>Manter na boca</p>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('saline')}>
               <CustomImage type="saline" size={48} className="storage-image" alt="Soro" />
               <h4>Soro</h4>
-              <p>Solução fisiológica</p>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('water')}>
               <CustomImage type="water" size={48} className="storage-image" alt="Água" />
               <h4>Água</h4>
-              <p>Não recomendada</p>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('paper')}>
               <CustomImage type="paper" size={48} className="storage-image" alt="Papel/Pano" />
               <h4>Papel/Pano</h4>
-              <p>Evitar seco</p>
             </Card>
           </div>
         </div>
@@ -188,7 +175,6 @@ const TraumaQuestionsStep = () => {
     return (
       <div className="question-section">
         <h3 className="question-title">O dente está mole ou deslocado?</h3>
-        <p className="question-description">Avalie se há mobilidade ou deslocamento do dente</p>
         <div className="button-group">
           <Button variant="primary" size="lg" onClick={() => handleIsLoose(true)}>
             Sim
@@ -205,7 +191,6 @@ const TraumaQuestionsStep = () => {
     return (
       <div className="question-section">
         <h3 className="question-title">Há sangramento?</h3>
-        <p className="question-description">Avalie se há sangramento na gengiva ou lábios</p>
         <div className="button-group">
           <Button variant="primary" size="lg" onClick={() => handleHasBleeding(true)}>
             Sim
@@ -232,7 +217,6 @@ const TraumaQuestionsStep = () => {
         return (
           <div className="question-section">
             <h3 className="question-title">Avaliação Necessária</h3>
-            <p className="question-description">Para outros tipos de trauma, é necessária avaliação profissional</p>
             <Button variant="primary" size="lg" onClick={handleContinue}>
               Continuar
             </Button>
@@ -247,9 +231,6 @@ const TraumaQuestionsStep = () => {
     <div className="step-container">
       <div className="step-header">
         <h2 className="step-title">Perguntas Específicas</h2>
-        <p className="step-description">
-          Responda as perguntas para receber orientações precisas
-        </p>
       </div>
 
       {renderQuestions()}
@@ -263,6 +244,8 @@ const TraumaQuestionsStep = () => {
         traumaType={traumaType as 'fracture' | 'avulsion'}
         alertType={alertType}
       />
+      
+      <FixedBottomButtons />
     </div>
   )
 }

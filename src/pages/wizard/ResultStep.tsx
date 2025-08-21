@@ -2,6 +2,7 @@ import { IconCheck, IconAlertTriangle, IconInfoCircle } from '@tabler/icons-reac
 import useWizardStore from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
+import FixedBottomButtons from '../../components/FixedBottomButtons'
 
 const ResultStep = () => {
   const { 
@@ -204,6 +205,8 @@ const ResultStep = () => {
           </Button>
         </div>
       </div>
+      
+      <FixedBottomButtons />
     </div>
   )
 }

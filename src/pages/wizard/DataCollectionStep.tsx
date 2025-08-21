@@ -3,6 +3,7 @@ import { IconMapPin, IconFileText, IconCamera, IconPhoto, IconClock } from '@tab
 import useWizardStore from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
+import FixedBottomButtons from '../../components/FixedBottomButtons'
 
 const DataCollectionStep = () => {
   const { 
@@ -75,9 +76,6 @@ const DataCollectionStep = () => {
     <div className="step-container">
       <div className="step-header">
         <h2 className="step-title">Dados do Acidente</h2>
-        <p className="step-description">
-          Preencha os dados para encontrar locais próximos
-        </p>
       </div>
 
       <div className="data-collection-content">
@@ -93,7 +91,7 @@ const DataCollectionStep = () => {
               value={accidentTimeRange || ''}
               onChange={(e) => setAccidentTimeRange(e.target.value as any)}
             >
-              <option value="">Selecione o tempo decorrido</option>
+              <option value="">Selecione o tempo</option>
               <option value="0-15">00 à 15 min</option>
               <option value="15-30">15 à 30 min</option>
               <option value="30-45">30 à 45 min</option>
@@ -115,21 +113,21 @@ const DataCollectionStep = () => {
               className="form-input"
               value={accidentLocation}
               onChange={(e) => setAccidentLocation(e.target.value)}
-              placeholder="Ex: Escola, parque, quadra esportiva..."
+              placeholder="Ex: Escola, parque..."
             />
           </div>
 
           <div className="form-group">
             <label htmlFor="observations" className="form-label">
               <IconFileText size={20} className="form-icon" />
-              Observações Adicionais
+              Observações
             </label>
             <textarea
               id="observations"
               className="form-textarea"
               value={observations}
               onChange={(e) => setObservations(e.target.value)}
-              placeholder="Detalhes adicionais sobre o trauma..."
+              placeholder="Detalhes adicionais..."
               rows={4}
             />
           </div>
@@ -137,11 +135,8 @@ const DataCollectionStep = () => {
           <div className="form-group">
             <label className="form-label">
               <IconCamera size={20} className="form-icon" />
-              Fotos do Trauma (Opcional)
+              Fotos (Opcional)
             </label>
-            <p className="form-help-text">
-              Adicione fotos para ajudar na avaliação do dentista
-            </p>
             
             <div className="photo-upload-buttons">
               <Button
@@ -167,7 +162,7 @@ const DataCollectionStep = () => {
             {localPhotos.length > 0 && (
               <div className="photo-preview">
                 <h4 className="photo-preview-title">
-                  Fotos Adicionadas ({localPhotos.length})
+                  Fotos ({localPhotos.length})
                 </h4>
                 <div className="photo-grid">
                   {localPhotos.map((photo, index) => (
@@ -222,6 +217,8 @@ const DataCollectionStep = () => {
         onChange={handleTakePhoto}
         style={{ display: 'none' }}
       />
+      
+      <FixedBottomButtons />
     </div>
   )
 }

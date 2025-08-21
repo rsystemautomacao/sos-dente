@@ -1,6 +1,7 @@
 import { IconTool } from '@tabler/icons-react'
 import useWizardStore from '../../store/useWizardStore'
 import Button from '../../components/Button'
+import FixedBottomButtons from '../../components/FixedBottomButtons'
 
 const StartScreen = () => {
   const { nextStep } = useWizardStore()
@@ -23,6 +24,8 @@ const StartScreen = () => {
           INICIAR
         </Button>
       </div>
+      
+      <FixedBottomButtons showBackButton={false} />
     </div>
   )
 }

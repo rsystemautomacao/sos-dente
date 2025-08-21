@@ -1,5 +1,6 @@
 import useWizardStore from '../../store/useWizardStore'
 import Button from '../../components/Button'
+import FixedBottomButtons from '../../components/FixedBottomButtons'
 
 const IsLooseStep = () => {
   const { setIsLoose } = useWizardStore()
@@ -12,9 +13,6 @@ const IsLooseStep = () => {
     <div className="step-container">
       <div className="step-header">
         <h2 className="step-title">O dente está mole ou deslocado?</h2>
-        <p className="step-description">
-          Avalie se há mobilidade ou deslocamento do dente
-        </p>
       </div>
 
       <div className="button-group">
@@ -35,6 +33,8 @@ const IsLooseStep = () => {
           Não
         </Button>
       </div>
+      
+      <FixedBottomButtons />
     </div>
   )
 }

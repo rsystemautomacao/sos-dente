@@ -1,5 +1,6 @@
 import useWizardStore from '../../store/useWizardStore'
 import Button from '../../components/Button'
+import FixedBottomButtons from '../../components/FixedBottomButtons'
 
 const FoundToothStep = () => {
   const { setFoundTooth } = useWizardStore()
@@ -12,9 +13,6 @@ const FoundToothStep = () => {
     <div className="step-container">
       <div className="step-header">
         <h2 className="step-title">Você encontrou o dente?</h2>
-        <p className="step-description">
-          É crucial encontrar o dente para tentar reimplantá-lo
-        </p>
       </div>
 
       <div className="button-group">
@@ -35,6 +33,8 @@ const FoundToothStep = () => {
           Não
         </Button>
       </div>
+      
+      <FixedBottomButtons />
     </div>
   )
 }

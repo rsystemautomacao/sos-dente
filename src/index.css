@@ -365,8 +365,65 @@ body {
   box-shadow: var(--shadow-lg), var(--shadow-error);
 }
 
-/* Botão SOS Flutuante Moderno */
-.btn-sos {
+/* Botões no Final das Páginas */
+.fixed-bottom-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-6);
+  margin-top: var(--spacing-8);
+  background: var(--color-background);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.btn-fixed {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-bounce);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-back {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+  color: var(--color-white);
+}
+
+.btn-back:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-home {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: var(--color-white);
+}
+
+.btn-home:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-sos-fixed {
+  background: linear-gradient(135deg, var(--color-error) 0%, var(--color-error-dark) 100%);
+  color: var(--color-white);
+  animation: sosPulse 2s infinite;
+}
+
+.btn-sos-fixed:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg), var(--shadow-error);
+  animation-play-state: paused;
+}
+
+/* Botão SOS Flutuante Moderno (removido para evitar conflitos) */
+/* .btn-sos {
   position: fixed;
   bottom: var(--spacing-6);
   right: var(--spacing-6);
@@ -393,7 +450,7 @@ body {
 
 .btn-sos:active {
   transform: scale(0.95);
-}
+} */
 
 @keyframes sosPulse {
   0% {
@@ -1640,9 +1697,9 @@ body {
 
 .step-header {
   text-align: center;
-  margin-bottom: var(--spacing-16);
+  margin-bottom: var(--spacing-8);
   background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-secondary) 100%);
-  padding: var(--spacing-12);
+  padding: var(--spacing-6);
   border-radius: var(--border-radius-xl);
   box-shadow: var(--shadow-lg);
 }
@@ -1665,10 +1722,10 @@ body {
 }
 
 .step-title {
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-2xl);
   font-weight: 700;
   color: var(--color-text-primary);
-  margin-bottom: var(--spacing-4);
+  margin-bottom: var(--spacing-3);
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1687,8 +1744,8 @@ body {
 .selection-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--spacing-8);
-  margin-top: var(--spacing-8);
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-6);
 }
 
 .selection-card {
@@ -1732,20 +1789,43 @@ body {
 .card-content {
   position: relative;
   z-index: 1;
-  padding: var(--spacing-8);
+  padding: var(--spacing-6);
   text-align: center;
+}
+
+.card-content-horizontal {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3);
+  text-align: left;
+}
+
+.card-text-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  flex: 1;
 }
 
 .icon-wrapper {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-secondary) 100%);
   border-radius: 50%;
   margin-bottom: var(--spacing-6);
   transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.card-content-horizontal .icon-wrapper {
+  margin-bottom: 0;
+  width: 64px;
+  height: 64px;
 }
 
 .selection-card:hover .icon-wrapper {
@@ -1782,11 +1862,21 @@ body {
   transition: color 0.3s ease;
 }
 
+.card-content-horizontal .selection-card-title {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-2);
+}
+
 .selection-card-description {
   font-size: var(--font-size-base);
   color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: var(--spacing-6);
+}
+
+.card-content-horizontal .selection-card-description {
+  font-size: var(--font-size-sm);
+  margin-bottom: 0;
 }
 
 .card-features {
