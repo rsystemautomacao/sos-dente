@@ -1,5 +1,7 @@
 import { useLocation } from 'react-router-dom'
+import { useState } from 'react'
 import DentalIcon from './DentalIcon'
+import HamburgerMenu from './HamburgerMenu'
 
 interface HeaderProps {
   onShowAbout: () => void
@@ -7,6 +9,7 @@ interface HeaderProps {
 
 const Header = ({ onShowAbout }: HeaderProps) => {
   const location = useLocation()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const getPageTitle = () => {
     switch (location.pathname) {
@@ -31,13 +34,11 @@ const Header = ({ onShowAbout }: HeaderProps) => {
           <h1 className="header-title">{getPageTitle()}</h1>
         </div>
         <div className="header-right">
-          <button 
-            className="about-link"
-            onClick={onShowAbout}
-            aria-label="Sobre o aplicativo"
-          >
-            Sobre
-          </button>
+          <HamburgerMenu
+            isOpen={isMenuOpen}
+            onToggle={() => setIsMenuOpen(!isMenuOpen)}
+            onShowAbout={onShowAbout}
+          />
         </div>
       </div>
     </header>

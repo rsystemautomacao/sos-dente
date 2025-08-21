@@ -98,23 +98,23 @@ const TraumaQuestionsStep = () => {
           <h3 className="question-title">Onde guardou o pedaço?</h3>
           <div className="storage-options">
             <Card className="storage-option" onClick={() => handleStorageSelect('milk')}>
-              <CustomImage type="milk" size={48} className="storage-image" alt="Leite" />
+              <CustomImage type="milk" size={40} className="storage-image" alt="Leite" />
               <h4>Leite</h4>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('saline')}>
-              <CustomImage type="saline" size={48} className="storage-image" alt="Soro" />
+              <CustomImage type="saline" size={40} className="storage-image" alt="Soro" />
               <h4>Soro</h4>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('saliva')}>
-              <CustomImage type="saliva" size={48} className="storage-image" alt="Saliva" />
+              <CustomImage type="saliva" size={40} className="storage-image" alt="Saliva" />
               <h4>Saliva</h4>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('water')}>
-              <CustomImage type="water" size={48} className="storage-image" alt="Água" />
+              <CustomImage type="water" size={40} className="storage-image" alt="Água" />
               <h4>Água</h4>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('paper')}>
-              <CustomImage type="paper" size={48} className="storage-image" alt="Papel/Pano" />
+              <CustomImage type="paper" size={40} className="storage-image" alt="Papel/Pano" />
               <h4>Papel/Pano</h4>
             </Card>
           </div>
@@ -146,23 +146,23 @@ const TraumaQuestionsStep = () => {
           <h3 className="question-title">Onde foi armazenado?</h3>
           <div className="storage-options">
             <Card className="storage-option" onClick={() => handleStorageSelect('milk')}>
-              <CustomImage type="milk" size={48} className="storage-image" alt="Leite" />
+              <CustomImage type="milk" size={40} className="storage-image" alt="Leite" />
               <h4>Leite</h4>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('saliva')}>
-              <CustomImage type="saliva" size={48} className="storage-image" alt="Saliva" />
+              <CustomImage type="saliva" size={40} className="storage-image" alt="Saliva" />
               <h4>Saliva</h4>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('saline')}>
-              <CustomImage type="saline" size={48} className="storage-image" alt="Soro" />
+              <CustomImage type="saline" size={40} className="storage-image" alt="Soro" />
               <h4>Soro</h4>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('water')}>
-              <CustomImage type="water" size={48} className="storage-image" alt="Água" />
+              <CustomImage type="water" size={40} className="storage-image" alt="Água" />
               <h4>Água</h4>
             </Card>
             <Card className="storage-option" onClick={() => handleStorageSelect('paper')}>
-              <CustomImage type="paper" size={48} className="storage-image" alt="Papel/Pano" />
+              <CustomImage type="paper" size={40} className="storage-image" alt="Papel/Pano" />
               <h4>Papel/Pano</h4>
             </Card>
           </div>

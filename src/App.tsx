@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import Header from './components/Header'
 import InstallPWA from './components/InstallPWA'
@@ -14,13 +14,17 @@ import { useScrollToTop } from './hooks/useScrollToTop'
 function App() {
   useScrollToTop()
   const [showAboutModal, setShowAboutModal] = useState(false)
+  const location = useLocation()
+
+  // Não mostrar o Header na página inicial
+  const showHeader = location.pathname !== '/'
 
   return (
     <div className="app">
-      <Header onShowAbout={() => setShowAboutModal(true)} />
+      {showHeader && <Header onShowAbout={() => setShowAboutModal(true)} />}
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home onShowAbout={() => setShowAboutModal(true)} />} />
           <Route path="/wizard" element={<Wizard />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/ebook" element={<Ebook />} />

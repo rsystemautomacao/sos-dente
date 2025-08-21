@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { IconSearch, IconArrowLeft } from '@tabler/icons-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Card from '../components/Card'
-import Button from '../components/Button'
 import * as faqData from '../data/faq.pt-BR.json'
 
 const FAQ = () => {
@@ -90,49 +89,6 @@ const FAQ = () => {
               <IconSearch size={16} />
             </button>
           </div>
-        </div>
-
-        <div className="ebook-link">
-          <Card className="ebook-card">
-            <div className="ebook-content">
-              <img 
-                src="/ebook trauma.png" 
-                alt="E-book Trauma" 
-                className="ebook-image"
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  objectFit: 'cover',
-                  borderRadius: '8px',
-                  flexShrink: 0
-                }}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement
-                  target.style.display = 'flex'
-                  target.style.alignItems = 'center'
-                  target.style.justifyContent = 'center'
-                  target.style.backgroundColor = '#e3f2fd'
-                  target.style.color = '#1976d2'
-                  target.style.fontSize = '20px'
-                  target.style.fontWeight = 'bold'
-                  target.alt = 'E-book'
-                  target.src = ''
-                  target.textContent = '📖'
-                }}
-              />
-              <div className="ebook-text">
-                <h3 className="ebook-title">E-book Completo</h3>
-                <p className="ebook-description">
-                  Acesse o e-book com informações detalhadas sobre trauma dentário
-                </p>
-              </div>
-              <Link to="/ebook">
-                <Button variant="primary" size="sm">
-                  Ver E-book
-                </Button>
-              </Link>
-            </div>
-          </Card>
         </div>
       </div>
 

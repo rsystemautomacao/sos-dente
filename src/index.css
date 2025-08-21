@@ -1064,9 +1064,11 @@ body {
 }
 
 .action-description {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   color: var(--color-text-secondary);
   line-height: var(--line-height-relaxed);
+  text-align: center;
+  margin: var(--spacing-4) 0;
 }
 
 .action-button {
@@ -1079,19 +1081,22 @@ body {
 }
 
 .emergency-card {
-  background: var(--color-error-light);
-  border-left: 4px solid var(--color-error);
+  background: linear-gradient(135deg, #ff4757, #ff3742);
+  border: none;
+  color: white;
 }
 
 .emergency-title {
-  color: var(--color-error);
-  font-weight: 600;
+  color: white;
+  font-weight: 700;
   margin-bottom: var(--spacing-2);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .emergency-text {
-  color: var(--color-gray-700);
+  color: rgba(255, 255, 255, 0.9);
   margin: 0;
+  font-weight: 500;
 }
 
 /* Wizard */
@@ -1921,15 +1926,15 @@ body {
 /* Storage Options */
 .storage-options {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-6);
-  margin-top: var(--spacing-8);
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-6);
 }
 
 .storage-option {
   cursor: pointer;
   text-align: center;
-  padding: var(--spacing-6);
+  padding: var(--spacing-4);
   transition: all 0.3s ease;
   border: 2px solid transparent;
 }
@@ -2197,7 +2202,8 @@ body {
   }
   
   .storage-options {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-3);
   }
   
   .action-buttons {
@@ -4688,5 +4694,455 @@ body {
   
   .ios-step-content p {
     font-size: var(--font-size-sm);
+  }
+}
+
+/* Menu Hambúrguer */
+.hamburger-button {
+  background: none;
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+  padding: var(--spacing-2);
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s ease;
+}
+
+.hamburger-button:hover {
+  background-color: var(--color-background-secondary);
+}
+
+.hamburger-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: var(--spacing-4);
+}
+
+.hamburger-menu {
+  background: var(--color-background);
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  width: 280px;
+  max-width: 90vw;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.hamburger-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.hamburger-header h3 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+.hamburger-close {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-1);
+  border-radius: var(--border-radius-sm);
+  transition: background-color 0.2s ease;
+}
+
+.hamburger-close:hover {
+  background-color: var(--color-background-secondary);
+}
+
+.hamburger-items {
+  padding: var(--spacing-2);
+}
+
+.hamburger-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  width: 100%;
+  padding: var(--spacing-3);
+  background: none;
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s ease;
+  text-align: left;
+}
+
+.hamburger-item:hover {
+  background-color: var(--color-background-secondary);
+}
+
+.hamburger-item span {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+}
+
+/* Checklist de Emergência */
+.emergency-checklist-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4);
+}
+
+.emergency-checklist {
+  background: var(--color-background);
+  border-radius: var(--border-radius);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.emergency-checklist-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.emergency-checklist-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.emergency-checklist-title h3 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-error);
+}
+
+.emergency-icon {
+  color: var(--color-error);
+}
+
+.emergency-checklist-close {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-2);
+  border-radius: var(--border-radius-sm);
+  transition: background-color 0.2s ease;
+}
+
+.emergency-checklist-close:hover {
+  background-color: var(--color-background-secondary);
+}
+
+.emergency-checklist-content {
+  padding: var(--spacing-6);
+}
+
+.emergency-progress {
+  margin-bottom: var(--spacing-6);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--color-gray-200);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: var(--spacing-2);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-error), var(--color-warning));
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.emergency-question {
+  margin-bottom: var(--spacing-6);
+}
+
+.question-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-4) 0;
+  line-height: 1.4;
+}
+
+.question-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.question-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  background: var(--color-background-secondary);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.question-option:hover {
+  border-color: var(--color-primary);
+  background: var(--color-background);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--border-radius-sm);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.option-text {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.emergency-warning {
+  background: var(--color-warning-light);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-4);
+  margin-top: var(--spacing-4);
+}
+
+.emergency-warning p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-warning-dark);
+  line-height: 1.4;
+}
+
+.emergency-navigation {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: var(--spacing-6);
+  margin-bottom: var(--spacing-4);
+}
+
+.emergency-back-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--color-gray-100);
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--border-radius);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.emergency-back-button:hover {
+  background: var(--color-gray-200);
+  border-color: var(--color-gray-400);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.emergency-checklist-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.emergency-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  background: var(--color-background-secondary);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.emergency-option:hover {
+  border-color: var(--color-primary);
+  background: var(--color-background);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.emergency-option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--border-radius);
+  flex-shrink: 0;
+}
+
+.dental-option .emergency-option-icon {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+}
+
+.hospital-option .emergency-option-icon {
+  background: linear-gradient(135deg, #ff4757, #ff3742);
+  color: white;
+}
+
+.emergency-option-content {
+  flex: 1;
+}
+
+.emergency-option-content h4 {
+  margin: 0 0 var(--spacing-1) 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+.emergency-option-content p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+}
+
+.emergency-option-check {
+  color: var(--color-primary);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.emergency-option:hover .emergency-option-check {
+  opacity: 1;
+}
+
+/* Página Home Atualizada */
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-background);
+}
+
+.trauma-card {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.trauma-image {
+  width: 100px !important;
+  height: 100px !important;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: var(--spacing-4);
+}
+
+.emergency-button {
+  margin-top: var(--spacing-4);
+  background: linear-gradient(135deg, #ff4757, #ff3742);
+  border: none;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.emergency-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+}
+
+/* Responsividade para Mobile */
+@media (max-width: 768px) {
+  .hamburger-menu {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .emergency-checklist {
+    margin: var(--spacing-4);
+    max-width: calc(100% - 2 * var(--spacing-4));
+  }
+  
+  .emergency-option {
+    padding: var(--spacing-3);
+  }
+  
+  .emergency-option-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .trauma-image {
+    width: 64px !important;
+    height: 64px !important;
   }
 }
