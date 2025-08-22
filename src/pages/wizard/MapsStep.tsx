@@ -39,7 +39,11 @@ const MapsStep = () => {
     setIsLoadingDentists(true)
     try {
       await openNearbyDentists()
-      toast.success('Abrindo Google Maps para dentistas próximos...')
+      // Detectar qual app de mapas será aberto
+      const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+      const mapApp = isIOSDevice ? 'Apple Maps' : 'Google Maps'
+      toast.success(`Abrindo ${mapApp} para dentistas próximos...`)
     } catch (error) {
       console.error('Erro ao abrir maps:', error)
       toast.error('Erro ao abrir o mapa. Tente novamente.')
@@ -52,7 +56,11 @@ const MapsStep = () => {
     setIsLoadingUPAs(true)
     try {
       await openNearbyUPAs()
-      toast.success('Abrindo Google Maps para UPAs próximas...')
+      // Detectar qual app de mapas será aberto
+      const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+      const mapApp = isIOSDevice ? 'Apple Maps' : 'Google Maps'
+      toast.success(`Abrindo ${mapApp} para UPAs próximas...`)
     } catch (error) {
       console.error('Erro ao abrir maps:', error)
       toast.error('Erro ao abrir o mapa. Tente novamente.')
