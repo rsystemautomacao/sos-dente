@@ -1,36 +1,50 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { IconBone } from '@tabler/icons-react'
 import useWizardStore, { TraumaType, StorageMethod } from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import CustomImage from '../../components/CustomImage'
 import StorageAlertModal from '../../components/StorageAlertModal'
+import BabyToothModal from '../../components/BabyToothModal'
 import FixedBottomButtons from '../../components/FixedBottomButtons'
 
 const TraumaQuestionsStep = () => {
-  const { traumaType, setFoundPiece, setFoundTooth, setIsLoose, setHasBleeding, setStorageMethod, nextStep } = useWizardStore()
+  const { ageGroup, toothType, traumaType, setFoundPiece, setFoundTooth, setIsLoose, setHasBleeding, setStorageMethod, setCurrentStep, nextStep } = useWizardStore()
   const [currentQuestion, setCurrentQuestion] = useState<'found' | 'storage' | null>(null)
   const [showStorageAlert, setShowStorageAlert] = useState(false)
+  const [showBabyToothModal, setShowBabyToothModal] = useState(false)
   const [selectedStorageMethod, setSelectedStorageMethod] = useState<StorageMethod | null>(null)
   const [alertType, setAlertType] = useState<'incorrect' | 'correct'>('incorrect')
+
+
 
   const handleFoundPiece = (found: boolean) => {
     setFoundPiece(found)
     if (found) {
-      setCurrentQuestion('storage')
+      // Se é criança de 0-5 anos (baby) ou dente de leite para 6-12 anos, mostrar modal de dente de leite
+      if (ageGroup === 'baby' || toothType === 'baby') {
+        setShowBabyToothModal(true)
+      } else {
+        setCurrentQuestion('storage')
+      }
     } else {
       // SEMPRE vai para a página de dados do acidente (pulando o resultado)
-      nextStep()
+      setCurrentStep(5) // Go to DataCollectionStep
     }
   }
 
   const handleFoundTooth = (found: boolean) => {
     setFoundTooth(found)
     if (found) {
-      setCurrentQuestion('storage')
+      // Se é criança de 0-5 anos (baby) ou dente de leite para 6-12 anos, mostrar modal de dente de leite
+      if (ageGroup === 'baby' || toothType === 'baby') {
+        setShowBabyToothModal(true)
+      } else {
+        setCurrentQuestion('storage')
+      }
     } else {
       // SEMPRE vai para a página de dados do acidente (pulando o resultado)
-      nextStep()
+      setCurrentStep(5) // Go to DataCollectionStep
     }
   }
 
@@ -54,25 +68,31 @@ const TraumaQuestionsStep = () => {
     if (selectedStorageMethod) {
       setStorageMethod(selectedStorageMethod)
       // Vai direto para a página de dados do acidente (pulando o resultado)
-      nextStep()
+      setCurrentStep(5) // Go to DataCollectionStep
     }
+  }
+
+  const handleBabyToothModalContinue = () => {
+    setShowBabyToothModal(false)
+    // Vai direto para a página de dados do acidente (pulando o resultado)
+    setCurrentStep(5) // Go to DataCollectionStep
   }
 
   const handleIsLoose = (loose: boolean) => {
     setIsLoose(loose)
     // SEMPRE vai para a página de dados do acidente (pulando o resultado)
-    nextStep()
+    setCurrentStep(5) // Go to DataCollectionStep
   }
 
   const handleHasBleeding = (bleeding: boolean) => {
     setHasBleeding(bleeding)
     // SEMPRE vai para a página de dados do acidente (pulando o resultado)
-    nextStep()
+    setCurrentStep(5) // Go to DataCollectionStep
   }
 
   const handleContinue = () => {
     // SEMPRE vai para a página de dados do acidente (pulando o resultado)
-    nextStep()
+    setCurrentStep(5) // Go to DataCollectionStep
   }
 
   const renderFractureQuestions = () => {
@@ -243,6 +263,13 @@ const TraumaQuestionsStep = () => {
         storageMethod={selectedStorageMethod || ''}
         traumaType={traumaType as 'fracture' | 'avulsion'}
         alertType={alertType}
+      />
+
+      {/* Modal de Dente de Leite */}
+      <BabyToothModal
+        isOpen={showBabyToothModal}
+        onClose={() => setShowBabyToothModal(false)}
+        onContinue={handleBabyToothModalContinue}
       />
       
       <FixedBottomButtons />

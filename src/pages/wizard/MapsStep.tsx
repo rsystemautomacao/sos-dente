@@ -16,6 +16,7 @@ const MapsStep = () => {
   const { 
     ageGroup, 
     gender, 
+    toothType,
     traumaType, 
     accidentTimeRange,
     accidentLocation, 
@@ -81,6 +82,7 @@ const MapsStep = () => {
       const pdfData: TraumaData = {
         ageGroup,
         gender,
+        toothType,
         traumaType,
         accidentTimeRange,
         accidentLocation,
@@ -143,6 +145,14 @@ const MapsStep = () => {
                 {gender === 'female' ? 'Feminino' : gender === 'male' ? 'Masculino' : 'Prefiro não informar'}
               </span>
             </div>
+            {toothType && (
+              <div className="summary-item">
+                <span className="summary-label">Tipo de Dente:</span>
+                <span className="summary-value">
+                  {toothType === 'baby' ? 'Dente de Leite' : toothType === 'permanent' ? 'Dente Permanente' : 'Não Identificado'}
+                </span>
+              </div>
+            )}
             <div className="summary-item">
               <span className="summary-label">Tipo de Trauma:</span>
               <span className="summary-value">
@@ -300,7 +310,7 @@ const MapsStep = () => {
 
         <div className="step-actions">
           <Button
-            variant="secondary"
+            variant="primary"
             size="lg"
             onClick={handleFinish}
             className="finish-button"

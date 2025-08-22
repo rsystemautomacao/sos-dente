@@ -4,6 +4,7 @@ import html2canvas from 'html2canvas'
 export interface TraumaData {
   ageGroup: string | null
   gender: string | null
+  toothType: string | null
   traumaType: string | null
   accidentTimeRange?: string | null
   accidentLocation?: string
@@ -154,8 +155,9 @@ export class PDFGenerator {
     }
 
     const ageMap: { [key: string]: string } = {
-      'child': 'Criança (0-11 anos)',
-      'adolescent': 'Adolescente (12-17 anos)'
+      'baby': '0 a 5 anos',
+      'child': '6 a 12 anos',
+      'adolescent': 'Maior que 12 anos'
     }
 
     const timeRangeMap: { [key: string]: string } = {
@@ -171,6 +173,7 @@ export class PDFGenerator {
     const infoItems = [
       { label: 'Faixa Etária:', value: ageMap[data.ageGroup || ''] || data.ageGroup || 'Não informado' },
       { label: 'Sexo:', value: genderMap[data.gender || ''] || data.gender || 'Não informado' },
+      ...(data.toothType ? [{ label: 'Tipo de Dente:', value: data.toothType === 'baby' ? 'Dente de Leite' : data.toothType === 'permanent' ? 'Dente Permanente' : 'Não Identificado' }] : []),
       { label: 'Tipo de Trauma:', value: traumaTypeMap[data.traumaType || ''] || data.traumaType || 'Não informado' },
       ...(data.accidentTimeRange ? [{ label: 'Tempo do Acidente:', value: timeRangeMap[data.accidentTimeRange] || data.accidentTimeRange }] : []),
       ...(data.accidentLocation ? [{ label: 'Local do Acidente:', value: data.accidentLocation }] : []),

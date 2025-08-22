@@ -2,6 +2,7 @@ import { create } from 'zustand'
 
 export type AgeGroup = 'baby' | 'child' | 'adolescent'
 export type Gender = 'female' | 'male' | 'prefer-not-to-say'
+export type ToothType = 'baby' | 'permanent' | 'unknown'
 export type TraumaType = 'fracture' | 'avulsion' | 'luxation' | 'bleeding' | 'other'
 export type StorageMethod = 'milk' | 'saline' | 'saliva' | 'water' | 'paper'
 export type AccidentTimeRange = '0-15' | '15-30' | '30-45' | '45-60' | '60-90' | '90-120' | '120+'
@@ -10,6 +11,7 @@ interface WizardState {
   // Dados do paciente
   ageGroup: AgeGroup | null
   gender: Gender | null
+  toothType: ToothType | null
   traumaType: TraumaType | null
   
   // Perguntas específicas por trauma
@@ -34,6 +36,7 @@ interface WizardState {
   // Ações
   setAgeGroup: (ageGroup: AgeGroup) => void
   setGender: (gender: Gender) => void
+  setToothType: (toothType: ToothType) => void
   setTraumaType: (traumaType: TraumaType) => void
   setFoundPiece: (found: boolean) => void
   setFoundTooth: (found: boolean) => void
@@ -55,6 +58,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
   // Estado inicial
   ageGroup: null,
   gender: null,
+  toothType: null,
   traumaType: null,
   foundPiece: null,
   foundTooth: null,
@@ -63,7 +67,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
   storageMethod: null,
   accidentTimeRange: null,
   currentStep: 0,
-  totalSteps: 6, // Idade, Sexo, Trauma, Perguntas específicas, Dados, Maps
+  totalSteps: 7, // Idade, Sexo, Tipo de Dente (para 6-12 anos), Trauma, Perguntas específicas, Dados, Maps
   accidentLocation: '',
   observations: '',
   photos: [],
@@ -71,12 +75,17 @@ const useWizardStore = create<WizardState>((set, get) => ({
   // Ações
   setAgeGroup: (ageGroup) => {
     set({ ageGroup })
-    get().nextStep()
+    get().setCurrentStep(1) // Go to GenderStep
   },
   
   setGender: (gender) => {
     set({ gender })
-    get().nextStep()
+    // Navigation will be controlled by the component
+  },
+  
+  setToothType: (toothType: ToothType) => {
+    set({ toothType })
+    // Navigation will be controlled by the component
   },
   
   setTraumaType: (traumaType) => {
@@ -138,6 +147,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
     set({
       ageGroup: null,
       gender: null,
+      toothType: null,
       traumaType: null,
       foundPiece: null,
       foundTooth: null,

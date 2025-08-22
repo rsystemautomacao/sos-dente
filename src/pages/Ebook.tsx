@@ -178,7 +178,7 @@ const Ebook = () => {
               </div>
               <div className="summary-item-content">
                 <span className="summary-item-label">Versão:</span>
-                                        <span className="summary-item-value">1.0 - 2025</span>
+                                        <span className="summary-item-value">1.1 - 2025</span>
               </div>
             </div>
             

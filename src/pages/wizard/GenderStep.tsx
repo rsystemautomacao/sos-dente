@@ -5,7 +5,7 @@ import CustomImage from '../../components/CustomImage'
 import FixedBottomButtons from '../../components/FixedBottomButtons'
 
 const GenderStep = () => {
-  const { gender, setGender } = useWizardStore()
+  const { ageGroup, gender, setGender, setCurrentStep } = useWizardStore()
 
   useEffect(() => {
     // Garantir que o step carregue no topo
@@ -14,6 +14,13 @@ const GenderStep = () => {
 
   const handleGenderSelect = (selectedGender: Gender) => {
     setGender(selectedGender)
+    
+    // Se for criança de 6-12 anos, ir para o step de tipo de dente
+    if (ageGroup === 'child') {
+      setCurrentStep(2) // Go to ToothTypeStep
+    } else {
+      setCurrentStep(3) // Skip ToothTypeStep, go to TraumaTypeStep
+    }
   }
 
   return (

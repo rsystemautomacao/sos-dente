@@ -4,6 +4,7 @@ import useWizardStore from '../store/useWizardStore'
 import Stepper from '../components/Stepper'
 import AgeStep from './wizard/AgeStep'
 import GenderStep from './wizard/GenderStep'
+import ToothTypeStep from './wizard/ToothTypeStep'
 import TraumaTypeStep from './wizard/TraumaTypeStep'
 import TraumaQuestionsStep from './wizard/TraumaQuestionsStep'
 import DataCollectionStep from './wizard/DataCollectionStep'
@@ -17,6 +18,7 @@ const Wizard = () => {
     'Início',
     'Idade',
     'Sexo', 
+    'Tipo de Dente',
     'Tipo de Trauma',
     'Perguntas Específicas',
     'Dados',
@@ -51,12 +53,14 @@ const Wizard = () => {
       case 1:
         return <GenderStep />
       case 2:
-        return <TraumaTypeStep />
+        return <ToothTypeStep />
       case 3:
-        return <TraumaQuestionsStep />
+        return <TraumaTypeStep />
       case 4:
-        return <DataCollectionStep />
+        return <TraumaQuestionsStep />
       case 5:
+        return <DataCollectionStep />
+      case 6:
         return <MapsStep />
       default:
         return <AgeStep />

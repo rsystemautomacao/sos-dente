@@ -127,7 +127,7 @@ const DataCollectionStep = () => {
               className="form-textarea"
               value={observations}
               onChange={(e) => setObservations(e.target.value)}
-              placeholder="Detalhes adicionais..."
+              placeholder="Descreva com mais detalhes sobre como e onde ocorreu o acidente."
               rows={4}
             />
           </div>
