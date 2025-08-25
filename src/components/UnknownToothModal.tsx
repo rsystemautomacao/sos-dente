@@ -47,7 +47,7 @@ const UnknownToothModal = ({ isOpen, onClose, onContinue }: UnknownToothModalPro
                 <li>Mantenha a calma</li>
                 <li>Guarde o dente em leite ou soro fisiológico</li>
                 <li>NÃO tente recolocar na boca</li>
-                <li>Procure um dentista o quanto antes</li>
+                <li><strong>Procure um dentista em até 30 minutos</strong> (se for dente permanente, dá tempo de reimplantar com bom prognóstico)</li>
                 <li>O dentista avaliará e decidirá o tratamento</li>
               </ul>
             </div>

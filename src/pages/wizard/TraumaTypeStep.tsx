@@ -5,7 +5,7 @@ import CustomImage from '../../components/CustomImage'
 import FixedBottomButtons from '../../components/FixedBottomButtons'
 
 const TraumaTypeStep = () => {
-  const { traumaType, setTraumaType } = useWizardStore()
+  const { traumaType, setTraumaType, setCurrentStep } = useWizardStore()
 
   useEffect(() => {
     // Garantir que o step carregue no topo
@@ -14,6 +14,8 @@ const TraumaTypeStep = () => {
 
   const handleTraumaSelect = (selectedTrauma: TraumaType) => {
     setTraumaType(selectedTrauma)
+    // Navegar para a próxima etapa após selecionar o tipo de trauma
+    setCurrentStep(4) // Go to TraumaQuestionsStep
   }
 
   return (

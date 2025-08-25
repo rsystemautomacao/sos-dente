@@ -26,7 +26,7 @@ const CustomImage = ({ type, size = 64, className = '', alt = '' }: CustomImageP
       case 'male':
         return '/masculino.png'
       case 'neutral':
-        return '/feminino.png'
+        return '/nao-definido.png'
       
       // Tipos de Trauma - mantendo as imagens JPEG que fazem sentido
       case 'fracture':

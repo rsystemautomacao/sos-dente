@@ -90,7 +90,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
   
   setTraumaType: (traumaType) => {
     set({ traumaType })
-    get().nextStep()
+    // Navigation will be controlled by the component
   },
   
   setFoundPiece: (found) => {

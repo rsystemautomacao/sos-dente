@@ -210,7 +210,7 @@ const EmergencyChecklist = ({ isOpen, onClose }: EmergencyChecklistProps) => {
         onClose={() => setShowDentalConfirm(false)}
         onConfirm={handleDentalConfirm}
         title="Problema Dental Identificado"
-        message="Baseado nas suas respostas, este parece ser um caso de trauma dental que pode ser avaliado pelo nosso sistema. Vamos iniciar a avaliação específica para trauma dental."
+        message="Baseado nas suas respostas, este parece ser um caso de trauma dental. Você pode seguir sendo auxiliado pelo nosso sistema. Vamos iniciar a avaliação específica para trauma dental."
         confirmText="Iniciar Avaliação Dental"
         cancelText="Cancelar"
       />

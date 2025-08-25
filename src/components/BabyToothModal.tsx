@@ -32,13 +32,13 @@ const BabyToothModal = ({ isOpen, onClose, onContinue }: BabyToothModalProps) =>
           
           <div className="baby-tooth-info">
             <p>
-              <strong>Crianças de 0 a 5 anos têm dentes de leite.</strong> 
-              Estes dentes <strong>NÃO devem ser reimplantados</strong> quando caem completamente.
+              Em geral, crianças de 0 a 5 anos estão na fase dos dentes de leite. 
+              Estes dentes <strong>NÃO devem ser reimplantados</strong> quando saem completamente da boca em casos de trauma.
             </p>
             
             <p>
               O reimplante de dentes de leite pode causar danos ao dente permanente 
-              que está se formando na gengiva.
+              que está se formando internamente na região.
             </p>
             
             <div className="baby-tooth-actions">

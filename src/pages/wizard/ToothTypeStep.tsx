@@ -31,8 +31,8 @@ const ToothTypeStep = () => {
 
   const handleBabyToothModalContinue = () => {
     setShowBabyToothModal(false)
-    // Vai direto para a página de dados do acidente (pulando o resultado)
-    setCurrentStep(5) // Go to DataCollectionStep
+    // Segue o fluxo normal para o tipo de trauma (mesmo sendo dente de leite)
+    setCurrentStep(3) // Go to TraumaTypeStep
   }
 
   const handleUnknownToothModalContinue = () => {

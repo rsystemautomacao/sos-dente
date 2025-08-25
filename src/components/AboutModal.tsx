@@ -9,7 +9,7 @@ interface AboutModalProps {
 const AboutModal = ({ isOpen, onClose }: AboutModalProps) => {
   if (!isOpen) return null
 
-  const appVersion = '1.1.4'
+  const appVersion = '1.2.1'
   const lastUpdate = 'Agosto de 2025'
   const developer = 'Richard Spanhol'
 
