@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import Wizard from './pages/Wizard'
 import FAQ from './pages/FAQ'
 import Ebook from './pages/Ebook'
+import Dashboard from './pages/Dashboard'
 import { useScrollToTop } from './hooks/useScrollToTop'
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/wizard" element={<Wizard />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/ebook" element={<Ebook />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </main>
       <InstallPWA />

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tabler/icons-react": "^2.20.0",
+    "date-fns": "^4.1.0",
     "html2canvas": "^1.4.1",
     "idb": "^7.1.1",
     "jspdf": "^3.0.1",
@@ -19,6 +20,7 @@
     "react-hot-toast": "^2.4.1",
     "react-pdf": "^10.0.1",
     "react-router-dom": "^6.8.1",
+    "recharts": "^3.1.2",
     "zustand": "^4.3.8"
   },
   "devDependencies": {

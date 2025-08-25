@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import analytics from '../services/analytics'
 
 export type AgeGroup = 'baby' | 'child' | 'adolescent'
 export type Gender = 'female' | 'male' | 'prefer-not-to-say'
@@ -76,21 +77,33 @@ const useWizardStore = create<WizardState>((set, get) => ({
   setAgeGroup: (ageGroup) => {
     set({ ageGroup })
     get().setCurrentStep(1) // Go to GenderStep
+    
+    // Rastrear seleção de idade
+    analytics.trackWizardStep(1, { ageGroup })
   },
   
   setGender: (gender) => {
     set({ gender })
     // Navigation will be controlled by the component
+    
+    // Rastrear seleção de gênero
+    analytics.trackWizardStep(2, { gender })
   },
   
   setToothType: (toothType: ToothType) => {
     set({ toothType })
     // Navigation will be controlled by the component
+    
+    // Rastrear seleção de tipo de dente
+    analytics.trackWizardStep(3, { toothType })
   },
   
   setTraumaType: (traumaType) => {
     set({ traumaType })
     // Navigation will be controlled by the component
+    
+    // Rastrear seleção de tipo de trauma
+    analytics.trackWizardStep(4, { traumaType })
   },
   
   setFoundPiece: (found) => {

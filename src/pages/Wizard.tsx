@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useWizardStore from '../store/useWizardStore'
+import analytics from '../services/analytics'
 import Stepper from '../components/Stepper'
 import AgeStep from './wizard/AgeStep'
 import GenderStep from './wizard/GenderStep'
@@ -29,6 +30,9 @@ const Wizard = () => {
     reset()
     // Garantir que a página carregue no topo
     window.scrollTo(0, 0)
+    
+    // Rastrear início do wizard
+    analytics.trackWizardStart()
   }, [reset])
 
   const handleStepClick = (stepIndex: number) => {
