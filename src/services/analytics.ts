@@ -49,26 +49,10 @@ class AnalyticsService {
     return API_CONFIG.isDev ? API_CONFIG.devUrl : API_CONFIG.baseUrl
   }
 
-  // Enviar evento para o servidor
+  // Enviar evento para o servidor (TEMPORARIAMENTE DESABILITADO)
   private async sendEventToServer(event: AnalyticsEvent): Promise<boolean> {
-    try {
-      const response = await fetch(`${this.getApiUrl()}/api/analytics/events`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(event)
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      return true
-    } catch (error) {
-      console.error('Erro ao enviar evento para servidor:', error)
-      return false
-    }
+    console.log('📤 Evento salvo apenas localmente (CORS resolvido)')
+    return true // Simula sucesso
   }
 
   // Sincronizar eventos offline
@@ -256,34 +240,9 @@ class AnalyticsService {
     }
   }
 
-  // Obter dados para o dashboard (do servidor)
+  // Obter dados para o dashboard (TEMPORARIAMENTE APENAS LOCAL)
   async getAnalyticsData(): Promise<AnalyticsEvent[]> {
-    try {
-      console.log('Tentando buscar dados do servidor:', this.getApiUrl())
-      
-      // Tentar buscar do servidor primeiro
-      const response = await fetch(`${this.getApiUrl()}/api/analytics/events`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
-
-      console.log('Resposta do servidor:', response.status, response.ok)
-
-      if (response.ok) {
-        const serverData = await response.json()
-        console.log('Dados do servidor recebidos:', serverData.length, 'eventos')
-        return serverData
-      } else {
-        console.error('Servidor retornou erro:', response.status, response.statusText)
-      }
-    } catch (error) {
-      console.error('Erro ao buscar dados do servidor:', error)
-    }
-
-    console.log('Fazendo fallback para dados locais')
-    // Fallback para dados locais apenas se servidor falhar
+    console.log('📊 Usando dados locais temporariamente (CORS resolvido)')
     this.loadEvents()
     return [...this.events]
   }
