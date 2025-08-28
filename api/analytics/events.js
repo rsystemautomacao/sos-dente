@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+import { MongoClient } from 'mongodb';
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://rsautomacao2000:%40Desbravadores%4093@sosdentecluster.zg8xrbc.mongodb.net/?retryWrites=true&w=majority&appName=SOSDenteCluster";
@@ -28,6 +28,8 @@ async function connectToMongoDB() {
 }
 
 export default async function handler(req, res) {
+  console.log('🚀 API Route chamada:', req.method, req.url);
+  
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -35,12 +37,15 @@ export default async function handler(req, res) {
 
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
+    console.log('✅ OPTIONS request respondida');
     res.status(200).end();
     return;
   }
 
   try {
+    console.log('🔍 Conectando ao MongoDB...');
     const database = await connectToMongoDB();
+    console.log('✅ MongoDB conectado com sucesso');
 
     if (req.method === 'POST') {
       // Salvar evento
@@ -104,6 +109,11 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('❌ Erro na API:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('❌ Stack trace:', error.stack);
+    res.status(500).json({ 
+      error: 'Erro interno do servidor',
+      message: error.message,
+      stack: error.stack
+    });
   }
 }

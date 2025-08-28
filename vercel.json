@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/analytics/events.js": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "MONGODB_URI": "mongodb+srv://rsautomacao2000:%40Desbravadores%4093@sosdentecluster.zg8xrbc.mongodb.net/?retryWrites=true&w=majority&appName=SOSDenteCluster"
+  }
+}
