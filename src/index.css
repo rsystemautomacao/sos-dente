@@ -5899,3 +5899,182 @@ body {
     gap: 8px;
   }
 }
+
+/* Privacy Consent Modal */
+.privacy-consent-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.privacy-consent-modal {
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.privacy-consent-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 24px;
+  border-radius: 16px 16px 0 0;
+  text-align: center;
+}
+
+.privacy-consent-header h2 {
+  margin: 12px 0 0 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.privacy-icon {
+  color: white;
+}
+
+.privacy-consent-content {
+  padding: 24px;
+}
+
+.privacy-section {
+  margin-bottom: 24px;
+}
+
+.privacy-section h3 {
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.privacy-section p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.privacy-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.privacy-section li {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.privacy-section li:before {
+  content: "•";
+  color: #667eea;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.privacy-notice {
+  background: #f8f9ff;
+  border: 1px solid #e3e8ff;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 24px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.privacy-notice p {
+  margin: 0;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.privacy-consent-actions {
+  padding: 24px;
+  border-top: 1px solid #eee;
+  background: #f9f9f9;
+  border-radius: 0 0 16px 16px;
+}
+
+.privacy-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  color: #555;
+  font-weight: 500;
+}
+
+.privacy-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #667eea;
+}
+
+.privacy-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.decline-button {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #6c757d;
+}
+
+.decline-button:hover {
+  background: #e9ecef;
+}
+
+.accept-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .privacy-consent-modal {
+    margin: 10px;
+    max-height: 95vh;
+  }
+  
+  .privacy-consent-header {
+    padding: 20px;
+  }
+  
+  .privacy-consent-content {
+    padding: 20px;
+  }
+  
+  .privacy-consent-actions {
+    padding: 20px;
+  }
+  
+  .privacy-buttons {
+    flex-direction: column;
+  }
+  
+  .privacy-buttons button {
+    width: 100%;
+  }
+}

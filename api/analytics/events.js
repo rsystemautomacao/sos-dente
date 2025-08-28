@@ -59,7 +59,8 @@ export default async function handler(req, res) {
       }
 
       event.receivedAt = new Date().toISOString();
-      event.ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+      // Removido captura automática de IP para conformidade LGPD
+      // event.ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
       
       const result = await database.collection('analytics_events').insertOne(event);
       

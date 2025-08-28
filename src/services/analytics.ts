@@ -51,6 +51,13 @@ class AnalyticsService {
 
   // Enviar evento para o servidor (MESMO DOMÍNIO!)
   private async sendEventToServer(event: AnalyticsEvent): Promise<boolean> {
+    // Verificar consentimento de privacidade
+    const hasConsented = localStorage.getItem('sos_dente_privacy_consent')
+    if (hasConsented !== 'true') {
+      console.log('📤 Evento não enviado - usuário não consentiu com coleta de dados')
+      return false
+    }
+
     try {
       const response = await fetch(`${this.getApiUrl()}/api/analytics/events`, {
         method: 'POST',
