@@ -11,10 +11,10 @@ export interface AnalyticsEvent {
   synced?: boolean // Adicionado para controlar sincronização
 }
 
-// Configuração da API
+// Configuração da API (MESMO DOMÍNIO!)
 const API_CONFIG = {
-  baseUrl: import.meta.env.VITE_API_URL || 'https://sos-dente-analytics-server-fxmshdpb6-rsystems-projects.vercel.app',
-  devUrl: import.meta.env.VITE_DEV_API_URL || 'http://localhost:3001',
+  baseUrl: window.location.origin, // MESMO DOMÍNIO DO APP!
+  devUrl: 'http://localhost:3000',
   isDev: import.meta.env.DEV
 }
 
@@ -49,10 +49,27 @@ class AnalyticsService {
     return API_CONFIG.isDev ? API_CONFIG.devUrl : API_CONFIG.baseUrl
   }
 
-  // Enviar evento para o servidor (TEMPORARIAMENTE DESABILITADO)
+  // Enviar evento para o servidor (MESMO DOMÍNIO!)
   private async sendEventToServer(event: AnalyticsEvent): Promise<boolean> {
-    console.log('📤 Evento salvo apenas localmente (CORS resolvido)')
-    return true // Simula sucesso
+    try {
+      const response = await fetch(`${this.getApiUrl()}/api/analytics/events`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event)
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      console.log('📤 Evento enviado para servidor com sucesso')
+      return true
+    } catch (error) {
+      console.error('Erro ao enviar evento para servidor:', error)
+      return false
+    }
   }
 
   // Sincronizar eventos offline
@@ -240,9 +257,32 @@ class AnalyticsService {
     }
   }
 
-  // Obter dados para o dashboard (TEMPORARIAMENTE APENAS LOCAL)
+  // Obter dados para o dashboard (MESMO DOMÍNIO!)
   async getAnalyticsData(): Promise<AnalyticsEvent[]> {
-    console.log('📊 Usando dados locais temporariamente (CORS resolvido)')
+    try {
+      console.log('📊 Buscando dados do servidor:', this.getApiUrl())
+      
+      const response = await fetch(`${this.getApiUrl()}/api/analytics/events`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+
+      console.log('Resposta do servidor:', response.status, response.ok)
+
+      if (response.ok) {
+        const serverData = await response.json()
+        console.log('📊 Dados do servidor recebidos:', serverData.length, 'eventos')
+        return serverData
+      } else {
+        console.error('Servidor retornou erro:', response.status, response.statusText)
+      }
+    } catch (error) {
+      console.error('Erro ao buscar dados do servidor:', error)
+    }
+
+    console.log('📊 Fallback para dados locais')
     this.loadEvents()
     return [...this.events]
   }
