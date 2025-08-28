@@ -13,7 +13,7 @@ export interface AnalyticsEvent {
 
 // Configuração da API
 const API_CONFIG = {
-  baseUrl: import.meta.env.VITE_API_URL || 'https://sos-dente-analytics-server-ogvou57xw-rsystems-projects.vercel.app',
+  baseUrl: import.meta.env.VITE_API_URL || 'https://sos-dente-analytics-server-1c3cehffm-rsystems-projects.vercel.app',
   devUrl: import.meta.env.VITE_DEV_API_URL || 'http://localhost:3001',
   isDev: import.meta.env.DEV
 }
