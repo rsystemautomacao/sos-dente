@@ -79,7 +79,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
     get().setCurrentStep(1) // Go to GenderStep
     
     // Rastrear seleção de idade
-    analytics.trackWizardStep(1, { ageGroup })
+    analytics.trackWizardStep('1', { ageGroup })
   },
   
   setGender: (gender) => {
@@ -87,7 +87,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
     // Navigation will be controlled by the component
     
     // Rastrear seleção de gênero
-    analytics.trackWizardStep(2, { gender })
+    analytics.trackWizardStep('2', { gender })
   },
   
   setToothType: (toothType: ToothType) => {
@@ -95,7 +95,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
     // Navigation will be controlled by the component
     
     // Rastrear seleção de tipo de dente
-    analytics.trackWizardStep(3, { toothType })
+    analytics.trackWizardStep('3', { toothType })
   },
   
   setTraumaType: (traumaType) => {
@@ -103,7 +103,7 @@ const useWizardStore = create<WizardState>((set, get) => ({
     // Navigation will be controlled by the component
     
     // Rastrear seleção de tipo de trauma
-    analytics.trackWizardStep(4, { traumaType })
+    analytics.trackWizardStep('4', { traumaType })
   },
   
   setFoundPiece: (found) => {

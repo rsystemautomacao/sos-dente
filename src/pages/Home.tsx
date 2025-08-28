@@ -18,7 +18,7 @@ const Home = ({ onShowAbout }: HomeProps) => {
   
   // Easter egg para acessar o dashboard
   const clickCount = useRef(0)
-  const clickTimeout = useRef<NodeJS.Timeout | null>(null)
+  const clickTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     // Garantir que a página carregue no topo

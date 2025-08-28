@@ -32,7 +32,7 @@ const Wizard = () => {
     window.scrollTo(0, 0)
     
     // Rastrear início do wizard
-    analytics.trackWizardStart()
+    analytics.trackWizardStart({ step: 'start' })
   }, [reset])
 
   const handleStepClick = (stepIndex: number) => {
