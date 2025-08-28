@@ -63,12 +63,20 @@ const Dashboard = () => {
 
   // Função auxiliar para processar dados de analytics
   const processAnalyticsData = (events: AnalyticsEvent[]): AnalyticsData[] => {
+    console.log('🔍 Processando dados de analytics:', events.length, 'eventos')
+    
     const sessionData = new Map<string, any>()
     
     // Primeiro, processar eventos de início para obter dados básicos
     events
       .filter(event => event.eventType === 'wizard_start')
       .forEach(event => {
+        console.log('📊 Evento wizard_start:', {
+          sessionId: event.sessionId,
+          ageGroup: event.data.ageGroup,
+          data: event.data
+        })
+        
         if (!sessionData.has(event.sessionId)) {
           sessionData.set(event.sessionId, {
             id: event.id,
@@ -90,6 +98,12 @@ const Dashboard = () => {
     events
       .filter(event => event.eventType === 'wizard_complete')
       .forEach(event => {
+        console.log('📊 Evento wizard_complete:', {
+          sessionId: event.sessionId,
+          ageGroup: event.data.ageGroup,
+          data: event.data
+        })
+        
         const existingData = sessionData.get(event.sessionId)
         if (existingData) {
           // Atualizar dados existentes com informações completas
@@ -119,7 +133,13 @@ const Dashboard = () => {
       })
     
     // Converter para array de AnalyticsData
-    return Array.from(sessionData.values())
+    const result = Array.from(sessionData.values())
+    console.log('📊 Dados processados finais:', result.map(item => ({
+      sessionId: item.sessionId,
+      ageGroup: item.ageGroup,
+      completed: item.completed
+    })))
+    return result
   }
 
   // Carregar dados reais de analytics
