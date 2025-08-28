@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import Card from '../components/Card'
@@ -15,44 +15,13 @@ const Home = ({ onShowAbout }: HomeProps) => {
   const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isEmergencyChecklistOpen, setIsEmergencyChecklistOpen] = useState(false)
-  
-  // Easter egg para acessar o dashboard
-  const clickCount = useRef(0)
-  const clickTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     // Garantir que a página carregue no topo
     window.scrollTo(0, 0)
-    
-    // Cleanup do timeout quando o componente for desmontado
-    return () => {
-      if (clickTimeout.current) {
-        clearTimeout(clickTimeout.current)
-      }
-    }
   }, [])
 
-  // Função para detectar 3 cliques rápidos
-  const handleSecretClick = () => {
-    clickCount.current += 1
-    
-    // Limpar timeout anterior se existir
-    if (clickTimeout.current) {
-      clearTimeout(clickTimeout.current)
-    }
-    
-    // Se chegou a 3 cliques, navegar para o dashboard
-    if (clickCount.current >= 3) {
-      navigate('/dashboard')
-      clickCount.current = 0
-      return
-    }
-    
-    // Resetar contador após 1 segundo se não completou 3 cliques
-    clickTimeout.current = setTimeout(() => {
-      clickCount.current = 0
-    }, 1000)
-  }
+
 
   return (
     <div className="container">
@@ -110,12 +79,7 @@ const Home = ({ onShowAbout }: HomeProps) => {
           </Button>
         </Card>
         
-        {/* Área secreta para acessar o dashboard */}
-        <div 
-          className="secret-dashboard-area"
-          onClick={handleSecretClick}
-          title="Área secreta"
-        />
+
       </div>
 
       <EmergencyChecklist

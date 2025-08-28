@@ -6051,6 +6051,48 @@ body {
   cursor: not-allowed;
 }
 
+/* Secret Access Styles */
+.secret-clickable {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.secret-clickable:hover {
+  transform: scale(1.02);
+  opacity: 0.8;
+}
+
+.secret-clickable:active {
+  transform: scale(0.98);
+}
+
+.secret-message {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  animation: fadeInUp 0.5s ease;
+  z-index: 10;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .privacy-consent-modal {
