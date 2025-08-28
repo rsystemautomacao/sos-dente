@@ -13,7 +13,7 @@ export interface AnalyticsEvent {
 
 // Configuração da API
 const API_CONFIG = {
-  baseUrl: import.meta.env.VITE_API_URL || 'https://api.sos-dente.com',
+  baseUrl: import.meta.env.VITE_API_URL || 'https://sos-dente-analytics-server-qbyi2doup-rsystems-projects.vercel.app',
   devUrl: import.meta.env.VITE_DEV_API_URL || 'http://localhost:3001',
   isDev: import.meta.env.DEV
 }
@@ -259,6 +259,8 @@ class AnalyticsService {
   // Obter dados para o dashboard (do servidor)
   async getAnalyticsData(): Promise<AnalyticsEvent[]> {
     try {
+      console.log('Tentando buscar dados do servidor:', this.getApiUrl())
+      
       // Tentar buscar do servidor primeiro
       const response = await fetch(`${this.getApiUrl()}/api/analytics/events`, {
         method: 'GET',
@@ -267,15 +269,21 @@ class AnalyticsService {
         }
       })
 
+      console.log('Resposta do servidor:', response.status, response.ok)
+
       if (response.ok) {
         const serverData = await response.json()
+        console.log('Dados do servidor recebidos:', serverData.length, 'eventos')
         return serverData
+      } else {
+        console.error('Servidor retornou erro:', response.status, response.statusText)
       }
     } catch (error) {
       console.error('Erro ao buscar dados do servidor:', error)
     }
 
-    // Fallback para dados locais
+    console.log('Fazendo fallback para dados locais')
+    // Fallback para dados locais apenas se servidor falhar
     this.loadEvents()
     return [...this.events]
   }
