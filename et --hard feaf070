@@ -1,0 +1,14 @@
+[33mcommit feaf07020820e1cf758412d504bad7377e405942[m
+Author: RSystem <rsautomacao2000@gmail.com>
+Date:   Mon Aug 25 16:36:55 2025 -0300
+
+    feat: implementa dashboard de analytics e easter egg secreto - Adiciona página de dashboard com gráficos e relatórios detalhados - Implementa sistema de tracking de analytics com localStorage - Cria easter egg com 3 cliques rápidos para acessar dashboard - Melhora formatação e responsividade do dashboard - Adiciona filtros por data, faixa etária, tipo de trauma e status - Inclui exportação de dados em CSV - Versão 1.2.1
+
+package.json
+src/App.tsx
+src/index.css
+src/pages/Dashboard.tsx
+src/pages/Home.tsx
+src/pages/Wizard.tsx
+src/services/analytics.ts
+src/store/useWizardStore.ts

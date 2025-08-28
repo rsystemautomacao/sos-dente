@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell, AreaChart, Area
@@ -7,11 +7,12 @@ import { format, subDays, startOfDay, endOfDay, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { 
   IconCalendar, IconFilter, IconDownload, IconRefresh, 
-  IconUsers, IconTooth, IconAlertTriangle, IconTrendingUp,
-  IconEye, IconClock, IconMapPin
+  IconUsers, IconAlertTriangle, IconTrendingUp,
+  IconEye, IconClock, IconMapPin, IconCheck, IconX
 } from '@tabler/icons-react'
 import Button from '../components/Button'
-import analytics from '../services/analytics'
+import ConfirmModal from '../components/ConfirmModal'
+import analytics, { AnalyticsEvent } from '../services/analytics'
 
 interface AnalyticsData {
   id: string
@@ -50,41 +51,167 @@ const Dashboard = () => {
     completed: null
   })
   const [isLoading, setIsLoading] = useState(true)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const [showErrorMessage, setShowErrorMessage] = useState(false)
+  const [messageText, setMessageText] = useState('')
+  
+  // Easter egg para limpar todos os dados
+  const clickCount = useRef(0)
+  const clickTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Função auxiliar para processar dados de analytics
+  const processAnalyticsData = (events: AnalyticsEvent[]): AnalyticsData[] => {
+    const sessionData = new Map<string, any>()
+    
+    // Primeiro, processar eventos de início para obter dados básicos
+    events
+      .filter(event => event.eventType === 'wizard_start')
+      .forEach(event => {
+        if (!sessionData.has(event.sessionId)) {
+          sessionData.set(event.sessionId, {
+            id: event.id,
+            timestamp: event.timestamp,
+            sessionId: event.sessionId,
+            userAgent: event.userAgent,
+            ipAddress: event.ipAddress || 'N/A',
+            ageGroup: event.data.ageGroup || 'unknown',
+            gender: event.data.gender || 'prefer-not-to-say',
+            toothType: null,
+            traumaType: 'other',
+            location: event.data.location || 'Brasil',
+            completed: false
+          })
+        }
+      })
+    
+    // Depois, processar eventos de conclusão para obter dados completos
+    events
+      .filter(event => event.eventType === 'wizard_complete')
+      .forEach(event => {
+        const existingData = sessionData.get(event.sessionId)
+        if (existingData) {
+          // Atualizar dados existentes com informações completas
+          existingData.id = event.id
+          existingData.timestamp = event.timestamp
+          existingData.ageGroup = event.data.ageGroup || existingData.ageGroup
+          existingData.gender = event.data.gender || existingData.gender
+          existingData.toothType = event.data.toothType || null
+          existingData.traumaType = event.data.traumaType || 'other'
+          existingData.completed = true
+        } else {
+          // Se não há dados de início, criar entrada apenas com dados de conclusão
+          sessionData.set(event.sessionId, {
+            id: event.id,
+            timestamp: event.timestamp,
+            sessionId: event.sessionId,
+            userAgent: event.userAgent,
+            ipAddress: event.ipAddress || 'N/A',
+            ageGroup: event.data.ageGroup || 'unknown',
+            gender: event.data.gender || 'prefer-not-to-say',
+            toothType: event.data.toothType || null,
+            traumaType: event.data.traumaType || 'other',
+            location: event.data.location || 'Brasil',
+            completed: true
+          })
+        }
+      })
+    
+    // Converter para array de AnalyticsData
+    return Array.from(sessionData.values())
+  }
 
   // Carregar dados reais de analytics
   useEffect(() => {
-    loadAnalyticsData()
+    const loadInitialData = async () => {
+      try {
+        setIsLoading(true)
+        
+        // Buscar dados do servidor (com fallback para localStorage)
+        const events = await analytics.getAnalyticsData()
+        
+        // Converter eventos para formato do dashboard
+        const dashboardData: AnalyticsData[] = processAnalyticsData(events)
+
+        setAnalyticsData(dashboardData)
+        setIsLoading(false)
+      } catch (error) {
+        console.error('Erro ao carregar dados iniciais:', error)
+        setIsLoading(false)
+      }
+    }
+    
+    loadInitialData()
+    
+    // Cleanup do timeout quando o componente for desmontado
+    return () => {
+      if (clickTimeout.current) {
+        clearTimeout(clickTimeout.current)
+      }
+    }
   }, [])
 
   useEffect(() => {
+    console.log('useEffect applyFilters triggered', { analyticsDataLength: analyticsData.length })
     applyFilters()
   }, [analyticsData, filters])
 
-  const loadAnalyticsData = () => {
-    const events = analytics.getAnalyticsData()
+  // Função para detectar 5 cliques rápidos no título
+  const handleTitleClick = () => {
+    clickCount.current += 1
     
-    // Converter eventos para formato do dashboard
-    const dashboardData: AnalyticsData[] = events
-      .filter(event => event.eventType === 'wizard_start' || event.eventType === 'wizard_complete')
-      .map(event => ({
-        id: event.id,
-        timestamp: event.timestamp,
-        ageGroup: event.data.ageGroup || 'unknown',
-        gender: event.data.gender || 'prefer-not-to-say',
-        toothType: event.data.toothType || null,
-        traumaType: event.data.traumaType || 'other',
-        location: event.data.location || 'Brasil',
-        completed: event.eventType === 'wizard_complete',
-        sessionId: event.sessionId,
-        userAgent: event.userAgent,
-        ipAddress: event.ipAddress || 'N/A'
-      }))
+    // Limpar timeout anterior se existir
+    if (clickTimeout.current) {
+      clearTimeout(clickTimeout.current)
+    }
+    
+    // Se chegou a 5 cliques, mostrar modal de confirmação
+    if (clickCount.current >= 5) {
+      setShowConfirmModal(true)
+      clickCount.current = 0
+      return
+    }
+    
+    // Resetar contador após 1 segundo se não completou 5 cliques
+    clickTimeout.current = setTimeout(() => {
+      clickCount.current = 0
+    }, 1000)
+  }
 
-    setAnalyticsData(dashboardData)
-    setIsLoading(false)
+  const loadAnalyticsData = async () => {
+    try {
+      setIsRefreshing(true)
+      console.log('Iniciando carregamento de dados...')
+      
+      // Buscar dados do servidor (com fallback para localStorage)
+      const events = await analytics.getAnalyticsData()
+      console.log('Eventos carregados:', events.length)
+      
+      // Converter eventos para formato do dashboard
+      const dashboardData: AnalyticsData[] = processAnalyticsData(events)
+      console.log('Dados processados:', dashboardData.length)
+
+      setAnalyticsData(dashboardData)
+      setIsLoading(false)
+      
+      // Mostrar mensagem de sucesso
+      setMessageText('Dados atualizados com sucesso!')
+      setShowSuccessMessage(true)
+      setTimeout(() => setShowSuccessMessage(false), 3000)
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error)
+      setMessageText('Erro ao carregar dados. Tente novamente.')
+      setShowErrorMessage(true)
+      setTimeout(() => setShowErrorMessage(false), 3000)
+    } finally {
+      setIsRefreshing(false)
+    }
   }
 
   const applyFilters = () => {
+    console.log('Aplicando filtros...', { analyticsDataLength: analyticsData.length, filters })
+    
     let filtered = [...analyticsData]
 
     // Filtro por data
@@ -109,6 +236,7 @@ const Dashboard = () => {
       filtered = filtered.filter(item => item.completed === filters.completed)
     }
 
+    console.log('Dados filtrados:', { originalLength: analyticsData.length, filteredLength: filtered.length })
     setFilteredData(filtered)
   }
 
@@ -187,6 +315,35 @@ const Dashboard = () => {
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
 
+  const handleClearAllData = async () => {
+    try {
+      console.log('Iniciando limpeza de dados...')
+      
+      // Limpar todos os dados usando o método do analytics
+      analytics.clearAllData()
+      console.log('Dados limpos do analytics')
+      
+      // Pequeno delay para garantir que a limpeza seja processada
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      // Recarregar dados (que agora estarão vazios)
+      await loadAnalyticsData()
+      
+      // Fechar modal
+      setShowConfirmModal(false)
+      
+      // Mostrar mensagem de sucesso
+      setMessageText('Todos os dados foram limpos com sucesso!')
+      setShowSuccessMessage(true)
+      setTimeout(() => setShowSuccessMessage(false), 3000)
+    } catch (error) {
+      console.error('Erro ao limpar dados:', error)
+      setMessageText('Erro ao limpar dados. Tente novamente.')
+      setShowErrorMessage(true)
+      setTimeout(() => setShowErrorMessage(false), 3000)
+    }
+  }
+
   const exportData = () => {
     const csvContent = [
       ['Data', 'Faixa Etária', 'Gênero', 'Tipo de Dente', 'Tipo de Trauma', 'Localização', 'Completado'],
@@ -219,9 +376,24 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
+      {/* Mensagens de feedback */}
+      {showSuccessMessage && (
+        <div className="dashboard-message success">
+          <IconCheck size={20} />
+          <span>{messageText}</span>
+        </div>
+      )}
+      
+      {showErrorMessage && (
+        <div className="dashboard-message error">
+          <IconX size={20} />
+          <span>{messageText}</span>
+        </div>
+      )}
+
       <div className="dashboard-header">
         <div className="dashboard-title">
-          <h1>📊 Dashboard Analytics</h1>
+          <h1 onClick={handleTitleClick} style={{ cursor: 'pointer' }}>📊 Dashboard Analytics</h1>
           <p>Análise detalhada do uso do SOS Dente</p>
         </div>
         <div className="dashboard-actions">
@@ -230,9 +402,10 @@ const Dashboard = () => {
             size="sm" 
             onClick={loadAnalyticsData}
             className="refresh-button"
+            disabled={isRefreshing}
           >
-            <IconRefresh size={16} />
-            Atualizar
+            <IconRefresh size={16} className={isRefreshing ? 'spinning' : ''} />
+            {isRefreshing ? 'Atualizando...' : 'Atualizar'}
           </Button>
           <Button 
             variant="primary" 
@@ -351,7 +524,7 @@ const Dashboard = () => {
           </div>
           <div className="summary-content">
             <h3>Total de Acessos</h3>
-            <p className="summary-number">{filteredData.length}</p>
+            <p className="summary-value">{filteredData.length}</p>
           </div>
         </div>
 
@@ -361,7 +534,7 @@ const Dashboard = () => {
           </div>
           <div className="summary-content">
             <h3>Usuários Únicos</h3>
-            <p className="summary-number">{getUniqueUsers()}</p>
+            <p className="summary-value">{getUniqueUsers()}</p>
           </div>
         </div>
 
@@ -371,7 +544,7 @@ const Dashboard = () => {
           </div>
           <div className="summary-content">
             <h3>Taxa de Conclusão</h3>
-            <p className="summary-number">{getCompletionRate()}%</p>
+            <p className="summary-value">{getCompletionRate()}%</p>
           </div>
         </div>
 
@@ -425,7 +598,7 @@ const Dashboard = () => {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                 label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
@@ -489,10 +662,22 @@ const Dashboard = () => {
               ))}
             </tbody>
           </table>
-        </div>
-      </div>
-    </div>
-  )
-}
+                 </div>
+       </div>
+
+       {/* Modal de Confirmação para Limpar Todos os Dados */}
+       <ConfirmModal
+         isOpen={showConfirmModal}
+         onClose={() => setShowConfirmModal(false)}
+         onConfirm={handleClearAllData}
+         title="Limpar Todos os Dados"
+         message="Tem certeza que deseja limpar TODOS os dados do dashboard? Esta ação não pode ser desfeita."
+         confirmText="Sim, Limpar Tudo"
+         cancelText="Cancelar"
+         icon={<IconAlertTriangle size={48} />}
+       />
+     </div>
+   )
+ }
 
 export default Dashboard

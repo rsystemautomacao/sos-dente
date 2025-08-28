@@ -9,6 +9,7 @@ import ConfirmModal from '../../components/ConfirmModal'
 import FixedBottomButtons from '../../components/FixedBottomButtons'
 import { openNearbyDentists, openNearbyUPAs } from '../../services/maps'
 import { generateTraumaPDF, TraumaData } from '../../services/pdfGenerator'
+import analytics from '../../services/analytics'
 import toast from 'react-hot-toast'
 
 const MapsStep = () => {
@@ -78,6 +79,17 @@ const MapsStep = () => {
   }
 
   const handleConfirmFinish = () => {
+    // Registrar conclusão do wizard no analytics
+    analytics.trackWizardComplete({
+      ageGroup,
+      gender,
+      toothType,
+      traumaType,
+      accidentTimeRange,
+      accidentLocation,
+      observations
+    })
+    
     navigate('/')
   }
 

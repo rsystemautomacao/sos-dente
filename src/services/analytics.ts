@@ -1,4 +1,4 @@
-interface AnalyticsEvent {
+export interface AnalyticsEvent {
   id: string
   timestamp: string
   eventType: 'wizard_start' | 'wizard_complete' | 'wizard_step' | 'page_view' | 'button_click'
@@ -8,183 +8,311 @@ interface AnalyticsEvent {
   userAgent: string
   ipAddress?: string
   location?: string
+  synced?: boolean // Adicionado para controlar sincronização
+}
+
+// Configuração da API
+const API_CONFIG = {
+  baseUrl: import.meta.env.VITE_API_URL || 'https://api.sos-dente.com',
+  devUrl: import.meta.env.VITE_DEV_API_URL || 'http://localhost:3001',
+  isDev: import.meta.env.DEV
 }
 
 class AnalyticsService {
   private sessionId: string
   private events: AnalyticsEvent[] = []
   private isInitialized = false
+  private isOnline = navigator.onLine
 
   constructor() {
     this.sessionId = this.generateSessionId()
     this.loadEvents()
+    
+    // Monitorar conectividade
+    window.addEventListener('online', () => {
+      this.isOnline = true
+      this.syncOfflineEvents()
+    })
+    
+    window.addEventListener('offline', () => {
+      this.isOnline = false
+    })
   }
 
+  // Gerar ID único para sessão
   private generateSessionId(): string {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
   }
 
-  private loadEvents(): void {
+  // Obter URL da API baseada no ambiente
+  private getApiUrl(): string {
+    return API_CONFIG.isDev ? API_CONFIG.devUrl : API_CONFIG.baseUrl
+  }
+
+  // Enviar evento para o servidor
+  private async sendEventToServer(event: AnalyticsEvent): Promise<boolean> {
     try {
-      const saved = localStorage.getItem('sos_dente_analytics')
-      if (saved) {
-        this.events = JSON.parse(saved)
+      const response = await fetch(`${this.getApiUrl()}/api/analytics/events`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event)
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
+
+      return true
     } catch (error) {
-      console.error('Erro ao carregar eventos de analytics:', error)
+      console.error('Erro ao enviar evento para servidor:', error)
+      return false
     }
   }
 
+  // Sincronizar eventos offline
+  private async syncOfflineEvents(): Promise<void> {
+    const offlineEvents = this.events.filter(event => !event.synced)
+    
+    for (const event of offlineEvents) {
+      const success = await this.sendEventToServer(event)
+      if (success) {
+        event.synced = true
+      }
+    }
+    
+    this.saveEvents()
+  }
+
+  // Carregar eventos do localStorage
+  private loadEvents(): void {
+    try {
+      const stored = localStorage.getItem('sos_dente_analytics')
+      if (stored) {
+        this.events = JSON.parse(stored)
+      }
+    } catch (error) {
+      console.error('Erro ao carregar eventos:', error)
+      this.events = []
+    }
+  }
+
+  // Salvar eventos no localStorage
   private saveEvents(): void {
     try {
       localStorage.setItem('sos_dente_analytics', JSON.stringify(this.events))
     } catch (error) {
-      console.error('Erro ao salvar eventos de analytics:', error)
+      console.error('Erro ao salvar eventos:', error)
     }
   }
 
-  private createEvent(eventType: AnalyticsEvent['eventType'], data: Record<string, any>): AnalyticsEvent {
-    return {
-      id: `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: new Date().toISOString(),
-      eventType,
-      sessionId: this.sessionId,
-      data,
-      userAgent: navigator.userAgent,
-      location: this.getLocation()
-    }
-  }
-
-  private getLocation(): string {
-    // Em produção, isso seria obtido via API de geolocalização
-    return 'Brasil'
+  // Limpar dados antigos (mais de 30 dias)
+  private cleanupOldData(): void {
+    const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000)
+    this.events = this.events.filter(event => 
+      new Date(event.timestamp).getTime() > thirtyDaysAgo
+    )
+    this.saveEvents()
   }
 
   // Rastrear início do wizard
-  trackWizardStart(ageGroup?: string, gender?: string): void {
-    const event = this.createEvent('wizard_start', {
-      ageGroup,
-      gender,
-      step: 'start'
-    })
+  trackWizardStart(data: Record<string, any>): void {
+    const event: AnalyticsEvent = {
+      id: this.generateSessionId(),
+      timestamp: new Date().toISOString(),
+      eventType: 'wizard_start',
+      sessionId: this.sessionId,
+      data,
+      userAgent: navigator.userAgent,
+      ipAddress: '', // Será preenchido pelo servidor
+      location: '', // Será preenchido pelo servidor
+      synced: false
+    }
+
     this.events.push(event)
     this.saveEvents()
+
+    // Tentar enviar para servidor se online
+    if (this.isOnline) {
+      this.sendEventToServer(event).then(success => {
+        if (success) {
+          event.synced = true
+          this.saveEvents()
+        }
+      })
+    }
   }
 
   // Rastrear conclusão do wizard
-  trackWizardComplete(wizardData: any): void {
-    const event = this.createEvent('wizard_complete', {
-      ageGroup: wizardData.ageGroup,
-      gender: wizardData.gender,
-      toothType: wizardData.toothType,
-      traumaType: wizardData.traumaType,
-      completed: true,
-      step: 'complete'
-    })
+  trackWizardComplete(data: Record<string, any>): void {
+    const event: AnalyticsEvent = {
+      id: this.generateSessionId(),
+      timestamp: new Date().toISOString(),
+      eventType: 'wizard_complete',
+      sessionId: this.sessionId,
+      data,
+      userAgent: navigator.userAgent,
+      ipAddress: '',
+      location: '',
+      synced: false
+    }
+
     this.events.push(event)
     this.saveEvents()
+
+    // Tentar enviar para servidor se online
+    if (this.isOnline) {
+      this.sendEventToServer(event).then(success => {
+        if (success) {
+          event.synced = true
+          this.saveEvents()
+        }
+      })
+    }
   }
 
-  // Rastrear passos do wizard
-  trackWizardStep(step: number, stepData: any): void {
-    const event = this.createEvent('wizard_step', {
-      step,
-      stepData,
-      sessionId: this.sessionId
-    })
+  // Rastrear etapa do wizard
+  trackWizardStep(step: string, data: Record<string, any>): void {
+    const event: AnalyticsEvent = {
+      id: this.generateSessionId(),
+      timestamp: new Date().toISOString(),
+      eventType: 'wizard_step',
+      sessionId: this.sessionId,
+      data: { step, ...data },
+      userAgent: navigator.userAgent,
+      ipAddress: '',
+      location: '',
+      synced: false
+    }
+
     this.events.push(event)
     this.saveEvents()
+
+    // Tentar enviar para servidor se online
+    if (this.isOnline) {
+      this.sendEventToServer(event).then(success => {
+        if (success) {
+          event.synced = true
+          this.saveEvents()
+        }
+      })
+    }
   }
 
   // Rastrear visualização de página
   trackPageView(page: string): void {
-    const event = this.createEvent('page_view', {
-      page,
-      url: window.location.href
-    })
+    const event: AnalyticsEvent = {
+      id: this.generateSessionId(),
+      timestamp: new Date().toISOString(),
+      eventType: 'page_view',
+      sessionId: this.sessionId,
+      data: { page },
+      userAgent: navigator.userAgent,
+      ipAddress: '',
+      location: '',
+      synced: false
+    }
+
     this.events.push(event)
     this.saveEvents()
+
+    // Tentar enviar para servidor se online
+    if (this.isOnline) {
+      this.sendEventToServer(event).then(success => {
+        if (success) {
+          event.synced = true
+          this.saveEvents()
+        }
+      })
+    }
   }
 
-  // Rastrear cliques em botões
+  // Rastrear clique em botão
   trackButtonClick(buttonId: string, context?: any): void {
-    const event = this.createEvent('button_click', {
-      buttonId,
-      context,
-      url: window.location.href
-    })
+    const event: AnalyticsEvent = {
+      id: this.generateSessionId(),
+      timestamp: new Date().toISOString(),
+      eventType: 'button_click',
+      sessionId: this.sessionId,
+      data: { buttonId, context },
+      userAgent: navigator.userAgent,
+      ipAddress: '',
+      location: '',
+      synced: false
+    }
+
     this.events.push(event)
     this.saveEvents()
+
+    // Tentar enviar para servidor se online
+    if (this.isOnline) {
+      this.sendEventToServer(event).then(success => {
+        if (success) {
+          event.synced = true
+          this.saveEvents()
+        }
+      })
+    }
   }
 
-  // Obter dados para o dashboard
-  getAnalyticsData(): AnalyticsEvent[] {
+  // Obter dados para o dashboard (do servidor)
+  async getAnalyticsData(): Promise<AnalyticsEvent[]> {
+    try {
+      // Tentar buscar do servidor primeiro
+      const response = await fetch(`${this.getApiUrl()}/api/analytics/events`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+
+      if (response.ok) {
+        const serverData = await response.json()
+        return serverData
+      }
+    } catch (error) {
+      console.error('Erro ao buscar dados do servidor:', error)
+    }
+
+    // Fallback para dados locais
+    this.loadEvents()
     return [...this.events]
   }
 
-  // Obter dados filtrados
-  getFilteredData(filters: {
-    startDate?: Date
-    endDate?: Date
-    eventTypes?: string[]
-    ageGroups?: string[]
-  }): AnalyticsEvent[] {
-    let filtered = [...this.events]
-
-    if (filters.startDate) {
-      filtered = filtered.filter(event => 
-        new Date(event.timestamp) >= filters.startDate!
-      )
-    }
-
-    if (filters.endDate) {
-      filtered = filtered.filter(event => 
-        new Date(event.timestamp) <= filters.endDate!
-      )
-    }
-
-    if (filters.eventTypes && filters.eventTypes.length > 0) {
-      filtered = filtered.filter(event => 
-        filters.eventTypes!.includes(event.eventType)
-      )
-    }
-
-    if (filters.ageGroups && filters.ageGroups.length > 0) {
-      filtered = filtered.filter(event => 
-        event.data.ageGroup && filters.ageGroups!.includes(event.data.ageGroup)
-      )
-    }
-
-    return filtered
+  // Recarregar dados do localStorage
+  reloadData(): void {
+    this.loadEvents()
   }
 
-  // Limpar dados antigos (mais de 90 dias)
-  cleanupOldData(): void {
-    const ninetyDaysAgo = new Date()
-    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
-    
-    this.events = this.events.filter(event => 
-      new Date(event.timestamp) > ninetyDaysAgo
-    )
-    
-    this.saveEvents()
+  // Limpar todos os dados
+  clearAllData(): void {
+    this.events = []
+    localStorage.removeItem('sos_dente_analytics')
   }
 
-  // Exportar dados
+  // Exportar dados como CSV
   exportData(): string {
-    const csvContent = [
-      ['ID', 'Timestamp', 'Event Type', 'Session ID', 'Data', 'User Agent', 'Location'],
-      ...this.events.map(event => [
+    if (this.events.length === 0) {
+      return 'Nenhum dado para exportar'
+    }
+
+    const headers = ['ID', 'Timestamp', 'Event Type', 'Session ID', 'Data', 'User Agent']
+    const csvRows = [headers.join(',')]
+
+    this.events.forEach(event => {
+      const row = [
         event.id,
         event.timestamp,
         event.eventType,
         event.sessionId,
-        JSON.stringify(event.data),
-        event.userAgent,
-        event.location || ''
-      ])
-    ].map(row => row.join(',')).join('\n')
+        JSON.stringify(event.data).replace(/"/g, '""'),
+        event.userAgent.replace(/"/g, '""')
+      ]
+      csvRows.push(row.join(','))
+    })
 
+    const csvContent = csvRows.join('\n')
     return csvContent
   }
 
