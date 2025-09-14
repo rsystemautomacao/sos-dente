@@ -17,7 +17,7 @@ const Ebook = () => {
   const [showPdfViewer, setShowPdfViewer] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
-  const pdfUrl = '/ebook-amanda-vidal.pdf'
+  const pdfUrl = '/E-book - Dra. Amanda Vidal V2.pdf'
 
   useEffect(() => {
     // Garantir que a página carregue no topo
