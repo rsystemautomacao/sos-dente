@@ -1,5 +1,6 @@
 import { IconX, IconHeart, IconAlertTriangle } from '@tabler/icons-react'
 import Button from './Button'
+import ExpandableModalContent from './ExpandableModalContent'
 
 interface BabyToothModalProps {
   isOpen: boolean
@@ -25,32 +26,34 @@ const BabyToothModal = ({ isOpen, onClose, onContinue }: BabyToothModalProps) =>
         </div>
 
         <div className="baby-tooth-modal-body">
-          <div className="baby-tooth-alert">
-            <IconAlertTriangle size={24} className="alert-icon" />
-            <h3>Não Reimplante Dentes de Leite</h3>
-          </div>
-          
-          <div className="baby-tooth-info">
-            <p>
-              Em geral, crianças de 0 a 5 anos estão na fase dos dentes de leite. 
-              Estes dentes <strong>NÃO devem ser reimplantados</strong> quando saem completamente da boca em casos de trauma.
-            </p>
-            
-            <p>
-              O reimplante de dentes de leite pode causar danos ao dente permanente 
-              que está se formando internamente na região.
-            </p>
-            
-            <div className="baby-tooth-actions">
-              <h4>O que fazer:</h4>
-              <ul>
-                <li>Mantenha a calma</li>
-                <li>Limpe a área com água</li>
-                <li>Procure um dentista o quanto antes</li>
-                <li>O dentista avaliará se há danos à gengiva</li>
-              </ul>
+          <ExpandableModalContent maxHeight="250px">
+            <div className="baby-tooth-alert">
+              <IconAlertTriangle size={24} className="alert-icon" />
+              <h3>Não Reimplante Dentes de Leite</h3>
             </div>
-          </div>
+            
+            <div className="baby-tooth-info">
+              <p>
+                Em geral, crianças de 0 a 5 anos estão na fase dos dentes de leite. 
+                Estes dentes <strong>NÃO devem ser reimplantados</strong> quando saem completamente da boca em casos de trauma.
+              </p>
+              
+              <p>
+                O reimplante de dentes de leite pode causar danos ao dente permanente 
+                que está se formando internamente na região.
+              </p>
+              
+              <div className="baby-tooth-actions">
+                <h4>O que fazer:</h4>
+                <ul>
+                  <li>Mantenha a calma</li>
+                  <li>Limpe a área com água</li>
+                  <li>Procure um dentista o quanto antes</li>
+                  <li>O dentista avaliará se há danos à gengiva</li>
+                </ul>
+              </div>
+            </div>
+          </ExpandableModalContent>
         </div>
 
         <div className="baby-tooth-modal-actions">

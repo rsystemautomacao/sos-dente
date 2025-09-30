@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { IconX, IconAlertTriangle, IconInfoCircle, IconCheck } from '@tabler/icons-react'
 import Button from './Button'
+import ExpandableModalContent from './ExpandableModalContent'
 
 interface StorageAlertModalProps {
   isOpen: boolean
@@ -215,26 +216,28 @@ const StorageAlertModal = ({
         </div>
         
         <div className="storage-alert-modal-body">
-          <div className="storage-alert-modal-instructions">
-            <h4>{alertType === 'correct' ? 'Continue fazendo:' : 'O que fazer AGORA:'}</h4>
-            <ul>
-              {content.instructions.map((instruction, index) => (
-                <li key={index} className="storage-alert-modal-instruction">
-                  {instruction}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <ExpandableModalContent maxHeight="300px">
+            <div className="storage-alert-modal-instructions">
+              <h4>{alertType === 'correct' ? 'Continue fazendo:' : 'O que fazer AGORA:'}</h4>
+              <ul>
+                {content.instructions.map((instruction, index) => (
+                  <li key={index} className="storage-alert-modal-instruction">
+                    {instruction}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div className="storage-alert-modal-warning">
-            <IconInfoCircle size={20} />
-            <p>
-              {alertType === 'correct' 
-                ? 'Você está fazendo o correto! Não mude o método de armazenamento para evitar riscos de perda do dente/fragmento.'
-                : 'O tempo é crucial! Quanto mais rápido você agir, maiores as chances de sucesso do tratamento.'
-              }
-            </p>
-          </div>
+            <div className="storage-alert-modal-warning">
+              <IconInfoCircle size={20} />
+              <p>
+                {alertType === 'correct' 
+                  ? 'Você está fazendo o correto! Não mude o método de armazenamento para evitar riscos de perda do dente/fragmento.'
+                  : 'O tempo é crucial! Quanto mais rápido você agir, maiores as chances de sucesso do tratamento.'
+                }
+              </p>
+            </div>
+          </ExpandableModalContent>
         </div>
         
         <div className="storage-alert-modal-actions">
