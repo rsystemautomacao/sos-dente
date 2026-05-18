@@ -430,6 +430,7 @@ const Dashboard = () => {
           <div className="date-inputs">
             <input
               type="date"
+              className={filters.dateRange.start > filters.dateRange.end ? 'input-error' : ''}
               value={format(filters.dateRange.start, 'yyyy-MM-dd')}
               onChange={(e) => setFilters(prev => ({
                 ...prev,
@@ -439,6 +440,7 @@ const Dashboard = () => {
             <span>até</span>
             <input
               type="date"
+              className={filters.dateRange.start > filters.dateRange.end ? 'input-error' : ''}
               value={format(filters.dateRange.end, 'yyyy-MM-dd')}
               onChange={(e) => setFilters(prev => ({
                 ...prev,
@@ -446,6 +448,9 @@ const Dashboard = () => {
               }))}
             />
           </div>
+          {filters.dateRange.start > filters.dateRange.end && (
+            <span className="date-error-msg">A data inicial não pode ser posterior à data final.</span>
+          )}
         </div>
 
         <div className="filter-group">
