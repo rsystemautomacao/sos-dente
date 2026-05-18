@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { logger } from '../utils/logger'
 import { getAgeGroupLabel, getTraumaTypeLabel, getGenderLabel } from '../utils/labels'
+import { TIMINGS, TABLE } from '../constants/config'
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell, AreaChart, Area
@@ -54,7 +55,7 @@ const Dashboard = () => {
   })
   const [isLoading, setIsLoading] = useState(true)
   const [tablePage, setTablePage] = useState(0)
-  const TABLE_PAGE_SIZE = 20
+  const TABLE_PAGE_SIZE = TABLE.PAGE_SIZE
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
@@ -229,13 +230,13 @@ const Dashboard = () => {
       if (!isMounted.current) return
       setMessageText('Dados atualizados com sucesso!')
       setShowSuccessMessage(true)
-      setTimeout(() => { if (isMounted.current) setShowSuccessMessage(false) }, 3000)
+      setTimeout(() => { if (isMounted.current) setShowSuccessMessage(false) }, TIMINGS.FEEDBACK_TOAST_MS)
     } catch (error) {
       logger.error('Erro ao carregar dados:', error)
       if (!isMounted.current) return
       setMessageText('Erro ao carregar dados. Tente novamente.')
       setShowErrorMessage(true)
-      setTimeout(() => { if (isMounted.current) setShowErrorMessage(false) }, 3000)
+      setTimeout(() => { if (isMounted.current) setShowErrorMessage(false) }, TIMINGS.FEEDBACK_TOAST_MS)
     } finally {
       if (isMounted.current) setIsRefreshing(false)
     }
@@ -337,13 +338,13 @@ const Dashboard = () => {
       if (!isMounted.current) return
       setMessageText('Todos os dados foram limpos com sucesso!')
       setShowSuccessMessage(true)
-      setTimeout(() => { if (isMounted.current) setShowSuccessMessage(false) }, 3000)
+      setTimeout(() => { if (isMounted.current) setShowSuccessMessage(false) }, TIMINGS.FEEDBACK_TOAST_MS)
     } catch (error) {
       logger.error('Erro ao limpar dados:', error)
       if (!isMounted.current) return
       setMessageText('Erro ao limpar dados. Tente novamente.')
       setShowErrorMessage(true)
-      setTimeout(() => { if (isMounted.current) setShowErrorMessage(false) }, 3000)
+      setTimeout(() => { if (isMounted.current) setShowErrorMessage(false) }, TIMINGS.FEEDBACK_TOAST_MS)
     }
   }
 

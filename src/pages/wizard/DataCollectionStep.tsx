@@ -3,13 +3,12 @@ import toast from 'react-hot-toast'
 import { logger } from '../../utils/logger'
 import { IconMapPin, IconFileText, IconCamera, IconPhoto, IconClock } from '@tabler/icons-react'
 import useWizardStore, { AccidentTimeRange } from '../../store/useWizardStore'
+import { UPLOAD } from '../../constants/config'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import FixedBottomButtons from '../../components/FixedBottomButtons'
 
-const MAX_FILE_SIZE_MB = 5
-const MAX_PHOTOS = 5
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+const { MAX_FILE_SIZE_MB, MAX_PHOTOS, ALLOWED_TYPES } = UPLOAD
 
 const DataCollectionStep = () => {
   const { 
