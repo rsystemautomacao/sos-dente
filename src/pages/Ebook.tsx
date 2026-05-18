@@ -7,8 +7,11 @@ import toast from 'react-hot-toast'
 import Button from '../components/Button'
 import Card from '../components/Card'
 
-// Configurar o worker do PDF.js
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
+// Worker local — resolvido pelo Vite no build, sem dependência de CDN externo
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString()
 
 const Ebook = () => {
   const navigate = useNavigate()
@@ -44,7 +47,7 @@ const Ebook = () => {
   }
 
   const onDocumentLoadError = (error: Error) => {
-    console.error('Erro ao carregar PDF:', error)
+    logger.error('Erro ao carregar PDF:', error)
     setLoading(false)
     setError(true)
   }
@@ -281,7 +284,7 @@ const Ebook = () => {
                     renderTextLayer={false}
                     renderAnnotationLayer={false}
                     onLoadError={(error) => {
-                      console.error('Erro ao carregar página:', error)
+                      logger.error('Erro ao carregar página:', error)
                       setError(true)
                     }}
                   />
