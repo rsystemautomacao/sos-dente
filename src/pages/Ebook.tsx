@@ -71,7 +71,7 @@ const Ebook = () => {
     } catch (error) {
       console.error('Erro ao baixar PDF:', error)
       // Fallback: abrir em nova aba
-      window.open(pdfUrl, '_blank')
+      window.open(pdfUrl, '_blank', 'noopener,noreferrer')
     }
   }
 
@@ -230,7 +230,7 @@ const Ebook = () => {
                 <Button
                   variant="secondary"
                   size="md"
-                  onClick={() => window.open(pdfUrl, '_blank')}
+                  onClick={() => window.open(pdfUrl, '_blank', 'noopener,noreferrer')}
                   className="open-new-tab"
                 >
                   Abrir em Nova Aba
@@ -265,7 +265,7 @@ const Ebook = () => {
                       <Button
                         variant="secondary"
                         size="md"
-                        onClick={() => window.open(pdfUrl, '_blank')}
+                        onClick={() => window.open(pdfUrl, '_blank', 'noopener,noreferrer')}
                         className="open-new-tab"
                       >
                         Abrir em Nova Aba

@@ -41,7 +41,7 @@ function openMapsWithFallback(query: string, latitude?: number, longitude?: numb
   }
   
   // Tentar abrir o mapa
-  const newWindow = window.open(url, '_blank')
+  const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
   
   // Se não conseguiu abrir, tentar fallback
   if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
