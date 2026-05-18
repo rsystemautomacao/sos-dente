@@ -3,6 +3,7 @@ import { logger } from '../utils/logger'
 import { Document, Page, pdfjs } from 'react-pdf'
 import { IconDownload, IconArrowLeft, IconLoader, IconEye, IconBook, IconUser, IconCalendar, IconFileText } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import Button from '../components/Button'
 import Card from '../components/Card'
 
@@ -68,9 +69,10 @@ const Ebook = () => {
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
+      toast.success('Download iniciado!')
     } catch (error) {
-      console.error('Erro ao baixar PDF:', error)
-      // Fallback: abrir em nova aba
+      logger.error('Erro ao baixar PDF:', error)
+      toast('Abrindo PDF em nova aba...', { icon: '📄' })
       window.open(pdfUrl, '_blank', 'noopener,noreferrer')
     }
   }
