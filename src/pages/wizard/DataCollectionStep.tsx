@@ -1,9 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useMemo } from 'react'
+import toast from 'react-hot-toast'
+import { logger } from '../../utils/logger'
 import { IconMapPin, IconFileText, IconCamera, IconPhoto, IconClock } from '@tabler/icons-react'
-import useWizardStore from '../../store/useWizardStore'
+import useWizardStore, { AccidentTimeRange } from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import FixedBottomButtons from '../../components/FixedBottomButtons'
+
+const MAX_FILE_SIZE_MB = 5
+const MAX_PHOTOS = 5
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 
 const DataCollectionStep = () => {
   const { 
@@ -19,7 +25,18 @@ const DataCollectionStep = () => {
   } = useWizardStore()
   
   const [localPhotos, setLocalPhotos] = useState<File[]>(photos || [])
-  
+
+  // Gera URLs de preview e as revoga quando as fotos mudam (evita memory leak)
+  const previewUrls = useMemo(() => {
+    return localPhotos.map(file => URL.createObjectURL(file))
+  }, [localPhotos])
+
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach(url => URL.revokeObjectURL(url))
+    }
+  }, [previewUrls])
+
   const fileInputRef = useRef<HTMLInputElement>(null)
   const cameraInputRef = useRef<HTMLInputElement>(null)
 
@@ -38,16 +55,43 @@ const DataCollectionStep = () => {
     nextStep()
   }
 
+  const validateAndAddFiles = (incoming: File[], current: File[]) => {
+    if (current.length >= MAX_PHOTOS) {
+      toast.error(`Máximo de ${MAX_PHOTOS} fotos permitidas.`)
+      return current
+    }
+    const valid: File[] = []
+    for (const file of incoming) {
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        toast.error(`"${file.name}" não é uma imagem válida.`)
+        continue
+      }
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        toast.error(`"${file.name}" excede ${MAX_FILE_SIZE_MB}MB.`)
+        continue
+      }
+      valid.push(file)
+    }
+    const combined = [...current, ...valid]
+    if (combined.length > MAX_PHOTOS) {
+      toast.error(`Máximo de ${MAX_PHOTOS} fotos. Apenas as primeiras foram adicionadas.`)
+      return combined.slice(0, MAX_PHOTOS)
+    }
+    return combined
+  }
+
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || [])
-    console.log('Arquivos selecionados:', files)
-    setLocalPhotos(prev => [...prev, ...files])
+    logger.log('Arquivos selecionados:', files)
+    setLocalPhotos(prev => validateAndAddFiles(files, prev))
+    event.target.value = ''
   }
 
   const handleTakePhoto = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || [])
-    console.log('Fotos tiradas:', files)
-    setLocalPhotos(prev => [...prev, ...files])
+    logger.log('Fotos tiradas:', files)
+    setLocalPhotos(prev => validateAndAddFiles(files, prev))
+    event.target.value = ''
   }
 
   const removePhoto = (index: number) => {
@@ -55,20 +99,20 @@ const DataCollectionStep = () => {
   }
 
   const openFileSelector = () => {
-    console.log('Abrindo seletor de arquivos...')
+    logger.log('Abrindo seletor de arquivos...')
     if (fileInputRef.current) {
       fileInputRef.current.click()
     } else {
-      console.error('Referência do input de arquivo não encontrada')
+      logger.error('Referência do input de arquivo não encontrada')
     }
   }
 
   const openCamera = () => {
-    console.log('Abrindo câmera...')
+    logger.log('Abrindo câmera...')
     if (cameraInputRef.current) {
       cameraInputRef.current.click()
     } else {
-      console.error('Referência do input da câmera não encontrada')
+      logger.error('Referência do input da câmera não encontrada')
     }
   }
 
@@ -89,7 +133,7 @@ const DataCollectionStep = () => {
               id="timeRange"
               className="form-select"
               value={accidentTimeRange || ''}
-              onChange={(e) => setAccidentTimeRange(e.target.value as any)}
+              onChange={(e) => setAccidentTimeRange(e.target.value as AccidentTimeRange)}
             >
               <option value="">Selecione o tempo</option>
               <option value="0-15">00 à 15 min</option>
@@ -114,6 +158,7 @@ const DataCollectionStep = () => {
               value={accidentLocation}
               onChange={(e) => setAccidentLocation(e.target.value)}
               placeholder="Ex: Escola, parque..."
+              maxLength={200}
             />
           </div>
 
@@ -129,6 +174,7 @@ const DataCollectionStep = () => {
               onChange={(e) => setObservations(e.target.value)}
               placeholder="Descreva com mais detalhes sobre como e onde ocorreu o acidente."
               rows={4}
+              maxLength={1000}
             />
           </div>
 
@@ -168,7 +214,7 @@ const DataCollectionStep = () => {
                   {localPhotos.map((photo, index) => (
                     <div key={index} className="photo-item">
                       <img
-                        src={URL.createObjectURL(photo)}
+                        src={previewUrls[index]}
                         alt={`Foto ${index + 1}`}
                         className="photo-thumbnail"
                       />
@@ -180,6 +226,10 @@ const DataCollectionStep = () => {
                       >
                         ×
                       </button>
+                      <span className="photo-name" title={photo.name}>
+                        {photo.name.length > 16 ? `${photo.name.slice(0, 13)}...` : photo.name}
+                        {' '}({(photo.size / 1024).toFixed(0)}KB)
+                      </span>
                     </div>
                   ))}
                 </div>

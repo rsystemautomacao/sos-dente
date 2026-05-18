@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import { logger } from '../utils/logger'
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell, AreaChart, Area
@@ -51,6 +52,8 @@ const Dashboard = () => {
     completed: null
   })
   const [isLoading, setIsLoading] = useState(true)
+  const [tablePage, setTablePage] = useState(0)
+  const TABLE_PAGE_SIZE = 20
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
@@ -60,18 +63,24 @@ const Dashboard = () => {
   // Easter egg para limpar todos os dados
   const clickCount = useRef(0)
   const clickTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const isMounted = useRef(true)
+
+  useEffect(() => {
+    isMounted.current = true
+    return () => { isMounted.current = false }
+  }, [])
 
   // Função auxiliar para processar dados de analytics
   const processAnalyticsData = (events: AnalyticsEvent[]): AnalyticsData[] => {
-    console.log('🔍 Processando dados de analytics:', events.length, 'eventos')
+    logger.log('🔍 Processando dados de analytics:', events.length, 'eventos')
     
-    const sessionData = new Map<string, any>()
+    const sessionData = new Map<string, AnalyticsData>()
     
     // Primeiro, processar eventos de início para obter dados básicos
     events
       .filter(event => event.eventType === 'wizard_start')
       .forEach(event => {
-        console.log('📊 Evento wizard_start:', {
+        logger.log('📊 Evento wizard_start:', {
           sessionId: event.sessionId,
           ageGroup: event.data.ageGroup,
           data: event.data
@@ -98,7 +107,7 @@ const Dashboard = () => {
     events
       .filter(event => event.eventType === 'wizard_complete')
       .forEach(event => {
-        console.log('📊 Evento wizard_complete:', {
+        logger.log('📊 Evento wizard_complete:', {
           sessionId: event.sessionId,
           ageGroup: event.data.ageGroup,
           data: event.data
@@ -134,7 +143,7 @@ const Dashboard = () => {
     
     // Converter para array de AnalyticsData
     const result = Array.from(sessionData.values())
-    console.log('📊 Dados processados finais:', result.map(item => ({
+    logger.log('📊 Dados processados finais:', result.map(item => ({
       sessionId: item.sessionId,
       ageGroup: item.ageGroup,
       completed: item.completed
@@ -147,21 +156,20 @@ const Dashboard = () => {
     const loadInitialData = async () => {
       try {
         setIsLoading(true)
-        
-        // Buscar dados do servidor (com fallback para localStorage)
-        const events = await analytics.getAnalyticsData()
-        
-        // Converter eventos para formato do dashboard
-        const dashboardData: AnalyticsData[] = processAnalyticsData(events)
 
-        setAnalyticsData(dashboardData)
+        const events = await analytics.getAnalyticsData({
+          startDate: startOfDay(filters.dateRange.start),
+          endDate: endOfDay(filters.dateRange.end),
+        })
+
+        setAnalyticsData(processAnalyticsData(events))
         setIsLoading(false)
       } catch (error) {
-        console.error('Erro ao carregar dados iniciais:', error)
+        logger.error('Erro ao carregar dados iniciais:', error)
         setIsLoading(false)
       }
     }
-    
+
     loadInitialData()
     
     // Cleanup do timeout quando o componente for desmontado
@@ -173,7 +181,7 @@ const Dashboard = () => {
   }, [])
 
   useEffect(() => {
-    console.log('useEffect applyFilters triggered', { analyticsDataLength: analyticsData.length })
+    logger.log('useEffect applyFilters triggered', { analyticsDataLength: analyticsData.length })
     applyFilters()
   }, [analyticsData, filters])
 
@@ -202,116 +210,108 @@ const Dashboard = () => {
   const loadAnalyticsData = async () => {
     try {
       setIsRefreshing(true)
-      console.log('Iniciando carregamento de dados...')
-      
-      // Buscar dados do servidor (com fallback para localStorage)
-      const events = await analytics.getAnalyticsData()
-      console.log('Eventos carregados:', events.length)
-      
-      // Converter eventos para formato do dashboard
+      logger.log('Iniciando carregamento de dados...')
+
+      const events = await analytics.getAnalyticsData({
+        startDate: startOfDay(filters.dateRange.start),
+        endDate: endOfDay(filters.dateRange.end),
+      })
+      logger.log('Eventos carregados:', events.length)
+
       const dashboardData: AnalyticsData[] = processAnalyticsData(events)
-      console.log('Dados processados:', dashboardData.length)
+      logger.log('Dados processados:', dashboardData.length)
 
       setAnalyticsData(dashboardData)
       setIsLoading(false)
-      
-      // Mostrar mensagem de sucesso
+      setTablePage(0)
+
+      if (!isMounted.current) return
       setMessageText('Dados atualizados com sucesso!')
       setShowSuccessMessage(true)
-      setTimeout(() => setShowSuccessMessage(false), 3000)
+      setTimeout(() => { if (isMounted.current) setShowSuccessMessage(false) }, 3000)
     } catch (error) {
-      console.error('Erro ao carregar dados:', error)
+      logger.error('Erro ao carregar dados:', error)
+      if (!isMounted.current) return
       setMessageText('Erro ao carregar dados. Tente novamente.')
       setShowErrorMessage(true)
-      setTimeout(() => setShowErrorMessage(false), 3000)
+      setTimeout(() => { if (isMounted.current) setShowErrorMessage(false) }, 3000)
     } finally {
-      setIsRefreshing(false)
+      if (isMounted.current) setIsRefreshing(false)
     }
   }
 
-  const applyFilters = () => {
-    console.log('Aplicando filtros...', { analyticsDataLength: analyticsData.length, filters })
-    
+  const applyFilters = useCallback(() => {
+    logger.log('Aplicando filtros...', { analyticsDataLength: analyticsData.length, filters })
+
     let filtered = [...analyticsData]
 
-    // Filtro por data
     filtered = filtered.filter(item => {
       const itemDate = parseISO(item.timestamp)
-      return itemDate >= startOfDay(filters.dateRange.start) && 
+      return itemDate >= startOfDay(filters.dateRange.start) &&
              itemDate <= endOfDay(filters.dateRange.end)
     })
 
-    // Filtro por faixa etária
     if (filters.ageGroups.length > 0) {
       filtered = filtered.filter(item => filters.ageGroups.includes(item.ageGroup))
     }
 
-    // Filtro por tipo de trauma
     if (filters.traumaTypes.length > 0) {
       filtered = filtered.filter(item => filters.traumaTypes.includes(item.traumaType))
     }
 
-    // Filtro por completude
     if (filters.completed !== null) {
       filtered = filtered.filter(item => item.completed === filters.completed)
     }
 
-    console.log('Dados filtrados:', { originalLength: analyticsData.length, filteredLength: filtered.length })
+    logger.log('Dados filtrados:', { originalLength: analyticsData.length, filteredLength: filtered.length })
     setFilteredData(filtered)
-  }
+    setTablePage(0)
+  }, [analyticsData, filters])
 
-  // Dados para gráficos
-  const getTraumaTypeData = () => {
+  // Dados para gráficos — memoizados para evitar recálculo em cada render
+  const traumaTypeData = useMemo(() => {
     const counts = filteredData.reduce((acc, item) => {
       acc[item.traumaType] = (acc[item.traumaType] || 0) + 1
       return acc
     }, {} as Record<string, number>)
-
     return Object.entries(counts).map(([type, count]) => ({
-      name: getTraumaTypeLabel(type),
-      value: count,
-      type
+      name: getTraumaTypeLabel(type), value: count, type
     }))
-  }
+  }, [filteredData])
 
-  const getAgeGroupData = () => {
+  const ageGroupData = useMemo(() => {
     const counts = filteredData.reduce((acc, item) => {
       acc[item.ageGroup] = (acc[item.ageGroup] || 0) + 1
       return acc
     }, {} as Record<string, number>)
-
     return Object.entries(counts).map(([age, count]) => ({
-      name: getAgeGroupLabel(age),
-      value: count,
-      age
+      name: getAgeGroupLabel(age), value: count, age
     }))
-  }
+  }, [filteredData])
 
-  const getDailyData = () => {
+  const dailyData = useMemo(() => {
     const dailyCounts = filteredData.reduce((acc, item) => {
       const date = format(parseISO(item.timestamp), 'yyyy-MM-dd')
       acc[date] = (acc[date] || 0) + 1
       return acc
     }, {} as Record<string, number>)
-
     return Object.entries(dailyCounts)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([date, count]) => ({
         date: format(parseISO(date), 'dd/MM', { locale: ptBR }),
         acessos: count
       }))
-  }
+  }, [filteredData])
 
-  const getCompletionRate = () => {
+  const completionRate = useMemo(() => {
     const total = filteredData.length
     const completed = filteredData.filter(item => item.completed).length
     return total > 0 ? Math.round((completed / total) * 100) : 0
-  }
+  }, [filteredData])
 
-  const getUniqueUsers = () => {
-    const uniqueSessions = new Set(filteredData.map(item => item.sessionId))
-    return uniqueSessions.size
-  }
+  const uniqueUsers = useMemo(() => {
+    return new Set(filteredData.map(item => item.sessionId)).size
+  }, [filteredData])
 
   const getTraumaTypeLabel = (type: string) => {
     const labels = {
@@ -337,11 +337,11 @@ const Dashboard = () => {
 
   const handleClearAllData = async () => {
     try {
-      console.log('Iniciando limpeza de dados...')
+      logger.log('Iniciando limpeza de dados...')
       
       // Limpar todos os dados usando o método do analytics
       analytics.clearAllData()
-      console.log('Dados limpos do analytics')
+      logger.log('Dados limpos do analytics')
       
       // Pequeno delay para garantir que a limpeza seja processada
       await new Promise(resolve => setTimeout(resolve, 100))
@@ -353,14 +353,16 @@ const Dashboard = () => {
       setShowConfirmModal(false)
       
       // Mostrar mensagem de sucesso
+      if (!isMounted.current) return
       setMessageText('Todos os dados foram limpos com sucesso!')
       setShowSuccessMessage(true)
-      setTimeout(() => setShowSuccessMessage(false), 3000)
+      setTimeout(() => { if (isMounted.current) setShowSuccessMessage(false) }, 3000)
     } catch (error) {
-      console.error('Erro ao limpar dados:', error)
+      logger.error('Erro ao limpar dados:', error)
+      if (!isMounted.current) return
       setMessageText('Erro ao limpar dados. Tente novamente.')
       setShowErrorMessage(true)
-      setTimeout(() => setShowErrorMessage(false), 3000)
+      setTimeout(() => { if (isMounted.current) setShowErrorMessage(false) }, 3000)
     }
   }
 
@@ -544,7 +546,7 @@ const Dashboard = () => {
           </div>
           <div className="summary-content">
             <h3>Total de Acessos</h3>
-            <p className="summary-value">{filteredData.length}</p>
+            <p className="summary-value">{filteredData.length} acessos</p>
           </div>
         </div>
 
@@ -554,7 +556,7 @@ const Dashboard = () => {
           </div>
           <div className="summary-content">
             <h3>Usuários Únicos</h3>
-            <p className="summary-value">{getUniqueUsers()}</p>
+            <p className="summary-value">{uniqueUsers}</p>
           </div>
         </div>
 
@@ -564,7 +566,7 @@ const Dashboard = () => {
           </div>
           <div className="summary-content">
             <h3>Taxa de Conclusão</h3>
-            <p className="summary-value">{getCompletionRate()}%</p>
+            <p className="summary-value">{completionRate}%</p>
           </div>
         </div>
 
@@ -586,7 +588,7 @@ const Dashboard = () => {
         <div className="chart-container">
           <h3>Acessos por Dia</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={getDailyData()}>
+            <AreaChart data={dailyData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
@@ -599,7 +601,7 @@ const Dashboard = () => {
         <div className="chart-container">
           <h3>Distribuição por Faixa Etária</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={getAgeGroupData()}>
+            <BarChart data={ageGroupData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
@@ -614,16 +616,16 @@ const Dashboard = () => {
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
-                data={getTraumaTypeData()}
+                data={traumaTypeData}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                                 label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
               >
-                {getTraumaTypeData().map((entry, index) => (
+                {traumaTypeData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
@@ -635,7 +637,7 @@ const Dashboard = () => {
         <div className="chart-container">
           <h3>Evolução Temporal por Tipo</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={getDailyData()}>
+            <LineChart data={dailyData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
@@ -649,7 +651,7 @@ const Dashboard = () => {
 
       {/* Tabela de Dados */}
       <div className="dashboard-table">
-        <h3>Dados Detalhados</h3>
+        <h3>Dados Detalhados ({filteredData.length} registros)</h3>
         <div className="table-container">
           <table>
             <thead>
@@ -663,27 +665,48 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredData.slice(0, 20).map(item => (
-                <tr key={item.id}>
-                  <td>{format(parseISO(item.timestamp), 'dd/MM/yyyy HH:mm')}</td>
-                  <td>{getAgeGroupLabel(item.ageGroup)}</td>
-                  <td>
-                    {item.gender === 'female' ? 'Feminino' : 
-                     item.gender === 'male' ? 'Masculino' : 'Prefere não informar'}
-                  </td>
-                  <td>{getTraumaTypeLabel(item.traumaType)}</td>
-                  <td>{item.location}</td>
-                  <td>
-                    <span className={`status-badge ${item.completed ? 'completed' : 'incomplete'}`}>
-                      {item.completed ? 'Completo' : 'Incompleto'}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {filteredData
+                .slice(tablePage * TABLE_PAGE_SIZE, (tablePage + 1) * TABLE_PAGE_SIZE)
+                .map(item => (
+                  <tr key={item.id}>
+                    <td>{format(parseISO(item.timestamp), 'dd/MM/yyyy HH:mm')}</td>
+                    <td>{getAgeGroupLabel(item.ageGroup)}</td>
+                    <td>
+                      {item.gender === 'female' ? 'Feminino' :
+                       item.gender === 'male' ? 'Masculino' : 'Prefere não informar'}
+                    </td>
+                    <td>{getTraumaTypeLabel(item.traumaType)}</td>
+                    <td>{item.location}</td>
+                    <td>
+                      <span className={`status-badge ${item.completed ? 'completed' : 'incomplete'}`}>
+                        {item.completed ? 'Completo' : 'Incompleto'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
-                 </div>
-       </div>
+        </div>
+        {filteredData.length > TABLE_PAGE_SIZE && (
+          <div className="table-pagination">
+            <button
+              onClick={() => setTablePage(p => Math.max(0, p - 1))}
+              disabled={tablePage === 0}
+            >
+              ← Anterior
+            </button>
+            <span>
+              Página {tablePage + 1} de {Math.ceil(filteredData.length / TABLE_PAGE_SIZE)}
+            </span>
+            <button
+              onClick={() => setTablePage(p => Math.min(Math.ceil(filteredData.length / TABLE_PAGE_SIZE) - 1, p + 1))}
+              disabled={(tablePage + 1) * TABLE_PAGE_SIZE >= filteredData.length}
+            >
+              Próxima →
+            </button>
+          </div>
+        )}
+      </div>
 
        {/* Modal de Confirmação para Limpar Todos os Dados */}
        <ConfirmModal

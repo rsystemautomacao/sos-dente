@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { logger } from '../utils/logger'
 import { Document, Page, pdfjs } from 'react-pdf'
 import { IconDownload, IconArrowLeft, IconLoader, IconEye, IconBook, IconUser, IconCalendar, IconFileText } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
@@ -35,7 +36,7 @@ const Ebook = () => {
   }, [])
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    console.log('PDF carregado com sucesso:', numPages, 'páginas')
+    logger.log('PDF carregado com sucesso:', numPages, 'páginas')
     setNumPages(numPages)
     setLoading(false)
     setError(false)
@@ -75,7 +76,7 @@ const Ebook = () => {
   }
 
   const handleViewPdf = () => {
-    console.log('Iniciando visualização do PDF...')
+    logger.log('Iniciando visualização do PDF...')
     setShowPdfViewer(true)
     setLoading(true)
     setError(false)
@@ -83,7 +84,7 @@ const Ebook = () => {
     // Timeout para evitar loop infinito
     const timeout = setTimeout(() => {
       if (loading) {
-        console.log('Timeout ao carregar PDF')
+        logger.log('Timeout ao carregar PDF')
         setLoading(false)
         setError(true)
       }

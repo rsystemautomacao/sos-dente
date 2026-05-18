@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { logger } from '../utils/logger'
 import { IconSearch, IconArrowLeft } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
 import Card from '../components/Card'
@@ -28,7 +29,7 @@ const FAQ = () => {
 
   const handleSearch = () => {
     // A pesquisa já acontece automaticamente conforme digita
-    console.log('Pesquisando por:', searchTerm)
+    logger.log('Pesquisando por:', searchTerm)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

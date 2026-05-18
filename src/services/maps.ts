@@ -1,3 +1,5 @@
+import { logger } from '../utils/logger'
+
 // Função para detectar se é iOS
 function isIOS(): boolean {
   return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
@@ -43,7 +45,7 @@ function openMapsWithFallback(query: string, latitude?: number, longitude?: numb
   
   // Se não conseguiu abrir, tentar fallback
   if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-    console.warn('Falha ao abrir mapa, tentando fallback...')
+    logger.warn('Falha ao abrir mapa, tentando fallback...')
     
     // Fallback: tentar abrir em nova aba
     setTimeout(() => {
@@ -77,7 +79,7 @@ export async function openNearbyDentists(): Promise<void> {
         resolve()
       },
       (error) => {
-        console.warn('Erro na geolocalização:', error)
+        logger.warn('Erro na geolocalização:', error)
         // Fallback em caso de erro
         openMapsWithFallback('dentist')
         resolve()
@@ -108,7 +110,7 @@ export async function openNearbyUPAs(): Promise<void> {
         resolve()
       },
       (error) => {
-        console.warn('Erro na geolocalização:', error)
+        logger.warn('Erro na geolocalização:', error)
         // Fallback em caso de erro
         openMapsWithFallback('UPA hospital emergency')
         resolve()

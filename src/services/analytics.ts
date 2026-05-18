@@ -1,3 +1,5 @@
+import { logger } from '../utils/logger'
+
 export interface AnalyticsEvent {
   id: string
   timestamp: string
@@ -54,7 +56,7 @@ class AnalyticsService {
     // Verificar consentimento de privacidade
     const hasConsented = localStorage.getItem('sos_dente_privacy_consent')
     if (hasConsented !== 'true') {
-      console.log('📤 Evento não enviado - usuário não consentiu com coleta de dados')
+      logger.log('📤 Evento não enviado - usuário não consentiu com coleta de dados')
       return false
     }
 
@@ -71,10 +73,10 @@ class AnalyticsService {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      console.log('📤 Evento enviado para servidor com sucesso')
+      logger.log('📤 Evento enviado para servidor com sucesso')
       return true
     } catch (error) {
-      console.error('Erro ao enviar evento para servidor:', error)
+      logger.error('Erro ao enviar evento para servidor:', error)
       return false
     }
   }
@@ -101,7 +103,7 @@ class AnalyticsService {
         this.events = JSON.parse(stored)
       }
     } catch (error) {
-      console.error('Erro ao carregar eventos:', error)
+      logger.error('Erro ao carregar eventos:', error)
       this.events = []
     }
   }
@@ -111,7 +113,7 @@ class AnalyticsService {
     try {
       localStorage.setItem('sos_dente_analytics', JSON.stringify(this.events))
     } catch (error) {
-      console.error('Erro ao salvar eventos:', error)
+      logger.error('Erro ao salvar eventos:', error)
     }
   }
 
@@ -237,7 +239,7 @@ class AnalyticsService {
   }
 
   // Rastrear clique em botão
-  trackButtonClick(buttonId: string, context?: any): void {
+  trackButtonClick(buttonId: string, context?: Record<string, unknown>): void {
     const event: AnalyticsEvent = {
       id: this.generateSessionId(),
       timestamp: new Date().toISOString(),
@@ -265,31 +267,36 @@ class AnalyticsService {
   }
 
   // Obter dados para o dashboard (MESMO DOMÍNIO!)
-  async getAnalyticsData(): Promise<AnalyticsEvent[]> {
+  async getAnalyticsData(params?: {
+    startDate?: Date
+    endDate?: Date
+    limit?: number
+    offset?: number
+  }): Promise<AnalyticsEvent[]> {
     try {
-      console.log('📊 Buscando dados do servidor:', this.getApiUrl())
-      
-      const response = await fetch(`${this.getApiUrl()}/api/analytics/events`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
+      const url = new URL(`${this.getApiUrl()}/api/analytics/events`)
+      url.searchParams.set('limit', String(params?.limit ?? 500))
+      url.searchParams.set('offset', String(params?.offset ?? 0))
+      if (params?.startDate) url.searchParams.set('startDate', params.startDate.toISOString())
+      if (params?.endDate)   url.searchParams.set('endDate',   params.endDate.toISOString())
 
-      console.log('Resposta do servidor:', response.status, response.ok)
+      logger.log('📊 Buscando dados do servidor:', url.toString())
+
+      const response = await fetch(url.toString(), {
+        headers: { 'Content-Type': 'application/json' }
+      })
 
       if (response.ok) {
         const serverData = await response.json()
-        console.log('📊 Dados do servidor recebidos:', serverData.length, 'eventos')
+        logger.log('📊 Dados do servidor recebidos:', serverData.length, 'eventos')
         return serverData
-      } else {
-        console.error('Servidor retornou erro:', response.status, response.statusText)
       }
+      logger.error('Servidor retornou erro:', response.status, response.statusText)
     } catch (error) {
-      console.error('Erro ao buscar dados do servidor:', error)
+      logger.error('Erro ao buscar dados do servidor:', error)
     }
 
-    console.log('📊 Fallback para dados locais')
+    logger.log('📊 Fallback para dados locais')
     this.loadEvents()
     return [...this.events]
   }

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import toast from 'react-hot-toast'
+import { logger } from '../utils/logger'
 
 const AutoUpdate = () => {
   useEffect(() => {
@@ -47,7 +48,7 @@ const AutoUpdate = () => {
           }
         }
       } catch (error) {
-        console.log('Erro ao verificar atualizações:', error)
+        logger.log('Erro ao verificar atualizações:', error)
       }
     }
 
