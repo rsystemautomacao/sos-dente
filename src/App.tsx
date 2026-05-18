@@ -68,8 +68,8 @@ function App() {
         onAccept={handlePrivacyAccept}
         onDecline={handlePrivacyDecline}
       />
-      <Toaster 
-        position="top-center"
+      <Toaster
+        position={window.innerWidth < 640 ? 'bottom-center' : 'top-center'}
         toastOptions={{
           duration: 4000,
           style: {
