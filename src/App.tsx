@@ -24,8 +24,9 @@ function App() {
 
   // Verificar consentimento de privacidade
   useEffect(() => {
-    const hasConsented = localStorage.getItem('sos_dente_privacy_consent')
-    if (!hasConsented) {
+    const consent = localStorage.getItem('sos_dente_privacy_consent')
+    // Só considera consentido se o valor for explicitamente 'true'
+    if (consent !== 'true' && consent !== 'false') {
       setShowPrivacyConsent(true)
     }
   }, [])
