@@ -75,7 +75,27 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
+        runtimeCaching: [
+          {
+            urlPattern: /\.pdf$/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'pdf-cache',
+              expiration: { maxEntries: 5, maxAgeSeconds: 60 * 60 * 24 * 7 },
+              networkTimeoutSeconds: 10,
+            },
+          },
+          {
+            urlPattern: /^https:\/\/sos-dente.*\/api\//i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              expiration: { maxEntries: 50, maxAgeSeconds: 60 * 5 },
+              networkTimeoutSeconds: 5,
+            },
+          },
+        ],
       },
       devOptions: {
         enabled: true
