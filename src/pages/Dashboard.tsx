@@ -9,9 +9,9 @@ import {
 import { format, subDays, startOfDay, endOfDay, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { 
-  IconCalendar, IconFilter, IconDownload, IconRefresh, 
+  IconDownload, IconRefresh,
   IconUsers, IconAlertTriangle, IconTrendingUp,
-  IconEye, IconClock, IconMapPin, IconCheck, IconX
+  IconEye, IconClock, IconCheck, IconX
 } from '@tabler/icons-react'
 import Button from '../components/Button'
 import ConfirmModal from '../components/ConfirmModal'
