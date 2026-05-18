@@ -7,7 +7,7 @@ import Button from '../../components/Button'
 import CustomImage from '../../components/CustomImage'
 import ConfirmModal from '../../components/ConfirmModal'
 import FixedBottomButtons from '../../components/FixedBottomButtons'
-import { openNearbyDentists, openNearbyUPAs } from '../../services/maps'
+import { openNearbyDentists, openNearbyUPAs, isIOS } from '../../services/maps'
 import { generateTraumaPDF, TraumaData } from '../../services/pdfGenerator'
 import analytics from '../../services/analytics'
 import { logger } from '../../utils/logger'
@@ -48,10 +48,7 @@ const MapsStep = () => {
     setIsLoadingDentists(true)
     try {
       await openNearbyDentists()
-      // Detectar qual app de mapas será aberto
-      const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-      const mapApp = isIOSDevice ? 'Apple Maps' : 'Google Maps'
+      const mapApp = isIOS() ? 'Apple Maps' : 'Google Maps'
       toast.success(`Abrindo ${mapApp} para dentistas próximos...`)
     } catch (error) {
       logger.error('Erro ao abrir maps:', error)
@@ -65,10 +62,7 @@ const MapsStep = () => {
     setIsLoadingUPAs(true)
     try {
       await openNearbyUPAs()
-      // Detectar qual app de mapas será aberto
-      const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-      const mapApp = isIOSDevice ? 'Apple Maps' : 'Google Maps'
+      const mapApp = isIOS() ? 'Apple Maps' : 'Google Maps'
       toast.success(`Abrindo ${mapApp} para UPAs próximas...`)
     } catch (error) {
       logger.error('Erro ao abrir maps:', error)

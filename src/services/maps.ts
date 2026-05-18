@@ -1,18 +1,15 @@
 import { logger } from '../utils/logger'
 
-// Função para detectar se é iOS
-function isIOS(): boolean {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+export function isIOS(): boolean {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
 }
 
-// Função para detectar se é Android
-function isAndroid(): boolean {
+export function isAndroid(): boolean {
   return /Android/.test(navigator.userAgent)
 }
 
-// Função para detectar se é mobile
-function isMobile(): boolean {
+export function isMobile(): boolean {
   return isIOS() || isAndroid()
 }
 
