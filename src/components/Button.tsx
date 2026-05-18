@@ -6,6 +6,7 @@ interface ButtonProps {
   size?: 'sm' | 'md' | 'lg'
   onClick?: () => void
   disabled?: boolean
+  isLoading?: boolean
   type?: 'button' | 'submit' | 'reset'
   className?: string
   'aria-label'?: string
@@ -17,6 +18,7 @@ const Button = ({
   size = 'md',
   onClick,
   disabled = false,
+  isLoading = false,
   type = 'button',
   className = '',
   'aria-label': ariaLabel
@@ -42,10 +44,16 @@ const Button = ({
       type={type}
       className={classes}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || isLoading}
       aria-label={ariaLabel}
+      aria-busy={isLoading}
     >
-      {children}
+      {isLoading ? (
+        <span className="btn-loading-content" aria-hidden="true">
+          <span className="btn-spinner" />
+          {children}
+        </span>
+      ) : children}
     </button>
   )
 }
