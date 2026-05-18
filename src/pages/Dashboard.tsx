@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { logger } from '../utils/logger'
+import { getAgeGroupLabel, getTraumaTypeLabel, getGenderLabel } from '../utils/labels'
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell, AreaChart, Area
@@ -313,26 +314,6 @@ const Dashboard = () => {
     return new Set(filteredData.map(item => item.sessionId)).size
   }, [filteredData])
 
-  const getTraumaTypeLabel = (type: string) => {
-    const labels = {
-      fracture: 'Fratura',
-      avulsion: 'Avulsão',
-      luxation: 'Luxação',
-      bleeding: 'Sangramento',
-      other: 'Outro'
-    }
-    return labels[type as keyof typeof labels] || type
-  }
-
-  const getAgeGroupLabel = (age: string) => {
-    const labels = {
-      baby: '0-5 anos',
-      child: '6-12 anos',
-      adolescent: '>12 anos'
-    }
-    return labels[age as keyof typeof labels] || age
-  }
-
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
 
   const handleClearAllData = async () => {
@@ -372,7 +353,7 @@ const Dashboard = () => {
       ...filteredData.map(item => [
         format(parseISO(item.timestamp), 'dd/MM/yyyy HH:mm'),
         getAgeGroupLabel(item.ageGroup),
-        item.gender === 'female' ? 'Feminino' : item.gender === 'male' ? 'Masculino' : 'Prefere não informar',
+        getGenderLabel(item.gender),
         item.toothType ? (item.toothType === 'baby' ? 'Dente de Leite' : item.toothType === 'permanent' ? 'Dente Permanente' : 'Não Sabe') : 'N/A',
         getTraumaTypeLabel(item.traumaType),
         item.location,
@@ -671,10 +652,7 @@ const Dashboard = () => {
                   <tr key={item.id}>
                     <td>{format(parseISO(item.timestamp), 'dd/MM/yyyy HH:mm')}</td>
                     <td>{getAgeGroupLabel(item.ageGroup)}</td>
-                    <td>
-                      {item.gender === 'female' ? 'Feminino' :
-                       item.gender === 'male' ? 'Masculino' : 'Prefere não informar'}
-                    </td>
+                    <td>{getGenderLabel(item.gender)}</td>
                     <td>{getTraumaTypeLabel(item.traumaType)}</td>
                     <td>{item.location}</td>
                     <td>
