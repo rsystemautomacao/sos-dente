@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { IconMapPin, IconBuildingHospital, IconLoader, IconDownload, IconX, IconHome } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
 import useWizardStore from '../../store/useWizardStore'
@@ -10,6 +10,7 @@ import FixedBottomButtons from '../../components/FixedBottomButtons'
 import { openNearbyDentists, openNearbyUPAs } from '../../services/maps'
 import { generateTraumaPDF, TraumaData } from '../../services/pdfGenerator'
 import analytics from '../../services/analytics'
+import { logger } from '../../utils/logger'
 import toast from 'react-hot-toast'
 
 const MapsStep = () => {
@@ -28,8 +29,15 @@ const MapsStep = () => {
   const [isLoadingDentists, setIsLoadingDentists] = useState(false)
   const [isLoadingUPAs, setIsLoadingUPAs] = useState(false)
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
-  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null)
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
+
+  // URLs de preview geradas uma única vez e revogadas no cleanup
+  const photoUrls = useMemo(
+    () => photos.map(p => URL.createObjectURL(p)),
+    [photos]
+  )
+  useEffect(() => () => { photoUrls.forEach(url => URL.revokeObjectURL(url)) }, [photoUrls])
 
   useEffect(() => {
     // Garantir que o step carregue no topo
@@ -46,7 +54,7 @@ const MapsStep = () => {
       const mapApp = isIOSDevice ? 'Apple Maps' : 'Google Maps'
       toast.success(`Abrindo ${mapApp} para dentistas próximos...`)
     } catch (error) {
-      console.error('Erro ao abrir maps:', error)
+      logger.error('Erro ao abrir maps:', error)
       toast.error('Erro ao abrir o mapa. Tente novamente.')
     } finally {
       setIsLoadingDentists(false)
@@ -63,7 +71,7 @@ const MapsStep = () => {
       const mapApp = isIOSDevice ? 'Apple Maps' : 'Google Maps'
       toast.success(`Abrindo ${mapApp} para UPAs próximas...`)
     } catch (error) {
-      console.error('Erro ao abrir maps:', error)
+      logger.error('Erro ao abrir maps:', error)
       toast.error('Erro ao abrir o mapa. Tente novamente.')
     } finally {
       setIsLoadingUPAs(false)
@@ -126,19 +134,19 @@ const MapsStep = () => {
       
       toast.success('PDF gerado e baixado com sucesso!')
     } catch (error) {
-      console.error('Erro ao gerar PDF:', error)
+      logger.error('Erro ao gerar PDF:', error)
       toast.error('Erro ao gerar PDF. Tente novamente.')
     } finally {
       setIsLoadingPDF(false)
     }
   }
 
-  const openPhotoModal = (photoUrl: string) => {
-    setSelectedPhoto(photoUrl)
+  const openPhotoModal = (index: number) => {
+    setSelectedPhotoIndex(index)
   }
 
   const closePhotoModal = () => {
-    setSelectedPhoto(null)
+    setSelectedPhotoIndex(null)
   }
 
   return (
@@ -214,14 +222,14 @@ const MapsStep = () => {
             <div className="photos-section">
               <h4 className="photos-title">Fotos do Trauma ({photos.length})</h4>
               <div className="photos-grid">
-                {photos.map((photo, index) => (
-                  <div 
-                    key={index} 
+                {photoUrls.map((url, index) => (
+                  <div
+                    key={index}
                     className="photo-thumbnail-container"
-                    onClick={() => openPhotoModal(URL.createObjectURL(photo))}
+                    onClick={() => openPhotoModal(index)}
                   >
                     <img
-                      src={URL.createObjectURL(photo)}
+                      src={url}
                       alt={`Foto ${index + 1}`}
                       className="photo-thumbnail"
                     />
@@ -341,13 +349,13 @@ const MapsStep = () => {
       </div>
 
              {/* Modal para visualizar fotos */}
-       {selectedPhoto && (
+       {selectedPhotoIndex !== null && (
          <div className="photo-modal-overlay" onClick={closePhotoModal}>
            <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
              <button className="photo-modal-close" onClick={closePhotoModal}>
                <IconX size={24} />
              </button>
-             <img src={selectedPhoto} alt="Foto ampliada" className="photo-modal-image" />
+             <img src={photoUrls[selectedPhotoIndex]} alt="Foto ampliada" className="photo-modal-image" />
            </div>
          </div>
        )}
