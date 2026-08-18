@@ -1,5 +1,4 @@
-import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas'
+import type jsPDF from 'jspdf'
 
 export interface TraumaData {
   ageGroup: string | null
@@ -14,10 +13,13 @@ export interface TraumaData {
 }
 
 export class PDFGenerator {
-  private doc: jsPDF
+  private doc!: jsPDF
 
-  constructor() {
-    this.doc = new jsPDF('p', 'mm', 'a4')
+  // jsPDF é carregado sob demanda: só é baixado quando o usuário
+  // realmente gera o relatório, em vez de inflar o bundle inicial.
+  private async init(): Promise<void> {
+    const { default: JsPDF } = await import('jspdf')
+    this.doc = new JsPDF('p', 'mm', 'a4')
   }
 
   // Função para redimensionar imagem para tamanho padrão
@@ -61,6 +63,8 @@ export class PDFGenerator {
   }
 
   async generateTraumaReport(data: TraumaData): Promise<Blob> {
+    await this.init()
+
     // Configurações iniciais
     const pageWidth = this.doc.internal.pageSize.getWidth()
     const pageHeight = this.doc.internal.pageSize.getHeight()
