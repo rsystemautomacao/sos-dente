@@ -28,8 +28,7 @@ const TraumaQuestionsStep = () => {
         setCurrentQuestion('storage')
       }
     } else {
-      // SEMPRE vai para a página de dados do acidente (pulando o resultado)
-      setCurrentStep(5) // Go to DataCollectionStep
+      setCurrentStep(5) // Go to ResultStep (orientações)
     }
   }
 
@@ -43,8 +42,7 @@ const TraumaQuestionsStep = () => {
         setCurrentQuestion('storage')
       }
     } else {
-      // SEMPRE vai para a página de dados do acidente (pulando o resultado)
-      setCurrentStep(5) // Go to DataCollectionStep
+      setCurrentStep(5) // Go to ResultStep (orientações)
     }
   }
 
@@ -67,32 +65,27 @@ const TraumaQuestionsStep = () => {
   const handleStorageAlertContinue = () => {
     if (selectedStorageMethod) {
       setStorageMethod(selectedStorageMethod)
-      // Vai direto para a página de dados do acidente (pulando o resultado)
-      setCurrentStep(5) // Go to DataCollectionStep
+      setCurrentStep(5) // Go to ResultStep (orientações)
     }
   }
 
   const handleBabyToothModalContinue = () => {
     setShowBabyToothModal(false)
-    // Vai direto para a página de dados do acidente (pulando o resultado)
-    setCurrentStep(5) // Go to DataCollectionStep
+    setCurrentStep(5) // Go to ResultStep (orientações)
   }
 
   const handleIsLoose = (loose: boolean) => {
     setIsLoose(loose)
-    // SEMPRE vai para a página de dados do acidente (pulando o resultado)
-    setCurrentStep(5) // Go to DataCollectionStep
+    setCurrentStep(5) // Go to ResultStep (orientações)
   }
 
   const handleHasBleeding = (bleeding: boolean) => {
     setHasBleeding(bleeding)
-    // SEMPRE vai para a página de dados do acidente (pulando o resultado)
-    setCurrentStep(5) // Go to DataCollectionStep
+    setCurrentStep(5) // Go to ResultStep (orientações)
   }
 
   const handleContinue = () => {
-    // SEMPRE vai para a página de dados do acidente (pulando o resultado)
-    setCurrentStep(5) // Go to DataCollectionStep
+    setCurrentStep(5) // Go to ResultStep (orientações)
   }
 
   const renderFractureQuestions = () => {

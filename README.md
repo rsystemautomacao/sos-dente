@@ -131,18 +131,19 @@ src/
 │   └── wizard/          # Etapas do wizard
 │       ├── AgeStep.tsx
 │       ├── GenderStep.tsx
+│       ├── ToothTypeStep.tsx
 │       ├── TraumaTypeStep.tsx
-│       ├── InstructionsStep.tsx
-│       ├── StorageStep.tsx
-│       └── ReferralStep.tsx
+│       ├── TraumaQuestionsStep.tsx
+│       ├── ResultStep.tsx
+│       ├── DataCollectionStep.tsx
+│       └── MapsStep.tsx
 ├── services/            # Serviços externos
 │   ├── maps.ts          # Geolocalização
 │   └── db.ts            # IndexedDB
 ├── store/               # Gerenciamento de estado
 │   └── useWizardStore.ts
 ├── data/                # Dados estáticos
-│   ├── faq.pt-BR.json
-│   └── guidance.pt-BR.json
+│   └── faq.pt-BR.json
 ├── App.tsx              # Componente principal
 ├── main.tsx             # Entry point
 └── index.css            # Estilos globais

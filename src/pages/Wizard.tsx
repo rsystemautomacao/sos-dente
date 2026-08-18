@@ -8,6 +8,7 @@ import GenderStep from './wizard/GenderStep'
 import ToothTypeStep from './wizard/ToothTypeStep'
 import TraumaTypeStep from './wizard/TraumaTypeStep'
 import TraumaQuestionsStep from './wizard/TraumaQuestionsStep'
+import ResultStep from './wizard/ResultStep'
 import DataCollectionStep from './wizard/DataCollectionStep'
 import MapsStep from './wizard/MapsStep'
 
@@ -22,6 +23,7 @@ const Wizard = () => {
     'Tipo de Dente',
     'Tipo de Trauma',
     'Perguntas Específicas',
+    'Orientações',
     'Dados',
     'Localização'
   ]
@@ -63,8 +65,10 @@ const Wizard = () => {
       case 4:
         return <TraumaQuestionsStep />
       case 5:
-        return <DataCollectionStep />
+        return <ResultStep />
       case 6:
+        return <DataCollectionStep />
+      case 7:
         return <MapsStep />
       default:
         return <AgeStep />
