@@ -6401,3 +6401,143 @@ body {
     background: linear-gradient(transparent, rgba(255, 255, 255, 0.95));
   }
 }
+
+/* Tela final do wizard (MapsStep) — resumo do trauma e ações
+   (baixar relatório, dentistas, UPAs, SAMU) num único padrão visual */
+.trauma-summary {
+  padding: var(--spacing-8);
+}
+
+.trauma-summary-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-4);
+}
+
+.trauma-summary-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.trauma-summary-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-6);
+  padding: var(--spacing-4) 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.trauma-summary-row:last-child {
+  border-bottom: none;
+}
+
+.trauma-summary-row--wrap {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+}
+
+.trauma-summary-label {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+}
+
+.trauma-summary-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  text-align: right;
+}
+
+.trauma-summary-row--wrap .trauma-summary-value {
+  text-align: left;
+}
+
+.wizard-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+}
+
+@media (min-width: 560px) {
+  .wizard-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.wizard-action {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  padding: var(--spacing-6);
+  margin-bottom: 0;
+}
+
+.wizard-action-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-5);
+}
+
+.wizard-action-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-lighter);
+  color: var(--color-primary);
+}
+
+.wizard-action-text {
+  min-width: 0;
+}
+
+.wizard-action-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-2);
+}
+
+.wizard-action-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  line-height: var(--line-height-normal);
+}
+
+.wizard-action-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3);
+  margin-top: auto;
+}
+
+.wizard-action--primary {
+  border: 1px solid var(--color-primary-light);
+  background: linear-gradient(160deg, var(--color-primary-lighter) 0%, var(--color-background) 55%);
+}
+
+.wizard-action--primary .wizard-action-icon {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.wizard-action--emergency {
+  cursor: pointer;
+  border: 1px solid var(--color-error-light);
+  background: linear-gradient(160deg, var(--color-error-light) 0%, var(--color-background) 55%);
+}
+
+.wizard-action--emergency .wizard-action-icon {
+  background: var(--color-error);
+  color: var(--color-white);
+}

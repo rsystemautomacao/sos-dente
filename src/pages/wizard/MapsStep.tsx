@@ -150,44 +150,44 @@ const MapsStep = () => {
       </div>
 
       <div className="maps-content">
-        <Card className="summary-card">
-          <h3 className="summary-title">Resumo do Trauma</h3>
-          <div className="summary-grid">
-            <div className="summary-item">
-              <span className="summary-label">Faixa Etária:</span>
-              <span className="summary-value">
-                {ageGroup === 'baby' ? '0 a 5 anos' : 
-                 ageGroup === 'child' ? '6 a 12 anos' : 
+        <Card className="trauma-summary">
+          <h3 className="trauma-summary-title">Resumo do Trauma</h3>
+          <div className="trauma-summary-list">
+            <div className="trauma-summary-row">
+              <span className="trauma-summary-label">Faixa Etária</span>
+              <span className="trauma-summary-value">
+                {ageGroup === 'baby' ? '0 a 5 anos' :
+                 ageGroup === 'child' ? '6 a 12 anos' :
                  ageGroup === 'adolescent' ? 'Maior que 12 anos' : 'Não informado'}
               </span>
             </div>
-            <div className="summary-item">
-              <span className="summary-label">Sexo:</span>
-              <span className="summary-value">
+            <div className="trauma-summary-row">
+              <span className="trauma-summary-label">Sexo</span>
+              <span className="trauma-summary-value">
                 {gender === 'female' ? 'Feminino' : gender === 'male' ? 'Masculino' : 'Prefiro não informar'}
               </span>
             </div>
             {toothType && (
-              <div className="summary-item">
-                <span className="summary-label">Tipo de Dente:</span>
-                <span className="summary-value">
+              <div className="trauma-summary-row">
+                <span className="trauma-summary-label">Tipo de Dente</span>
+                <span className="trauma-summary-value">
                   {toothType === 'baby' ? 'Dente de Leite' : toothType === 'permanent' ? 'Dente Permanente' : 'Não Identificado'}
                 </span>
               </div>
             )}
-            <div className="summary-item">
-              <span className="summary-label">Tipo de Trauma:</span>
-              <span className="summary-value">
-                {traumaType === 'fracture' ? 'Fratura' : 
-                 traumaType === 'avulsion' ? 'Avulsão' : 
-                 traumaType === 'luxation' ? 'Luxação' : 
+            <div className="trauma-summary-row">
+              <span className="trauma-summary-label">Tipo de Trauma</span>
+              <span className="trauma-summary-value">
+                {traumaType === 'fracture' ? 'Fratura' :
+                 traumaType === 'avulsion' ? 'Avulsão' :
+                 traumaType === 'luxation' ? 'Luxação' :
                  traumaType === 'bleeding' ? 'Sangramento' : 'Outro'}
               </span>
             </div>
             {accidentTimeRange && (
-              <div className="summary-item">
-                <span className="summary-label">Tempo do Acidente:</span>
-                <span className="summary-value">
+              <div className="trauma-summary-row">
+                <span className="trauma-summary-label">Tempo do Acidente</span>
+                <span className="trauma-summary-value">
                   {accidentTimeRange === '0-15' ? '00 à 15 min' :
                    accidentTimeRange === '15-30' ? '15 à 30 min' :
                    accidentTimeRange === '30-45' ? '30 à 45 min' :
@@ -199,15 +199,15 @@ const MapsStep = () => {
               </div>
             )}
             {accidentLocation && (
-              <div className="summary-item">
-                <span className="summary-label">Local:</span>
-                <span className="summary-value">{accidentLocation}</span>
+              <div className="trauma-summary-row">
+                <span className="trauma-summary-label">Local</span>
+                <span className="trauma-summary-value">{accidentLocation}</span>
               </div>
             )}
             {observations && (
-              <div className="summary-item">
-                <span className="summary-label">Observações:</span>
-                <span className="summary-value">{observations}</span>
+              <div className="trauma-summary-row trauma-summary-row--wrap">
+                <span className="trauma-summary-label">Observações</span>
+                <span className="trauma-summary-value">{observations}</span>
               </div>
             )}
           </div>
@@ -234,21 +234,25 @@ const MapsStep = () => {
           )}
         </Card>
 
-        <Card className="download-card">
-          <div className="download-content">
-            <IconDownload size={32} className="download-icon" />
-            <div className="download-text">
-              <h3 className="download-title">Baixar Relatório</h3>
-              <p className="download-description">
-                PDF com todos os dados para enviar ao dentista
-              </p>
+        <div className="wizard-actions">
+          <Card className="wizard-action wizard-action--primary">
+            <div className="wizard-action-row">
+              <div className="wizard-action-icon">
+                <IconDownload size={22} />
+              </div>
+              <div className="wizard-action-text">
+                <h3 className="wizard-action-title">Baixar Relatório</h3>
+                <p className="wizard-action-description">
+                  PDF com todos os dados para enviar ao dentista
+                </p>
+              </div>
             </div>
             <Button
               variant="primary"
               size="lg"
               onClick={handleDownloadPDF}
               disabled={isLoadingPDF}
-              className="download-button"
+              className="wizard-action-button"
             >
               {isLoadingPDF ? (
                 <>
@@ -262,22 +266,26 @@ const MapsStep = () => {
                 </>
               )}
             </Button>
-          </div>
-        </Card>
+          </Card>
 
-        <div className="action-buttons">
-          <Card className="action-card">
-            <CustomImage type="emergency" size={64} className="action-image" alt="Dentistas" />
-            <h3 className="action-title">Dentistas Próximos</h3>
-            <p className="action-description">
-              Encontre dentistas e clínicas próximas
-            </p>
+          <Card className="wizard-action">
+            <div className="wizard-action-row">
+              <div className="wizard-action-icon">
+                <CustomImage type="emergency" size={26} alt="" />
+              </div>
+              <div className="wizard-action-text">
+                <h3 className="wizard-action-title">Dentistas Próximos</h3>
+                <p className="wizard-action-description">
+                  Encontre dentistas e clínicas próximas
+                </p>
+              </div>
+            </div>
             <Button
               variant="primary"
               size="lg"
               onClick={handleFindDentists}
               disabled={isLoadingDentists}
-              className="action-button"
+              className="wizard-action-button"
             >
               {isLoadingDentists ? (
                 <>
@@ -290,18 +298,24 @@ const MapsStep = () => {
             </Button>
           </Card>
 
-          <Card className="action-card">
-            <IconBuildingHospital size={64} className="action-icon" />
-            <h3 className="action-title">UPAs e Hospitais</h3>
-            <p className="action-description">
-              Encontre unidades de emergência próximas
-            </p>
+          <Card className="wizard-action">
+            <div className="wizard-action-row">
+              <div className="wizard-action-icon">
+                <IconBuildingHospital size={22} />
+              </div>
+              <div className="wizard-action-text">
+                <h3 className="wizard-action-title">UPAs e Hospitais</h3>
+                <p className="wizard-action-description">
+                  Encontre unidades de emergência próximas
+                </p>
+              </div>
+            </div>
             <Button
               variant="primary"
               size="lg"
               onClick={handleFindUPAs}
               disabled={isLoadingUPAs}
-              className="action-button"
+              className="wizard-action-button"
             >
               {isLoadingUPAs ? (
                 <>
@@ -314,16 +328,22 @@ const MapsStep = () => {
             </Button>
           </Card>
 
-          <Card className="emergency-card" onClick={handleCallSAMU}>
-            <IconMapPin size={64} className="emergency-icon" />
-            <h3 className="emergency-title">Ligar SAMU</h3>
-            <p className="emergency-description">
-              Em caso de emergência
-            </p>
+          <Card className="wizard-action wizard-action--emergency" onClick={handleCallSAMU}>
+            <div className="wizard-action-row">
+              <div className="wizard-action-icon">
+                <IconMapPin size={22} />
+              </div>
+              <div className="wizard-action-text">
+                <h3 className="wizard-action-title">Ligar SAMU</h3>
+                <p className="wizard-action-description">
+                  Em caso de emergência
+                </p>
+              </div>
+            </div>
             <Button
               variant="error"
               size="lg"
-              className="emergency-button"
+              className="wizard-action-button"
             >
               Ligar 192
             </Button>
