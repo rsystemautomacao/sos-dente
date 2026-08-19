@@ -195,6 +195,28 @@ body {
   }
 }
 
+/* Apresentação de desktop: em telas largas o app é envolvido por um
+   fundo com gradiente suave e o conteúdo vira um "cartão" centralizado,
+   em vez de sobrar espaço em branco vazio nas laterais */
+@media (min-width: 700px) {
+  body {
+    background: linear-gradient(160deg, var(--color-primary-lighter) 0%, var(--color-background-light) 45%, var(--color-primary-lighter) 100%);
+    background-attachment: fixed;
+  }
+
+  .main-content {
+    padding: var(--spacing-16) 0 var(--spacing-24);
+  }
+
+  .container {
+    background: var(--color-background);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-xl);
+    padding-top: var(--spacing-10);
+    padding-bottom: var(--spacing-10);
+  }
+}
+
 /* Layout mobile-first */
 .app-layout {
   min-height: 100vh;
@@ -579,6 +601,99 @@ body {
 .step-connector.active {
   background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
   box-shadow: var(--shadow-primary);
+}
+
+/* Wizard Stepper — barra de progresso + pontos, funciona bem em qualquer
+   largura de tela (evita rótulos de 9 etapas quebrando linha no celular) */
+.wizard-stepper {
+  margin-bottom: var(--spacing-8);
+  padding: var(--spacing-6);
+  background: var(--color-background);
+  border-radius: var(--border-radius-xl);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.wizard-stepper-info {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+}
+
+.wizard-stepper-label {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.wizard-stepper-count {
+  flex-shrink: 0;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+}
+
+.wizard-stepper-track {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--border-radius-full);
+  background: var(--color-border-light);
+  overflow: hidden;
+  margin-bottom: var(--spacing-8);
+}
+
+.wizard-stepper-fill {
+  height: 100%;
+  border-radius: var(--border-radius-full);
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  transition: width var(--transition-normal);
+}
+
+.wizard-stepper-dots {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
+.wizard-stepper-dot {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 1;
+  height: 6px;
+  min-width: 6px;
+  max-width: 32px;
+  border: none;
+  border-radius: var(--border-radius-full);
+  background: var(--color-border);
+  padding: 0;
+  cursor: default;
+  opacity: 1;
+  transition: all var(--transition-normal);
+}
+
+.wizard-stepper-dot.completed {
+  background: var(--color-success);
+  cursor: pointer;
+}
+
+.wizard-stepper-dot.active {
+  background: var(--color-primary);
+  transform: scaleY(1.8);
+}
+
+@media (min-width: 640px) {
+  .wizard-stepper {
+    padding: var(--spacing-8);
+  }
+
+  .wizard-stepper-label {
+    font-size: var(--font-size-lg);
+  }
 }
 
 /* Formulários Modernos */
