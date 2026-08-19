@@ -180,12 +180,43 @@ const Dashboard = () => {
         clearTimeout(clickTimeout.current)
       }
     }
-  }, [])
+    // Rebusca no servidor sempre que o período do filtro mudar — sem isso,
+    // escolher uma data fora da janela buscada no mount mostrava tela vazia
+    // em silêncio, pois só refiltrava os dados já carregados.
+  }, [filters.dateRange.start, filters.dateRange.end])
+
+  const applyFilters = useCallback(() => {
+    logger.log('Aplicando filtros...', { analyticsDataLength: analyticsData.length, filters })
+
+    let filtered = [...analyticsData]
+
+    filtered = filtered.filter(item => {
+      const itemDate = parseISO(item.timestamp)
+      return itemDate >= startOfDay(filters.dateRange.start) &&
+             itemDate <= endOfDay(filters.dateRange.end)
+    })
+
+    if (filters.ageGroups.length > 0) {
+      filtered = filtered.filter(item => filters.ageGroups.includes(item.ageGroup))
+    }
+
+    if (filters.traumaTypes.length > 0) {
+      filtered = filtered.filter(item => filters.traumaTypes.includes(item.traumaType))
+    }
+
+    if (filters.completed !== null) {
+      filtered = filtered.filter(item => item.completed === filters.completed)
+    }
+
+    logger.log('Dados filtrados:', { originalLength: analyticsData.length, filteredLength: filtered.length })
+    setFilteredData(filtered)
+    setTablePage(0)
+  }, [analyticsData, filters])
 
   useEffect(() => {
     logger.log('useEffect applyFilters triggered', { analyticsDataLength: analyticsData.length })
     applyFilters()
-  }, [analyticsData, filters])
+  }, [analyticsData, filters, applyFilters])
 
   // Função para detectar 5 cliques rápidos no título
   const handleTitleClick = () => {
@@ -241,34 +272,6 @@ const Dashboard = () => {
       if (isMounted.current) setIsRefreshing(false)
     }
   }
-
-  const applyFilters = useCallback(() => {
-    logger.log('Aplicando filtros...', { analyticsDataLength: analyticsData.length, filters })
-
-    let filtered = [...analyticsData]
-
-    filtered = filtered.filter(item => {
-      const itemDate = parseISO(item.timestamp)
-      return itemDate >= startOfDay(filters.dateRange.start) &&
-             itemDate <= endOfDay(filters.dateRange.end)
-    })
-
-    if (filters.ageGroups.length > 0) {
-      filtered = filtered.filter(item => filters.ageGroups.includes(item.ageGroup))
-    }
-
-    if (filters.traumaTypes.length > 0) {
-      filtered = filtered.filter(item => filters.traumaTypes.includes(item.traumaType))
-    }
-
-    if (filters.completed !== null) {
-      filtered = filtered.filter(item => item.completed === filters.completed)
-    }
-
-    logger.log('Dados filtrados:', { originalLength: analyticsData.length, filteredLength: filtered.length })
-    setFilteredData(filtered)
-    setTablePage(0)
-  }, [analyticsData, filters])
 
   // Dados para gráficos — memoizados para evitar recálculo em cada render
   const traumaTypeData = useMemo(() => {
