@@ -5,7 +5,7 @@ interface StepperProps {
   onStepClick?: (stepIndex: number) => void
 }
 
-const Stepper = ({ currentStep, totalSteps, steps, onStepClick }: StepperProps) => {
+const Stepper = ({ currentStep, totalSteps: _totalSteps, steps, onStepClick }: StepperProps) => {
   const handleStepClick = (stepIndex: number) => {
     // Só permite navegar para etapas já preenchidas (anteriores à atual)
     if (stepIndex < currentStep && onStepClick) {

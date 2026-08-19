@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { IconX, IconCode, IconCalendar, IconUser, IconHeart, IconBrandGithub } from '@tabler/icons-react'
+import { IconX, IconCode, IconCalendar, IconUser, IconHeart } from '@tabler/icons-react'
 import Button from './Button'
 
 interface AboutModalProps {

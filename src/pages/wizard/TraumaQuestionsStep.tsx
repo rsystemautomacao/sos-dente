@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
-import { IconBone } from '@tabler/icons-react'
-import useWizardStore, { TraumaType, StorageMethod } from '../../store/useWizardStore'
+import { useState } from 'react'
+import useWizardStore, { StorageMethod } from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import CustomImage from '../../components/CustomImage'
@@ -9,7 +8,7 @@ import BabyToothModal from '../../components/BabyToothModal'
 import FixedBottomButtons from '../../components/FixedBottomButtons'
 
 const TraumaQuestionsStep = () => {
-  const { ageGroup, toothType, traumaType, setFoundPiece, setFoundTooth, setIsLoose, setHasBleeding, setStorageMethod, setCurrentStep, nextStep } = useWizardStore()
+  const { ageGroup, toothType, traumaType, setFoundPiece, setFoundTooth, setIsLoose, setHasBleeding, setStorageMethod, setCurrentStep } = useWizardStore()
   const [currentQuestion, setCurrentQuestion] = useState<'found' | 'storage' | null>(null)
   const [showStorageAlert, setShowStorageAlert] = useState(false)
   const [showBabyToothModal, setShowBabyToothModal] = useState(false)

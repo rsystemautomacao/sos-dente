@@ -1,4 +1,3 @@
-import { ReactNode } from 'react'
 import { IconX, IconAlertTriangle, IconInfoCircle, IconCheck } from '@tabler/icons-react'
 import Button from './Button'
 import ExpandableModalContent from './ExpandableModalContent'

@@ -94,7 +94,7 @@ export class PDFGenerator {
     return this.doc.output('blob')
   }
 
-  private addHeader(yPosition: number, contentWidth: number): void {
+  private addHeader(yPosition: number, _contentWidth: number): void {
     // Título principal (menor)
     this.doc.setFontSize(20)
     this.doc.setFont('helvetica', 'bold')
