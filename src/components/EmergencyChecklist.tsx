@@ -22,7 +22,6 @@ const EmergencyChecklist = ({ isOpen, onClose }: EmergencyChecklistProps) => {
   const navigate = useNavigate()
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<string, 'dental' | 'hospital' | 'neutral'>>({})
-  const [showResult, setShowResult] = useState(false)
   const [showDentalConfirm, setShowDentalConfirm] = useState(false)
   const [showHospitalConfirm, setShowHospitalConfirm] = useState(false)
 
@@ -80,15 +79,17 @@ const EmergencyChecklist = ({ isOpen, onClose }: EmergencyChecklistProps) => {
   ]
 
   const handleAnswer = (questionId: string, value: 'dental' | 'hospital' | 'neutral') => {
-    setAnswers(prev => ({ ...prev, [questionId]: value }))
-    
+    // Mescla a resposta atual antes de decidir: usar o estado "answers" direto
+    // aqui ficaria desatualizado na última pergunta (setState é assíncrono),
+    // fazendo a resposta final nunca contar na triagem hospital/dental.
+    const updatedAnswers = { ...answers, [questionId]: value }
+    setAnswers(updatedAnswers)
+
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1)
     } else {
-      // Analisar respostas
-      const hospitalAnswers = Object.values(answers).filter(a => a === 'hospital').length
-      const dentalAnswers = Object.values(answers).filter(a => a === 'dental').length
-      
+      const hospitalAnswers = Object.values(updatedAnswers).filter(a => a === 'hospital').length
+
       if (hospitalAnswers > 0) {
         setShowHospitalConfirm(true)
       } else {
@@ -123,7 +124,6 @@ const EmergencyChecklist = ({ isOpen, onClose }: EmergencyChecklistProps) => {
   const resetChecklist = () => {
     setCurrentQuestion(0)
     setAnswers({})
-    setShowResult(false)
     setShowDentalConfirm(false)
     setShowHospitalConfirm(false)
   }
