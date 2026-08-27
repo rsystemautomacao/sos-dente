@@ -26,8 +26,6 @@ const MapsStep = () => {
     photos 
   } = useWizardStore()
   
-  const [isLoadingDentists, setIsLoadingDentists] = useState(false)
-  const [isLoadingUPAs, setIsLoadingUPAs] = useState(false)
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
@@ -44,40 +42,16 @@ const MapsStep = () => {
     window.scrollTo(0, 0)
   }, [])
 
-  const handleFindDentists = async () => {
-    setIsLoadingDentists(true)
-    try {
-      const opened = await openNearbyDentists()
-      if (opened) {
-        const mapApp = isIOS() ? 'Apple Maps' : 'Google Maps'
-        toast.success(`Abrindo ${mapApp} para dentistas próximos...`)
-      } else {
-        toast.error('O navegador bloqueou a nova aba. Permita pop-ups para este site e tente novamente.')
-      }
-    } catch (error) {
-      logger.error('Erro ao abrir maps:', error)
-      toast.error('Erro ao abrir o mapa. Tente novamente.')
-    } finally {
-      setIsLoadingDentists(false)
-    }
+  const handleFindDentists = () => {
+    openNearbyDentists()
+    const mapApp = isIOS() ? 'Apple Maps' : 'Google Maps'
+    toast.success(`Abrindo ${mapApp} para dentistas próximos...`)
   }
 
-  const handleFindUPAs = async () => {
-    setIsLoadingUPAs(true)
-    try {
-      const opened = await openNearbyUPAs()
-      if (opened) {
-        const mapApp = isIOS() ? 'Apple Maps' : 'Google Maps'
-        toast.success(`Abrindo ${mapApp} para UPAs próximas...`)
-      } else {
-        toast.error('O navegador bloqueou a nova aba. Permita pop-ups para este site e tente novamente.')
-      }
-    } catch (error) {
-      logger.error('Erro ao abrir maps:', error)
-      toast.error('Erro ao abrir o mapa. Tente novamente.')
-    } finally {
-      setIsLoadingUPAs(false)
-    }
+  const handleFindUPAs = () => {
+    openNearbyUPAs()
+    const mapApp = isIOS() ? 'Apple Maps' : 'Google Maps'
+    toast.success(`Abrindo ${mapApp} para UPAs próximas...`)
   }
 
   const handleCallSAMU = () => {
@@ -292,17 +266,9 @@ const MapsStep = () => {
               variant="primary"
               size="lg"
               onClick={handleFindDentists}
-              disabled={isLoadingDentists}
               className="wizard-action-button"
             >
-              {isLoadingDentists ? (
-                <>
-                  <IconLoader size={20} className="loading-icon" />
-                  Buscando...
-                </>
-              ) : (
-                'Buscar Dentistas'
-              )}
+              Buscar Dentistas
             </Button>
           </Card>
 
@@ -322,17 +288,9 @@ const MapsStep = () => {
               variant="primary"
               size="lg"
               onClick={handleFindUPAs}
-              disabled={isLoadingUPAs}
               className="wizard-action-button"
             >
-              {isLoadingUPAs ? (
-                <>
-                  <IconLoader size={20} className="loading-icon" />
-                  Buscando...
-                </>
-              ) : (
-                'Buscar UPAs'
-              )}
+              Buscar UPAs
             </Button>
           </Card>
 
