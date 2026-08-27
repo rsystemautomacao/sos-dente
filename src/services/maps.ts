@@ -36,13 +36,25 @@ function buildMapsUrl(query: string, latitude?: number, longitude?: number): str
 // operação assíncrona) costuma ser bloqueado como pop-up pelo navegador,
 // e um fallback antigo para esse bloqueio navegava a própria aba do app
 // para o mapa, apagando todo o progresso preenchido no wizard.
+//
+// Importante: NÃO passar 'noopener'/'noreferrer' aqui. Com essas flags,
+// o navegador sempre retorna null de window.open() — mesmo quando a aba
+// abre de verdade — porque elas servem justamente para impedir que o
+// código mantenha uma referência à nova aba. Só que aqui a URL final
+// (com a localização do usuário) só fica pronta depois de um passo
+// assíncrono, então precisamos da referência para navegar a aba mais
+// tarde. Em vez disso, zeramos `opener` manualmente logo abaixo — mesmo
+// efeito de segurança (a nova aba não consegue acessar/manipular a
+// aba do app), sem perder a referência que precisamos.
 async function openNearbyPlaces(query: string): Promise<boolean> {
-  const newTab = window.open('', '_blank', 'noopener,noreferrer')
+  const newTab = window.open('', '_blank')
 
   if (!newTab) {
     logger.warn('Não foi possível abrir uma nova aba (pop-up bloqueado).')
     return false
   }
+
+  newTab.opener = null
 
   if (!navigator.geolocation) {
     newTab.location.href = buildMapsUrl(query)
