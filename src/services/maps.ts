@@ -30,6 +30,56 @@ function buildMapsUrl(query: string, latitude?: number, longitude?: number): str
   return `https://www.google.com/maps/search/${encodeURIComponent(query)}`
 }
 
+// Escreve uma tela de carregamento na aba recém-aberta enquanto a
+// localização do usuário é obtida — sem isso, a aba fica em branco por
+// alguns segundos (o tempo da geolocalização), o que pode fazer o
+// usuário pensar que não funcionou e fechá-la antes do mapa carregar.
+function writeLoadingPage(win: Window): void {
+  try {
+    win.document.open()
+    win.document.write(`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Abrindo mapa...</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f9fafb;
+    color: #344054;
+  }
+  .loading { text-align: center; padding: 24px; }
+  .spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 16px;
+    border: 4px solid #e0e7ff;
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  p { margin: 0; font-size: 15px; }
+</style>
+</head>
+<body>
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Buscando sua localização para abrir o mapa...</p>
+  </div>
+</body>
+</html>`)
+    win.document.close()
+  } catch (error) {
+    logger.warn('Não foi possível escrever a tela de carregamento:', error)
+  }
+}
+
 // Abre o mapa numa nova aba, sem nunca navegar a aba atual do app para
 // fora dele. A aba é aberta de forma síncrona, ainda dentro do gesto de
 // clique do usuário — abrir só depois de aguardar a geolocalização (uma
@@ -55,6 +105,7 @@ async function openNearbyPlaces(query: string): Promise<boolean> {
   }
 
   newTab.opener = null
+  writeLoadingPage(newTab)
 
   if (!navigator.geolocation) {
     newTab.location.href = buildMapsUrl(query)
