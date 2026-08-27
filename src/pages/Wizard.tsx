@@ -13,13 +13,13 @@ import DataCollectionStep from './wizard/DataCollectionStep'
 import MapsStep from './wizard/MapsStep'
 
 const Wizard = () => {
-  const { currentStep, totalSteps, reset, setCurrentStep } = useWizardStore()
+  const { currentStep, totalSteps, setCurrentStep } = useWizardStore()
   const navigate = useNavigate()
 
   const steps = [
     'Início',
     'Idade',
-    'Sexo', 
+    'Sexo',
     'Tipo de Dente',
     'Tipo de Trauma',
     'Perguntas Específicas',
@@ -29,13 +29,16 @@ const Wizard = () => {
   ]
 
   useEffect(() => {
-    reset()
-    // Garantir que a página carregue no topo
+    // Não reseta o progresso aqui: o progresso é salvo automaticamente
+    // (ver useWizardStore) e só deve ser zerado quando o usuário inicia
+    // uma nova avaliação de propósito, a partir da Home. Resetar sempre
+    // que esta tela monta apagaria os dados se o usuário só recarregar
+    // a página (ex: app em segundo plano encerrado pelo celular).
     window.scrollTo(0, 0)
-    
+
     // Rastrear início do wizard
     analytics.trackWizardStart({ step: 'start' })
-  }, [reset])
+  }, [])
 
   const handleStepClick = (stepIndex: number) => {
     // Se clicar em "Início", volta para a página inicial

@@ -47,9 +47,13 @@ const MapsStep = () => {
   const handleFindDentists = async () => {
     setIsLoadingDentists(true)
     try {
-      await openNearbyDentists()
-      const mapApp = isIOS() ? 'Apple Maps' : 'Google Maps'
-      toast.success(`Abrindo ${mapApp} para dentistas próximos...`)
+      const opened = await openNearbyDentists()
+      if (opened) {
+        const mapApp = isIOS() ? 'Apple Maps' : 'Google Maps'
+        toast.success(`Abrindo ${mapApp} para dentistas próximos...`)
+      } else {
+        toast.error('O navegador bloqueou a nova aba. Permita pop-ups para este site e tente novamente.')
+      }
     } catch (error) {
       logger.error('Erro ao abrir maps:', error)
       toast.error('Erro ao abrir o mapa. Tente novamente.')
@@ -61,9 +65,13 @@ const MapsStep = () => {
   const handleFindUPAs = async () => {
     setIsLoadingUPAs(true)
     try {
-      await openNearbyUPAs()
-      const mapApp = isIOS() ? 'Apple Maps' : 'Google Maps'
-      toast.success(`Abrindo ${mapApp} para UPAs próximas...`)
+      const opened = await openNearbyUPAs()
+      if (opened) {
+        const mapApp = isIOS() ? 'Apple Maps' : 'Google Maps'
+        toast.success(`Abrindo ${mapApp} para UPAs próximas...`)
+      } else {
+        toast.error('O navegador bloqueou a nova aba. Permita pop-ups para este site e tente novamente.')
+      }
     } catch (error) {
       logger.error('Erro ao abrir maps:', error)
       toast.error('Erro ao abrir o mapa. Tente novamente.')

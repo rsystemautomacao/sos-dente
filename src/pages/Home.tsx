@@ -5,6 +5,7 @@ import Card from '../components/Card'
 import DentalIcon from '../components/DentalIcon'
 import HamburgerMenu from '../components/HamburgerMenu'
 import EmergencyChecklist from '../components/EmergencyChecklist'
+import useWizardStore from '../store/useWizardStore'
 
 interface HomeProps {
   onShowAbout: () => void
@@ -12,8 +13,16 @@ interface HomeProps {
 
 const Home = ({ onShowAbout }: HomeProps) => {
   const navigate = useNavigate()
+  const reset = useWizardStore((state) => state.reset)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isEmergencyChecklistOpen, setIsEmergencyChecklistOpen] = useState(false)
+
+  const handleStartAssessment = () => {
+    // Começa sempre do zero (o progresso de uma avaliação anterior, se
+    // existir, é intencionalmente descartado aqui — ver useWizardStore)
+    reset()
+    navigate('/wizard')
+  }
 
   useEffect(() => {
     // Garantir que a página carregue no topo
@@ -53,7 +62,7 @@ const Home = ({ onShowAbout }: HomeProps) => {
             <Button
               variant="primary"
               size="lg"
-              onClick={() => navigate('/wizard')}
+              onClick={handleStartAssessment}
               className="action-button"
             >
               Iniciar Avaliação

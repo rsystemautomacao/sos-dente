@@ -13,76 +13,58 @@ export function isMobile(): boolean {
   return isIOS() || isAndroid()
 }
 
-// Função para abrir mapas com fallbacks
-function openMapsWithFallback(query: string, latitude?: number, longitude?: number): void {
+function buildMapsUrl(query: string, latitude?: number, longitude?: number): string {
   const isMobileDevice = isMobile()
   const isIOSDevice = isIOS()
-  
-  let url: string
-  
+
   if (isMobileDevice && latitude && longitude) {
     if (isIOSDevice) {
-      // iOS - usar Apple Maps
-      url = `http://maps.apple.com/?q=${encodeURIComponent(query)}&ll=${latitude},${longitude}`
-    } else {
-      // Android - usar Google Maps
-      url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}&query_place_id=&center=${latitude},${longitude}`
+      return `http://maps.apple.com/?q=${encodeURIComponent(query)}&ll=${latitude},${longitude}`
     }
-  } else {
-    // Fallback para desktop ou sem localização
-    if (isIOSDevice) {
-      url = `http://maps.apple.com/?q=${encodeURIComponent(query)}`
-    } else {
-      url = `https://www.google.com/maps/search/${encodeURIComponent(query)}`
-    }
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}&query_place_id=&center=${latitude},${longitude}`
   }
-  
-  // Tentar abrir o mapa
-  const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-  
-  // Se não conseguiu abrir, tentar fallback
-  if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-    logger.warn('Falha ao abrir mapa, tentando fallback...')
-    
-    // Fallback: tentar abrir em nova aba
-    setTimeout(() => {
-      const fallbackWindow = window.open(url, '_blank', 'noopener,noreferrer')
-      if (fallbackWindow) {
-        fallbackWindow.focus()
-      } else {
-        // Último fallback: abrir na mesma janela
-        window.location.href = url
-      }
-    }, 100)
-  } else {
-    newWindow.focus()
+
+  if (isIOSDevice) {
+    return `http://maps.apple.com/?q=${encodeURIComponent(query)}`
   }
+  return `https://www.google.com/maps/search/${encodeURIComponent(query)}`
 }
 
-export async function openNearbyDentists(): Promise<void> {
-  return new Promise((resolve) => {
-    if (!navigator.geolocation) {
-      // Fallback: abrir sem localização
-      openMapsWithFallback('dentist')
-      resolve()
-      return
-    }
+// Abre o mapa numa nova aba, sem nunca navegar a aba atual do app para
+// fora dele. A aba é aberta de forma síncrona, ainda dentro do gesto de
+// clique do usuário — abrir só depois de aguardar a geolocalização (uma
+// operação assíncrona) costuma ser bloqueado como pop-up pelo navegador,
+// e um fallback antigo para esse bloqueio navegava a própria aba do app
+// para o mapa, apagando todo o progresso preenchido no wizard.
+async function openNearbyPlaces(query: string): Promise<boolean> {
+  const newTab = window.open('', '_blank', 'noopener,noreferrer')
 
-    // Mostrar loading ou feedback visual aqui se necessário
+  if (!newTab) {
+    logger.warn('Não foi possível abrir uma nova aba (pop-up bloqueado).')
+    return false
+  }
+
+  if (!navigator.geolocation) {
+    newTab.location.href = buildMapsUrl(query)
+    newTab.focus()
+    return true
+  }
+
+  return new Promise((resolve) => {
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
-        const { latitude, longitude } = coords
-        openMapsWithFallback('dentist', latitude, longitude)
-        resolve()
+        newTab.location.href = buildMapsUrl(query, coords.latitude, coords.longitude)
+        newTab.focus()
+        resolve(true)
       },
       (error) => {
         logger.warn('Erro na geolocalização:', error)
-        // Fallback em caso de erro
-        openMapsWithFallback('dentist')
-        resolve()
+        newTab.location.href = buildMapsUrl(query)
+        newTab.focus()
+        resolve(true)
       },
-      { 
-        enableHighAccuracy: true, 
+      {
+        enableHighAccuracy: true,
         timeout: 5000,
         maximumAge: 60000
       }
@@ -90,33 +72,10 @@ export async function openNearbyDentists(): Promise<void> {
   })
 }
 
-export async function openNearbyUPAs(): Promise<void> {
-  return new Promise((resolve) => {
-    if (!navigator.geolocation) {
-      // Fallback: abrir sem localização
-      openMapsWithFallback('UPA hospital emergency')
-      resolve()
-      return
-    }
+export function openNearbyDentists(): Promise<boolean> {
+  return openNearbyPlaces('dentist')
+}
 
-    // Mostrar loading ou feedback visual aqui se necessário
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        const { latitude, longitude } = coords
-        openMapsWithFallback('UPA hospital emergency', latitude, longitude)
-        resolve()
-      },
-      (error) => {
-        logger.warn('Erro na geolocalização:', error)
-        // Fallback em caso de erro
-        openMapsWithFallback('UPA hospital emergency')
-        resolve()
-      },
-      { 
-        enableHighAccuracy: true, 
-        timeout: 5000,
-        maximumAge: 60000
-      }
-    )
-  })
+export function openNearbyUPAs(): Promise<boolean> {
+  return openNearbyPlaces('UPA hospital emergency')
 }

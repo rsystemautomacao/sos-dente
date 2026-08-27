@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IconTool, IconBuildingHospital, IconX, IconCheck, IconAlertTriangle, IconBrain, IconHeart, IconEye, IconArrowLeft } from '@tabler/icons-react'
 import ConfirmModal from './ConfirmModal'
+import useWizardStore from '../store/useWizardStore'
 
 interface EmergencyChecklistProps {
   isOpen: boolean
@@ -20,6 +21,7 @@ type EmergencyQuestion = {
 
 const EmergencyChecklist = ({ isOpen, onClose }: EmergencyChecklistProps) => {
   const navigate = useNavigate()
+  const resetWizard = useWizardStore((state) => state.reset)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<string, 'dental' | 'hospital' | 'neutral'>>({})
   const [showDentalConfirm, setShowDentalConfirm] = useState(false)
@@ -112,6 +114,7 @@ const EmergencyChecklist = ({ isOpen, onClose }: EmergencyChecklistProps) => {
   const handleDentalConfirm = () => {
     setShowDentalConfirm(false)
     handleClose()
+    resetWizard()
     navigate('/wizard')
   }
 
