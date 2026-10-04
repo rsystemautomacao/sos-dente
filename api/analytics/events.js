@@ -90,8 +90,8 @@ export default async function handler(req, res) {
       
       if (startDate || endDate) {
         filter.timestamp = {};
-        if (startDate) filter.timestamp.$gte = new Date(startDate);
-        if (endDate) filter.timestamp.$lte = new Date(endDate);
+        if (startDate) filter.timestamp.$gte = new Date(startDate).toISOString();
+        if (endDate) filter.timestamp.$lte = new Date(endDate).toISOString();
       }
 
       const events = await database.collection('analytics_events')
