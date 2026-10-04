@@ -3,6 +3,7 @@ export function getAgeGroupLabel(age: string): string {
     baby: '0-5 anos',
     child: '6-12 anos',
     adolescent: '>12 anos',
+    unknown: 'Não informado',
   }
   return labels[age] ?? age
 }

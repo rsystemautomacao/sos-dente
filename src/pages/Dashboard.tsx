@@ -20,7 +20,7 @@ import analytics, { AnalyticsEvent } from '../services/analytics'
 interface AnalyticsData {
   id: string
   timestamp: string
-  ageGroup: 'baby' | 'child' | 'adolescent'
+  ageGroup: 'baby' | 'child' | 'adolescent' | 'unknown'
   gender: 'female' | 'male' | 'prefer-not-to-say'
   toothType: 'baby' | 'permanent' | 'unknown' | null
   traumaType: 'fracture' | 'avulsion' | 'luxation' | 'bleeding' | 'other'
@@ -143,6 +143,28 @@ const Dashboard = () => {
         }
       })
     
+    // Por fim, aproveitar as respostas já dadas nos passos do wizard (idade,
+    // gênero, tipo de dente, trauma). Sem isso, quem abandona o fluxo no meio
+    // aparece com dados em branco, embora tenha respondido parte das perguntas.
+    // Os dados do wizard_complete continuam tendo prioridade.
+    events
+      .filter(event => event.eventType === 'wizard_step')
+      .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+      .forEach(event => {
+        const session = sessionData.get(event.sessionId)
+        if (!session) return
+
+        if (event.data.ageGroup && session.ageGroup === 'unknown') {
+          session.ageGroup = event.data.ageGroup
+        }
+
+        if (!session.completed) {
+          if (event.data.gender) session.gender = event.data.gender
+          if (event.data.toothType) session.toothType = event.data.toothType
+          if (event.data.traumaType) session.traumaType = event.data.traumaType
+        }
+      })
+
     // Converter para array de AnalyticsData
     const result = Array.from(sessionData.values())
     logger.log('📊 Dados processados finais:', result.map(item => ({
