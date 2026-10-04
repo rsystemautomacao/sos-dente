@@ -29,7 +29,7 @@ vercel --prod
 ```
 
 ### 3. Configurar Variáveis de Ambiente no Vercel
-- `MONGODB_URI`: mongodb+srv://rsautomacao2000:%40Desbravadores%4093@sosdentecluster.zg8xrbc.mongodb.net/?retryWrites=true&w=majority&appName=SOSDenteCluster
+- `MONGODB_URI`: mongodb+srv://<usuario>:<senha>@<cluster>.mongodb.net/?retryWrites=true&w=majority (definir no painel da Vercel, nunca no código)
 
 ### 4. Configurar Domínio (Opcional)
 - Adicionar domínio personalizado: `api.sos-dente.com`

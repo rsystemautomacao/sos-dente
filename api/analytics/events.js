@@ -1,12 +1,16 @@
 import { MongoClient } from 'mongodb';
 
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://rsautomacao2000:%40Desbravadores%4093@sosdentecluster.zg8xrbc.mongodb.net/?retryWrites=true&w=majority&appName=SOSDenteCluster";
+const MONGODB_URI = process.env.MONGODB_URI;
 
 let db;
 
 async function connectToMongoDB() {
   if (db) return db;
+
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI não está definida nas variáveis de ambiente');
+  }
   
   try {
     console.log('🔍 Conectando ao MongoDB...');
