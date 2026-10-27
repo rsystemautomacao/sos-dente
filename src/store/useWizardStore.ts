@@ -40,8 +40,8 @@ export type AgeGroup = 'baby' | 'child' | 'adolescent'
 export type Gender = 'female' | 'male' | 'prefer-not-to-say'
 export type ToothType = 'baby' | 'permanent' | 'unknown'
 export type TraumaType = 'fracture' | 'avulsion' | 'luxation' | 'bleeding' | 'other'
-export type StorageMethod = 'milk' | 'saline' | 'saliva' | 'water' | 'paper'
-export type AccidentTimeRange = '0-15' | '15-30' | '30-45' | '45-60' | '60-90' | '90-120' | '120+'
+export type StorageMethod = 'milk' | 'saline' | 'saliva' | 'water' | 'paper' | 'unknown'
+export type AccidentTimeRange = '0-15' | '15-30' | '30-45' | '45-60' | '60-90' | '90-120' | '120+' | 'unknown'
 
 export interface WizardState {
   // Dados do paciente

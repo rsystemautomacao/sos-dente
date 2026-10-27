@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { IconX, IconAlertTriangle, IconInfoCircle, IconCheck } from '@tabler/icons-react'
 import Button from './Button'
 import ExpandableModalContent from './ExpandableModalContent'
@@ -11,6 +12,13 @@ interface StorageAlertModalProps {
   alertType?: 'incorrect' | 'correct' // Novo prop para diferenciar o tipo de alerta
 }
 
+interface AlertContent {
+  title: string
+  instructions: ReactNode[]
+  urgency: string
+  icon: 'success' | 'warning' | 'error'
+}
+
 const StorageAlertModal = ({
   isOpen,
   onClose,
@@ -21,154 +29,83 @@ const StorageAlertModal = ({
 }: StorageAlertModalProps) => {
   if (!isOpen) return null
 
-  const getAlertContent = () => {
+  const isAvulsion = traumaType === 'avulsion'
+  const subject = isAvulsion ? 'dente' : 'fragmento'
+
+  const getAlertContent = (): AlertContent | null => {
     // Para armazenamento CORRETO
     if (alertType === 'correct') {
-      if (traumaType === 'fracture') {
-        if (storageMethod === 'milk') {
-          return {
-            title: '✅ EXCELENTE: Armazenamento Correto!',
-            instructions: [
-              '✅ Leite mantém as células do dente vivas',
-              '✅ Continue usando LEITE FRESCO',
-              '✅ NÃO mude para água ou papel seco',
-              '✅ Mantenha em temperatura ambiente',
-              '🚨 Procure um dentista URGENTEMENTE'
-            ],
-            urgency: 'URGENTE',
-            icon: 'success'
-          }
-        } else if (storageMethod === 'saline') {
-          return {
-            title: '✅ EXCELENTE: Armazenamento Correto!',
-            instructions: [
-              '✅ Soro fisiológico preserva as células',
-              '✅ Continue usando SOLUÇÃO FISIOLÓGICA',
-              '✅ NÃO mude para água ou papel seco',
-              '✅ Mantenha em temperatura ambiente',
-              '🚨 Procure um dentista URGENTEMENTE'
-            ],
-            urgency: 'URGENTE',
-            icon: 'success'
-          }
-        } else if (storageMethod === 'saliva') {
-          return {
-            title: '✅ BOM: Armazenamento Adequado!',
-            instructions: [
-              '✅ Saliva mantém o fragmento úmido',
-              '✅ Continue mantendo na BOCA',
-              '✅ NÃO mude para água ou papel seco',
-              '✅ Evite engolir o fragmento',
-              '🚨 Procure um dentista URGENTEMENTE'
-            ],
-            urgency: 'URGENTE',
-            icon: 'success'
-          }
+      const dentist = isAvulsion
+        ? <strong>Vá ao dentista agora (máx. 30 min).</strong>
+        : <strong>Procure um dentista com urgência.</strong>
+      const urgency = isAvulsion ? 'MUITO URGENTE' : 'URGENTE'
+
+      if (storageMethod === 'milk' || storageMethod === 'saline') {
+        return {
+          title: '✅ EXCELENTE: Armazenamento Correto!',
+          instructions: [
+            <strong>Continue no leite (ou soro).</strong>,
+            'Não troque por água nem papel.',
+            dentist
+          ],
+          urgency,
+          icon: 'success'
         }
       }
 
-      if (traumaType === 'avulsion') {
-        if (storageMethod === 'milk') {
-          return {
-            title: '✅ EXCELENTE: Armazenamento Correto!',
-            instructions: [
-              '✅ Leite preserva o ligamento periodontal',
-              '✅ Continue usando LEITE FRESCO',
-              '✅ NÃO mude para água ou papel seco',
-              '✅ Mantenha em temperatura ambiente',
-              '🚨 Procure um dentista IMEDIATAMENTE (máximo 30 min)'
-            ],
-            urgency: 'MUITO URGENTE',
-            icon: 'success'
-          }
-        } else if (storageMethod === 'saline') {
-          return {
-            title: '✅ EXCELENTE: Armazenamento Correto!',
-            instructions: [
-              '✅ Soro fisiológico preserva o ligamento',
-              '✅ Continue usando SOLUÇÃO FISIOLÓGICA',
-              '✅ NÃO mude para água ou papel seco',
-              '✅ Mantenha em temperatura ambiente',
-              '🚨 Procure um dentista IMEDIATAMENTE (máximo 30 min)'
-            ],
-            urgency: 'MUITO URGENTE',
-            icon: 'success'
-          }
-        } else if (storageMethod === 'saliva') {
-          return {
-            title: '✅ BOM: Armazenamento Adequado!',
-            instructions: [
-              '✅ Saliva mantém o dente úmido',
-              '✅ Continue mantendo na BOCA',
-              '✅ NÃO mude para água ou papel seco',
-              '✅ Evite engolir o dente',
-              '🚨 Procure um dentista IMEDIATAMENTE (máximo 30 min)'
-            ],
-            urgency: 'MUITO URGENTE',
-            icon: 'success'
-          }
+      if (storageMethod === 'saliva') {
+        return {
+          title: '✅ BOM: Armazenamento Adequado!',
+          instructions: [
+            <strong>Continue com o {subject} na boca, sem engolir.</strong>,
+            'Não troque por água nem papel.',
+            dentist
+          ],
+          urgency,
+          icon: 'success'
         }
+      }
+
+      return null
+    }
+
+    // Para armazenamento INCORRETO ou desconhecido
+    const keepInMouth = `Se não tiver, mantenha o ${subject} dentro da boca, entre a bochecha e os dentes.`
+    const dentist = isAvulsion
+      ? <strong>Vá ao dentista em até 30 minutos.</strong>
+      : <strong>Procure um dentista com urgência.</strong>
+    const title = isAvulsion
+      ? '🚨 EMERGÊNCIA: Armazenamento Incorreto!'
+      : '⚠️ ATENÇÃO: Armazenamento Incorreto!'
+    const urgency = isAvulsion ? 'EMERGÊNCIA' : 'MUITO URGENTE'
+    const icon = isAvulsion ? 'error' : 'warning'
+
+    if (storageMethod === 'water' || storageMethod === 'paper') {
+      const source = storageMethod === 'water' ? 'a água' : 'o papel/pano'
+      return {
+        title,
+        instructions: [
+          <strong>Troque {source} por leite ou soro agora.</strong>,
+          keepInMouth,
+          dentist
+        ],
+        urgency,
+        icon
       }
     }
 
-    // Para armazenamento INCORRETO (código existente)
-    if (traumaType === 'fracture') {
-      if (storageMethod === 'water') {
-        return {
-          title: '⚠️ ATENÇÃO: Armazenamento Incorreto!',
-          instructions: [
-            '❌ Água pode danificar as células do dente',
-            '✅ Transfira imediatamente para LEITE FRESCO',
-            '✅ Ou use SOLUÇÃO FISIOLÓGICA (soro)',
-            '✅ Ou mantenha na BOCA (entre bochecha e dentes)',
-            '🚨 Procure um dentista URGENTEMENTE'
-          ],
-          urgency: 'MUITO URGENTE',
-          icon: 'warning'
-        }
-      } else if (storageMethod === 'paper') {
-        return {
-          title: '⚠️ ATENÇÃO: Armazenamento Incorreto!',
-          instructions: [
-            '❌ Papel/pano seco desidrata o fragmento',
-            '✅ Transfira imediatamente para LEITE FRESCO',
-            '✅ Ou use SOLUÇÃO FISIOLÓGICA (soro)',
-            '✅ Ou mantenha na BOCA (entre bochecha e dentes)',
-            '🚨 Procure um dentista URGENTEMENTE'
-          ],
-          urgency: 'MUITO URGENTE',
-          icon: 'warning'
-        }
-      }
-    }
-
-    if (traumaType === 'avulsion') {
-      if (storageMethod === 'water') {
-        return {
-          title: '🚨 EMERGÊNCIA: Armazenamento Incorreto!',
-          instructions: [
-            '❌ Água destrói as células do ligamento periodontal',
-            '✅ Transfira IMEDIATAMENTE para LEITE FRESCO',
-            '✅ Ou use SOLUÇÃO FISIOLÓGICA (soro)',
-            '✅ Ou mantenha na BOCA (entre bochecha e dentes)',
-            '🚨 Procure um dentista IMEDIATAMENTE (máximo 30 min)'
-          ],
-          urgency: 'EMERGÊNCIA',
-          icon: 'error'
-        }
-      } else if (storageMethod === 'paper') {
-        return {
-          title: '🚨 EMERGÊNCIA: Armazenamento Incorreto!',
-          instructions: [
-            '❌ Papel/pano seco desidrata completamente o dente',
-            '✅ Transfira IMEDIATAMENTE para LEITE FRESCO',
-            '✅ Ou use SOLUÇÃO FISIOLÓGICA (soro)',
-            '✅ Ou mantenha na BOCA (entre bochecha e dentes)',
-            '🚨 Procure um dentista IMEDIATAMENTE (máximo 30 min)'
-          ],
-          urgency: 'EMERGÊNCIA',
-          icon: 'error'
-        }
+    if (storageMethod === 'unknown') {
+      return {
+        title: isAvulsion
+          ? '🚨 EMERGÊNCIA: Armazenamento Desconhecido!'
+          : '⚠️ ATENÇÃO: Armazenamento Desconhecido!',
+        instructions: [
+          <strong>Coloque o {subject} agora em leite ou soro.</strong>,
+          keepInMouth,
+          dentist
+        ],
+        urgency,
+        icon
       }
     }
 
@@ -203,7 +140,7 @@ const StorageAlertModal = ({
         <button className="storage-alert-modal-close" onClick={onClose}>
           <IconX size={24} />
         </button>
-        
+
         <div className="storage-alert-modal-header">
           <div className="storage-alert-modal-icon">
             {getIcon()}
@@ -213,32 +150,22 @@ const StorageAlertModal = ({
             {content.urgency}
           </div>
         </div>
-        
+
         <div className="storage-alert-modal-body">
           <ExpandableModalContent maxHeight="300px">
             <div className="storage-alert-modal-instructions">
               <h4>{alertType === 'correct' ? 'Continue fazendo:' : 'O que fazer AGORA:'}</h4>
-              <ul>
+              <ol>
                 {content.instructions.map((instruction, index) => (
                   <li key={index} className="storage-alert-modal-instruction">
                     {instruction}
                   </li>
                 ))}
-              </ul>
-            </div>
-
-            <div className="storage-alert-modal-warning">
-              <IconInfoCircle size={20} />
-              <p>
-                {alertType === 'correct' 
-                  ? 'Você está fazendo o correto! Não mude o método de armazenamento para evitar riscos de perda do dente/fragmento.'
-                  : 'O tempo é crucial! Quanto mais rápido você agir, maiores as chances de sucesso do tratamento.'
-                }
-              </p>
+              </ol>
             </div>
           </ExpandableModalContent>
         </div>
-        
+
         <div className="storage-alert-modal-actions">
           <Button
             variant={alertType === 'correct' ? 'primary' : 'error'}

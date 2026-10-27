@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { IconHelp } from '@tabler/icons-react'
 import useWizardStore, { StorageMethod } from '../../store/useWizardStore'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
@@ -48,8 +49,9 @@ const TraumaQuestionsStep = () => {
   const handleStorageSelect = (method: StorageMethod) => {
     setSelectedStorageMethod(method)
     
-    // Verificar se é um método de armazenamento incorreto
-    const isIncorrectStorage = method === 'water' || method === 'paper'
+    // Verificar se é um método de armazenamento incorreto ("Não sei" conta
+    // como incorreto: a orientação é colocar em leite ou soro agora)
+    const isIncorrectStorage = method === 'water' || method === 'paper' || method === 'unknown'
     
     if (isIncorrectStorage) {
       setAlertType('incorrect')
@@ -129,6 +131,12 @@ const TraumaQuestionsStep = () => {
               <CustomImage type="paper" size={40} className="storage-image" alt="Papel/Pano" />
               <h4>Papel/Pano</h4>
             </Card>
+            <Card className="storage-option" onClick={() => handleStorageSelect('unknown')}>
+              <div className="storage-image storage-image--unknown">
+                <IconHelp size={28} />
+              </div>
+              <h4>Não sei</h4>
+            </Card>
           </div>
         </div>
       )
@@ -177,6 +185,12 @@ const TraumaQuestionsStep = () => {
               <CustomImage type="paper" size={40} className="storage-image" alt="Papel/Pano" />
               <h4>Papel/Pano</h4>
             </Card>
+            <Card className="storage-option" onClick={() => handleStorageSelect('unknown')}>
+              <div className="storage-image storage-image--unknown">
+                <IconHelp size={28} />
+              </div>
+              <h4>Não sei</h4>
+            </Card>
           </div>
         </div>
       )
@@ -193,6 +207,10 @@ const TraumaQuestionsStep = () => {
           </Button>
           <Button variant="primary" size="lg" onClick={() => handleIsLoose(false)}>
             Não
+          </Button>
+          {/* "Não sei" é tratado como "Sim" (mais cautela) */}
+          <Button variant="primary" size="lg" onClick={() => handleIsLoose(true)}>
+            Não sei
           </Button>
         </div>
       </div>

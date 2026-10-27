@@ -31,6 +31,20 @@ describe('getResultMessage', () => {
     expect(result.dontList.length).toBeGreaterThan(0)
   })
 
+  it('fratura, não sabe onde guardou: orienta leite/soro, mesma urgência da água', () => {
+    const result = getResultMessage({ ...base, traumaType: 'fracture', foundPiece: true, storageMethod: 'unknown' })
+    expect(result.urgency).toBe('Muito Urgente')
+    expect(result.doList.join(' ')).toMatch(/leite ou soro/)
+    expect(result.message).not.toMatch(/papel/)
+  })
+
+  it('avulsão, não sabe onde guardou: orienta leite/soro, mesma urgência da água', () => {
+    const result = getResultMessage({ ...base, traumaType: 'avulsion', foundTooth: true, storageMethod: 'unknown' })
+    expect(result.urgency).toBe('Muito Urgente')
+    expect(result.doList.join(' ')).toMatch(/leite ou soro/)
+    expect(result.message).not.toMatch(/papel/)
+  })
+
   it('fratura, não encontrou o pedaço (bug original: ficava sem nenhuma orientação)', () => {
     const result = getResultMessage({ ...base, traumaType: 'fracture', foundPiece: false })
     expect(result.doList.length).toBeGreaterThan(0)

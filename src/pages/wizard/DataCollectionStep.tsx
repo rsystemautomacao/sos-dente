@@ -136,6 +136,7 @@ const DataCollectionStep = () => {
               <option value="60-90">01:00 à 01:30 hrs</option>
               <option value="90-120">01:30 à 02:00 hrs</option>
               <option value="120+">Mais de 2 horas</option>
+              <option value="unknown">Não sei</option>
             </select>
           </div>
 

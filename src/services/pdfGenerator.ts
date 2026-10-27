@@ -169,7 +169,8 @@ export class PDFGenerator {
       '45-60': '45 à 60 min',
       '60-90': '01:00 à 01:30 hrs',
       '90-120': '01:30 à 02:00 hrs',
-      '120+': 'Mais de 2 horas'
+      '120+': 'Mais de 2 horas',
+      'unknown': 'Não sei informar'
     }
 
     const infoItems = [
@@ -178,6 +179,7 @@ export class PDFGenerator {
       ...(data.toothType ? [{ label: 'Tipo de Dente:', value: data.toothType === 'baby' ? 'Dente de Leite' : data.toothType === 'permanent' ? 'Dente Permanente' : 'Não Identificado' }] : []),
       { label: 'Tipo de Trauma:', value: traumaLabel ? `${traumaLabel.technical} (${traumaLabel.plain})` : data.traumaType || 'Não informado' },
       ...(data.accidentTimeRange ? [{ label: 'Tempo do Acidente:', value: timeRangeMap[data.accidentTimeRange] || data.accidentTimeRange }] : []),
+      ...(data.accidentTimeRange === 'unknown' ? [{ label: 'Atenção:', value: 'Como não se sabe há quanto tempo foi o acidente, procure o dentista agora.' }] : []),
       ...(data.accidentLocation ? [{ label: 'Local do Acidente:', value: data.accidentLocation }] : []),
       ...(data.observations ? [{ label: 'Observações:', value: data.observations }] : [])
     ]

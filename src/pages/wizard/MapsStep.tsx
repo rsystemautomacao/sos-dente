@@ -176,9 +176,15 @@ const MapsStep = () => {
                    accidentTimeRange === '45-60' ? '45 à 60 min' :
                    accidentTimeRange === '60-90' ? '01:00 à 01:30 hrs' :
                    accidentTimeRange === '90-120' ? '01:30 à 02:00 hrs' :
-                   accidentTimeRange === '120+' ? 'Mais de 2 horas' : accidentTimeRange}
+                   accidentTimeRange === '120+' ? 'Mais de 2 horas' :
+                   accidentTimeRange === 'unknown' ? 'Não sei informar' : accidentTimeRange}
                 </span>
               </div>
+            )}
+            {accidentTimeRange === 'unknown' && (
+              <p className="trauma-summary-note">
+                Como não se sabe há quanto tempo foi o acidente, procure o dentista agora.
+              </p>
             )}
             {accidentLocation && (
               <div className="trauma-summary-row">

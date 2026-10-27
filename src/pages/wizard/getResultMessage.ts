@@ -60,6 +60,20 @@ export const getResultMessage = ({
             'Não deixe o fragmento parado na água por muito tempo'
           ]
         }
+      } else if (storageMethod === 'unknown') {
+        return {
+          title: 'Atenção!',
+          message: 'Coloque o fragmento agora em leite ou soro. Vá ao dentista urgentemente.',
+          icon: 'warning',
+          urgency: 'Muito Urgente',
+          doList: [
+            'Coloque o fragmento agora em leite ou soro fisiológico',
+            'Leve o fragmento e a pessoa ao dentista com urgência'
+          ],
+          dontList: [
+            'Não deixe o fragmento seco nem parado na água'
+          ]
+        }
       } else {
         return {
           title: 'Cuidado!',
@@ -123,6 +137,20 @@ export const getResultMessage = ({
           ],
           dontList: [
             'Não deixe o dente fora de um líquido adequado'
+          ]
+        }
+      } else if (storageMethod === 'unknown') {
+        return {
+          title: 'Atenção!',
+          message: 'Coloque o dente agora em leite ou soro. Vá ao dentista agora.',
+          icon: 'warning',
+          urgency: 'Muito Urgente',
+          doList: [
+            'Coloque o dente agora em leite ou soro fisiológico',
+            'Vá ao dentista agora'
+          ],
+          dontList: [
+            'Não deixe o dente seco nem fora de um líquido adequado'
           ]
         }
       } else {

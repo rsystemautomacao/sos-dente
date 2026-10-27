@@ -6573,3 +6573,71 @@ body {
   font-size: var(--font-size-base);
   color: var(--color-text-secondary);
 }
+
+/* Listas numeradas nas orientações (resultado e modais) */
+.instructions-list--numbered {
+  counter-reset: step;
+}
+
+.instructions-list--numbered .instruction-item {
+  padding-left: 1.75rem;
+}
+
+.instructions-list--numbered .instruction-item::before {
+  counter-increment: step;
+  content: counter(step) '.';
+  font-weight: var(--font-weight-bold);
+}
+
+.storage-alert-modal-instructions ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: step;
+}
+
+.storage-alert-modal-instructions ol .storage-alert-modal-instruction {
+  padding-left: 1.75rem;
+}
+
+.storage-alert-modal-instructions ol .storage-alert-modal-instruction:before {
+  counter-increment: step;
+  content: counter(step) '.';
+}
+
+.baby-tooth-actions ol,
+.unknown-tooth-actions ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.baby-tooth-info .baby-tooth-reason {
+  margin: var(--spacing-4) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Opção "Não sei" no armazenamento */
+.storage-image--unknown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 6px; /* alinha o texto com os cartões que usam imagem */
+  width: 40px;
+  height: 40px;
+  box-sizing: border-box;
+  border: 2px solid var(--color-border);
+  background: var(--color-gray-100);
+  color: var(--color-text-secondary);
+}
+
+/* Aviso no resumo quando o tempo do acidente não é conhecido */
+.trauma-summary-note {
+  margin: var(--spacing-2) 0 0;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--border-radius-md);
+  background: var(--color-warning-light);
+  color: #93370d;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
