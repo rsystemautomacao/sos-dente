@@ -6,7 +6,7 @@ vi.mock('../services/analytics', () => ({
   default: new Proxy({}, { get: () => vi.fn() })
 }))
 
-import useWizardStore from './useWizardStore'
+import useWizardStore, { hasWizardProgress } from './useWizardStore'
 
 describe('useWizardStore', () => {
   beforeEach(() => {
@@ -51,6 +51,14 @@ describe('useWizardStore', () => {
   it('prevStep não retrocede abaixo de 0', () => {
     useWizardStore.getState().prevStep()
     expect(useWizardStore.getState().currentStep).toBe(0)
+  })
+
+  it('hasWizardProgress indica avaliação em andamento só quando há algo preenchido', () => {
+    expect(hasWizardProgress(useWizardStore.getState())).toBe(false)
+    useWizardStore.getState().setObservations('Caiu da bicicleta')
+    expect(hasWizardProgress(useWizardStore.getState())).toBe(true)
+    useWizardStore.getState().reset()
+    expect(hasWizardProgress(useWizardStore.getState())).toBe(false)
   })
 
   it('reset limpa todos os dados preenchidos', () => {

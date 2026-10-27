@@ -22,8 +22,9 @@ const MapsStep = () => {
     traumaType, 
     accidentTimeRange,
     accidentLocation, 
-    observations, 
-    photos 
+    observations,
+    photos,
+    reset
   } = useWizardStore()
   
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
@@ -73,7 +74,9 @@ const MapsStep = () => {
       accidentLocation,
       observations
     })
-    
+
+    // Avaliação concluída: apaga o progresso salvo no aparelho
+    reset()
     navigate('/')
   }
 

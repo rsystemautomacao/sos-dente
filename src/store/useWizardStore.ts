@@ -1,6 +1,11 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage, StateStorage } from 'zustand/middleware'
 import analytics from '../services/analytics'
+import { savePhotos, loadPhotos, clearPhotos } from '../services/photoStorage'
+
+// Evita que a restauração assíncrona das fotos sobrescreva uma ação do
+// usuário (adicionar/remover fotos ou recomeçar) feita antes dela terminar.
+let photosTouched = false
 
 // localStorage pode não existir (ambiente de teste em Node) ou estar
 // indisponível (modo privado em alguns navegadores, quota excedida) — um
@@ -30,7 +35,7 @@ export type TraumaType = 'fracture' | 'avulsion' | 'luxation' | 'bleeding' | 'ot
 export type StorageMethod = 'milk' | 'saline' | 'saliva' | 'water' | 'paper'
 export type AccidentTimeRange = '0-15' | '15-30' | '30-45' | '45-60' | '60-90' | '90-120' | '120+'
 
-interface WizardState {
+export interface WizardState {
   // Dados do paciente
   ageGroup: AgeGroup | null
   gender: Gender | null
@@ -178,9 +183,15 @@ const useWizardStore = create<WizardState>()(
   
   setAccidentLocation: (accidentLocation) => set({ accidentLocation }),
   setObservations: (observations) => set({ observations }),
-  setPhotos: (photos) => set({ photos }),
+  setPhotos: (photos) => {
+    photosTouched = true
+    set({ photos })
+    void savePhotos(photos)
+  },
   
   reset: () => {
+    photosTouched = true
+    void clearPhotos()
     set({
       ageGroup: null,
       gender: null,
@@ -226,5 +237,22 @@ const useWizardStore = create<WizardState>()(
     }
   )
 )
+
+// Restaura as fotos salvas no aparelho (o resto do progresso é restaurado
+// de forma síncrona pelo persist acima).
+void loadPhotos().then((photos) => {
+  if (!photosTouched && photos.length > 0) {
+    useWizardStore.setState({ photos })
+  }
+})
+
+// Indica se há uma avaliação em andamento salva (para oferecer
+// "Continuar" ou "Recomeçar" em vez de apagar o progresso sem avisar).
+export const hasWizardProgress = (state: WizardState): boolean =>
+  state.currentStep > 0 ||
+  state.ageGroup !== null ||
+  state.observations !== '' ||
+  state.accidentLocation !== '' ||
+  state.photos.length > 0
 
 export default useWizardStore

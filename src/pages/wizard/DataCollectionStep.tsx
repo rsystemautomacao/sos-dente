@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import toast from 'react-hot-toast'
 import { logger } from '../../utils/logger'
 import { IconMapPin, IconFileText, IconCamera, IconPhoto, IconClock } from '@tabler/icons-react'
@@ -23,12 +23,10 @@ const DataCollectionStep = () => {
     nextStep
   } = useWizardStore()
   
-  const [localPhotos, setLocalPhotos] = useState<File[]>(photos || [])
-
   // Gera URLs de preview e as revoga quando as fotos mudam (evita memory leak)
   const previewUrls = useMemo(() => {
-    return localPhotos.map(file => URL.createObjectURL(file))
-  }, [localPhotos])
+    return photos.map(file => URL.createObjectURL(file))
+  }, [photos])
 
   useEffect(() => {
     return () => {
@@ -44,13 +42,9 @@ const DataCollectionStep = () => {
     window.scrollTo(0, 0)
   }, [])
 
-  useEffect(() => {
-    // Sincronizar fotos do store com estado local
-    setLocalPhotos(photos || [])
-  }, [photos])
-
+  // As fotos vão direto para o store (e daí para o aparelho) a cada mudança,
+  // para não se perderem se o usuário sair da tela antes de continuar.
   const handleContinue = () => {
-    setPhotos(localPhotos)
     nextStep()
   }
 
@@ -82,19 +76,19 @@ const DataCollectionStep = () => {
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || [])
     logger.log('Arquivos selecionados:', files)
-    setLocalPhotos(prev => validateAndAddFiles(files, prev))
+    setPhotos(validateAndAddFiles(files, photos))
     event.target.value = ''
   }
 
   const handleTakePhoto = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || [])
     logger.log('Fotos tiradas:', files)
-    setLocalPhotos(prev => validateAndAddFiles(files, prev))
+    setPhotos(validateAndAddFiles(files, photos))
     event.target.value = ''
   }
 
   const removePhoto = (index: number) => {
-    setLocalPhotos(prev => prev.filter((_, i) => i !== index))
+    setPhotos(photos.filter((_, i) => i !== index))
   }
 
   const openFileSelector = () => {
@@ -204,13 +198,13 @@ const DataCollectionStep = () => {
               </Button>
             </div>
 
-            {localPhotos.length > 0 && (
+            {photos.length > 0 && (
               <div className="photo-preview">
                 <h4 className="photo-preview-title">
-                  Fotos ({localPhotos.length})
+                  Fotos ({photos.length})
                 </h4>
                 <div className="photo-grid">
-                  {localPhotos.map((photo, index) => (
+                  {photos.map((photo, index) => (
                     <div key={index} className="photo-item">
                       <img
                         src={previewUrls[index]}

@@ -5,7 +5,8 @@ import Card from '../components/Card'
 import DentalIcon from '../components/DentalIcon'
 import HamburgerMenu from '../components/HamburgerMenu'
 import EmergencyChecklist from '../components/EmergencyChecklist'
-import useWizardStore from '../store/useWizardStore'
+import ConfirmModal from '../components/ConfirmModal'
+import useWizardStore, { hasWizardProgress } from '../store/useWizardStore'
 
 interface HomeProps {
   onShowAbout: () => void
@@ -14,14 +15,23 @@ interface HomeProps {
 const Home = ({ onShowAbout }: HomeProps) => {
   const navigate = useNavigate()
   const reset = useWizardStore((state) => state.reset)
+  const inProgress = useWizardStore(hasWizardProgress)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isEmergencyChecklistOpen, setIsEmergencyChecklistOpen] = useState(false)
+  const [showRestartConfirm, setShowRestartConfirm] = useState(false)
 
   const handleStartAssessment = () => {
-    // Começa sempre do zero (o progresso de uma avaliação anterior, se
-    // existir, é intencionalmente descartado aqui — ver useWizardStore)
     reset()
     navigate('/wizard')
+  }
+
+  const handleContinueAssessment = () => {
+    navigate('/wizard')
+  }
+
+  const handleConfirmRestart = () => {
+    setShowRestartConfirm(false)
+    handleStartAssessment()
   }
 
   useEffect(() => {
@@ -57,16 +67,39 @@ const Home = ({ onShowAbout }: HomeProps) => {
             />
             <h2 className="action-title">Houve um Trauma</h2>
             <p className="action-description">
-              Clique aqui para iniciar a avaliação completa do trauma dental e receber orientações específicas
+              {inProgress
+                ? 'Você tem uma avaliação em andamento, salva neste aparelho.'
+                : 'Clique aqui para iniciar a avaliação completa do trauma dental e receber orientações específicas'}
             </p>
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={handleStartAssessment}
-              className="action-button"
-            >
-              Iniciar Avaliação
-            </Button>
+            {inProgress ? (
+              <>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  onClick={handleContinueAssessment}
+                  className="action-button"
+                >
+                  Continuar Avaliação
+                </Button>
+                <Button
+                  variant="outline"
+                  size="md"
+                  onClick={() => setShowRestartConfirm(true)}
+                  className="action-button restart-button"
+                >
+                  Recomeçar do zero
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={handleStartAssessment}
+                className="action-button"
+              >
+                Iniciar Avaliação
+              </Button>
+            )}
           </div>
         </Card>
       </div>
@@ -93,6 +126,16 @@ const Home = ({ onShowAbout }: HomeProps) => {
       <EmergencyChecklist
         isOpen={isEmergencyChecklistOpen}
         onClose={() => setIsEmergencyChecklistOpen(false)}
+      />
+
+      <ConfirmModal
+        isOpen={showRestartConfirm}
+        onClose={() => setShowRestartConfirm(false)}
+        onConfirm={handleConfirmRestart}
+        title="Recomeçar avaliação"
+        message="Deseja apagar a avaliação em andamento e começar do zero? Essa ação não pode ser desfeita."
+        confirmText="Sim, recomeçar"
+        cancelText="Cancelar"
       />
     </div>
   )

@@ -68,7 +68,7 @@ const FixedBottomButtons = ({ showBackButton = true }: FixedBottomButtonsProps) 
         onClose={() => setShowConfirmModal(false)}
         onConfirm={handleConfirmHome}
         title="Voltar ao Início"
-        message="Tem certeza que deseja voltar ao início? Todos os dados preenchidos serão perdidos."
+        message="Deseja voltar ao início? Seu progresso fica salvo neste aparelho e você poderá continuar depois."
         confirmText="Sim, voltar"
         cancelText="Cancelar"
       />

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IconTool, IconBuildingHospital, IconX, IconCheck, IconAlertTriangle, IconBrain, IconHeart, IconEye, IconArrowLeft } from '@tabler/icons-react'
 import ConfirmModal from './ConfirmModal'
-import useWizardStore from '../store/useWizardStore'
+import useWizardStore, { hasWizardProgress } from '../store/useWizardStore'
 
 interface EmergencyChecklistProps {
   isOpen: boolean
@@ -114,7 +114,10 @@ const EmergencyChecklist = ({ isOpen, onClose }: EmergencyChecklistProps) => {
   const handleDentalConfirm = () => {
     setShowDentalConfirm(false)
     handleClose()
-    resetWizard()
+    // Se já há uma avaliação em andamento, continua nela em vez de apagá-la
+    if (!hasWizardProgress(useWizardStore.getState())) {
+      resetWizard()
+    }
     navigate('/wizard')
   }
 
