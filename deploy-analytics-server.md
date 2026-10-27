@@ -29,7 +29,7 @@ vercel --prod
 ```
 
 ### 3. Configurar Variáveis de Ambiente no Vercel
-- `MONGODB_URI`: string de conexão do MongoDB Atlas (`mongodb+srv://<usuario>:<senha>@<cluster>.mongodb.net/?retryWrites=true&w=majority`). Cadastre só no painel da Vercel, nunca no código.
+- `MONGODB_URI`: mongodb+srv://<usuario>:<senha>@<cluster>.mongodb.net/?retryWrites=true&w=majority (definir no painel da Vercel, nunca no código)
 
 ### 4. Configurar Domínio (Opcional)
 - Adicionar domínio personalizado: `api.sos-dente.com`

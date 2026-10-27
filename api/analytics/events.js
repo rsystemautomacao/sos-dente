@@ -1,7 +1,6 @@
 import { MongoClient } from 'mongodb';
 
 // MongoDB connection
-// A string de conexão vem só da variável de ambiente MONGODB_URI (Vercel).
 const MONGODB_URI = process.env.MONGODB_URI;
 
 let db;
@@ -10,7 +9,7 @@ async function connectToMongoDB() {
   if (db) return db;
 
   if (!MONGODB_URI) {
-    throw new Error('Variável de ambiente MONGODB_URI não configurada');
+    throw new Error('MONGODB_URI não está definida nas variáveis de ambiente');
   }
 
   try {
@@ -103,8 +102,8 @@ export default async function handler(req, res) {
       
       if (startDate || endDate) {
         filter.timestamp = {};
-        if (startDate) filter.timestamp.$gte = new Date(startDate);
-        if (endDate) filter.timestamp.$lte = new Date(endDate);
+        if (startDate) filter.timestamp.$gte = new Date(startDate).toISOString();
+        if (endDate) filter.timestamp.$lte = new Date(endDate).toISOString();
       }
 
       const events = await database.collection('analytics_events')
