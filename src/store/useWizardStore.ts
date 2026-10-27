@@ -7,6 +7,14 @@ import { savePhotos, loadPhotos, clearPhotos } from '../services/photoStorage'
 // usuário (adicionar/remover fotos ou recomeçar) feita antes dela terminar.
 let photosTouched = false
 
+// O progresso salvo expira após 24 h sem alterações, para que uma avaliação
+// antiga não reapareça dias depois. lastSavedAt só muda quando o usuário
+// altera algo (não quando as fotos são restauradas ao abrir o app).
+const PROGRESS_TTL_MS = 24 * 60 * 60 * 1000
+let lastSavedAt = 0
+let progressExpiredOnLoad = false
+let hydratingPhotos = false
+
 // localStorage pode não existir (ambiente de teste em Node) ou estar
 // indisponível (modo privado em alguns navegadores, quota excedida) — um
 // fallback em memória evita que o persist middleware quebre ou gere
@@ -218,31 +226,58 @@ const useWizardStore = create<WizardState>()(
       // serializáveis — precisam ser adicionadas de novo nesse caso raro.
       name: 'sos-dente-wizard-progress',
       storage: createJSONStorage(getSafeStorage),
-      partialize: (state) => ({
-        ageGroup: state.ageGroup,
-        gender: state.gender,
-        toothType: state.toothType,
-        traumaType: state.traumaType,
-        foundPiece: state.foundPiece,
-        foundTooth: state.foundTooth,
-        isLoose: state.isLoose,
-        hasBleeding: state.hasBleeding,
-        storageMethod: state.storageMethod,
-        accidentTimeRange: state.accidentTimeRange,
-        accidentLocation: state.accidentLocation,
-        observations: state.observations,
-        currentStep: state.currentStep,
-        totalSteps: state.totalSteps
-      })
+      merge: (persisted, current) => {
+        const saved = persisted as (Partial<WizardState> & { savedAt?: number }) | undefined
+        if (!saved) return current
+        const expired =
+          typeof saved.savedAt !== 'number' || Date.now() - saved.savedAt > PROGRESS_TTL_MS
+        if (expired) {
+          progressExpiredOnLoad = true
+          return current
+        }
+        lastSavedAt = saved.savedAt as number
+        return { ...current, ...saved }
+      },
+      partialize: (state) => {
+        if (!hydratingPhotos) lastSavedAt = Date.now()
+        return {
+          savedAt: lastSavedAt,
+          ageGroup: state.ageGroup,
+          gender: state.gender,
+          toothType: state.toothType,
+          traumaType: state.traumaType,
+          foundPiece: state.foundPiece,
+          foundTooth: state.foundTooth,
+          isLoose: state.isLoose,
+          hasBleeding: state.hasBleeding,
+          storageMethod: state.storageMethod,
+          accidentTimeRange: state.accidentTimeRange,
+          accidentLocation: state.accidentLocation,
+          observations: state.observations,
+          currentStep: state.currentStep,
+          totalSteps: state.totalSteps
+        }
+      }
     }
   )
 )
 
+// Progresso salvo há mais de 24 h: descarta também o que ficou guardado
+if (progressExpiredOnLoad) {
+  useWizardStore.persist.clearStorage()
+}
+
 // Restaura as fotos salvas no aparelho (o resto do progresso é restaurado
 // de forma síncrona pelo persist acima).
 void loadPhotos().then((photos) => {
+  if (progressExpiredOnLoad) {
+    void clearPhotos()
+    return
+  }
   if (!photosTouched && photos.length > 0) {
+    hydratingPhotos = true
     useWizardStore.setState({ photos })
+    hydratingPhotos = false
   }
 })
 
