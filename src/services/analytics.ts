@@ -20,6 +20,17 @@ const API_CONFIG = {
   isDev: import.meta.env.DEV
 }
 
+// Campos de texto livre que podem conter dados pessoais (nome, endereço etc.).
+// Nunca são enviados ao servidor, nem de eventos antigos que ainda estejam
+// na fila local do aparelho.
+const CAMPOS_NAO_ENVIADOS = ['accidentLocation', 'observations', 'location']
+
+function removerCamposPessoais(data: Record<string, unknown>): Record<string, unknown> {
+  const copia = { ...data }
+  CAMPOS_NAO_ENVIADOS.forEach((campo) => delete copia[campo])
+  return copia
+}
+
 class AnalyticsService {
   private sessionId: string
   private events: AnalyticsEvent[] = []
@@ -66,7 +77,7 @@ class AnalyticsService {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(event)
+        body: JSON.stringify({ ...event, data: removerCamposPessoais(event.data) })
       })
 
       if (!response.ok) {
@@ -161,7 +172,7 @@ class AnalyticsService {
       timestamp: new Date().toISOString(),
       eventType: 'wizard_complete',
       sessionId: this.sessionId,
-      data,
+      data: removerCamposPessoais(data),
       userAgent: navigator.userAgent,
       ipAddress: '',
       location: '',

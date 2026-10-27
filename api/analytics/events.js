@@ -58,6 +58,14 @@ export default async function handler(req, res) {
         });
       }
 
+      // Campos de texto livre podem conter dados pessoais: nunca são gravados
+      // (cobre também versões antigas do app que ainda os enviem).
+      if (event.data && typeof event.data === 'object') {
+        delete event.data.accidentLocation;
+        delete event.data.observations;
+        delete event.data.location;
+      }
+
       event.receivedAt = new Date().toISOString();
       // Removido captura automática de IP para conformidade LGPD
       // event.ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;

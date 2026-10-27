@@ -71,9 +71,7 @@ const MapsStep = () => {
       gender,
       toothType,
       traumaType,
-      accidentTimeRange,
-      accidentLocation,
-      observations
+      accidentTimeRange
     })
 
     // Avaliação concluída: apaga o progresso salvo no aparelho

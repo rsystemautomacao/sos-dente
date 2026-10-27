@@ -48,6 +48,7 @@ const PrivacyConsentModal = ({ isOpen, onAccept, onDecline }: PrivacyConsentModa
                 <ul>
                   <li>Nome, CPF, telefone ou qualquer identificação pessoal</li>
                   <li>Localização precisa ou endereço IP</li>
+                  <li>Local do acidente e observações que você digitar (ficam só no seu aparelho)</li>
                   <li>Fotos ou informações médicas específicas</li>
                 </ul>
               </div>
@@ -87,7 +88,6 @@ const PrivacyConsentModal = ({ isOpen, onAccept, onDecline }: PrivacyConsentModa
                 <ul>
                   <li><strong>Dados de uso:</strong> Como você navega pelo aplicativo</li>
                   <li><strong>Informações do trauma:</strong> Tipo de trauma, faixa etária (sem identificação pessoal)</li>
-                  <li><strong>Local do acidente:</strong> Apenas o que você informar voluntariamente</li>
                   <li><strong>Dados técnicos:</strong> Tipo de dispositivo, navegador (para compatibilidade)</li>
                 </ul>
               </div>
@@ -97,6 +97,7 @@ const PrivacyConsentModal = ({ isOpen, onAccept, onDecline }: PrivacyConsentModa
                 <ul>
                   <li>Nome, CPF, telefone ou qualquer identificação pessoal</li>
                   <li>Endereço IP ou localização precisa</li>
+                  <li>Local do acidente e observações digitadas (ficam só no seu aparelho)</li>
                   <li>Fotos ou imagens pessoais</li>
                   <li>Histórico médico ou informações de saúde específicas</li>
                 </ul>

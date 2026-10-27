@@ -24,7 +24,6 @@ interface AnalyticsData {
   gender: 'female' | 'male' | 'prefer-not-to-say'
   toothType: 'baby' | 'permanent' | 'unknown' | null
   traumaType: 'fracture' | 'avulsion' | 'luxation' | 'bleeding' | 'other'
-  location: string
   completed: boolean
   sessionId: string
   userAgent: string
@@ -99,7 +98,6 @@ const Dashboard = () => {
             gender: event.data.gender || 'prefer-not-to-say',
             toothType: null,
             traumaType: 'other',
-            location: event.data.location || 'Brasil',
             completed: false
           })
         }
@@ -137,7 +135,6 @@ const Dashboard = () => {
             gender: event.data.gender || 'prefer-not-to-say',
             toothType: event.data.toothType || null,
             traumaType: event.data.traumaType || 'other',
-            location: event.data.location || 'Brasil',
             completed: true
           })
         }
@@ -353,14 +350,13 @@ const Dashboard = () => {
 
   const exportData = () => {
     const csvContent = [
-      ['Data', 'Faixa Etária', 'Gênero', 'Tipo de Dente', 'Tipo de Trauma', 'Localização', 'Completado'],
+      ['Data', 'Faixa Etária', 'Gênero', 'Tipo de Dente', 'Tipo de Trauma', 'Completado'],
       ...filteredData.map(item => [
         format(parseISO(item.timestamp), 'dd/MM/yyyy HH:mm'),
         getAgeGroupLabel(item.ageGroup),
         getGenderLabel(item.gender),
         item.toothType ? (item.toothType === 'baby' ? 'Dente de Leite' : item.toothType === 'permanent' ? 'Dente Permanente' : 'Não Sabe') : 'N/A',
         getTraumaTypeLabel(item.traumaType),
-        item.location,
         item.completed ? 'Sim' : 'Não'
       ])
     ].map(row => row.join(',')).join('\n')
@@ -650,7 +646,6 @@ const Dashboard = () => {
                 <th>Faixa Etária</th>
                 <th>Gênero</th>
                 <th>Tipo de Trauma</th>
-                <th>Localização</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -663,7 +658,6 @@ const Dashboard = () => {
                     <td>{getAgeGroupLabel(item.ageGroup)}</td>
                     <td>{getGenderLabel(item.gender)}</td>
                     <td>{getTraumaTypeLabel(item.traumaType)}</td>
-                    <td>{item.location}</td>
                     <td>
                       <span className={`status-badge ${item.completed ? 'completed' : 'incomplete'}`}>
                         {item.completed ? 'Completo' : 'Incompleto'}
