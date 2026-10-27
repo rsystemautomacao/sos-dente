@@ -13,8 +13,8 @@ const AboutModal = ({ isOpen, onClose }: AboutModalProps) => {
 
   if (!isOpen) return null
 
-  const appVersion = '1.2.1'
-  const lastUpdate = 'Agosto de 2025'
+  const appVersion = '1.3.0'
+  const lastUpdate = '27 de outubro de 2026'
   const developer = 'Richard Spanhol'
 
   const handleSecretClick = () => {
@@ -88,6 +88,16 @@ const AboutModal = ({ isOpen, onClose }: AboutModalProps) => {
               Este app foi criado com foco na acessibilidade e usabilidade, garantindo que 
               qualquer pessoa possa utilizá-lo em momentos de necessidade.
             </p>
+          </div>
+
+          <div className="about-changelog">
+            <h3>Novidades da versão {appVersion} (27/10/2026)</h3>
+            <ul>
+              <li>Seu progresso fica salvo neste aparelho por até 24 horas: se sair para o mapa ou para o relatório, você continua de onde parou.</li>
+              <li>Nova opção "Não sei" no tempo do acidente, em onde o dente foi guardado e na pergunta sobre dente mole.</li>
+              <li>O resumo mostra o tipo de trauma, com o nome técnico e o nome simples.</li>
+              <li>Textos de emergência mais curtos, com os passos numerados.</li>
+            </ul>
           </div>
 
           <div className="about-footer">

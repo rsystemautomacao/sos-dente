@@ -6641,3 +6641,30 @@ body {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
 }
+
+/* Novidades da versão (modal Sobre) */
+.about-changelog {
+  margin-bottom: var(--spacing-6);
+  padding: var(--spacing-4);
+  border-radius: var(--border-radius-lg);
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+}
+
+.about-changelog h3 {
+  margin: 0 0 var(--spacing-3);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+}
+
+.about-changelog ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.about-changelog li {
+  margin-bottom: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
