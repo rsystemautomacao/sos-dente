@@ -1,13 +1,18 @@
 import { MongoClient } from 'mongodb';
 
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://rsautomacao2000:%40Desbravadores%4093@sosdentecluster.zg8xrbc.mongodb.net/?retryWrites=true&w=majority&appName=SOSDenteCluster";
+// A string de conexão vem só da variável de ambiente MONGODB_URI (Vercel).
+const MONGODB_URI = process.env.MONGODB_URI;
 
 let db;
 
 async function connectToMongoDB() {
   if (db) return db;
-  
+
+  if (!MONGODB_URI) {
+    throw new Error('Variável de ambiente MONGODB_URI não configurada');
+  }
+
   try {
     console.log('🔍 Conectando ao MongoDB...');
     const client = new MongoClient(MONGODB_URI);
