@@ -7,7 +7,7 @@ interface ConfirmModalProps {
   onClose: () => void
   onConfirm: () => void
   title: string
-  message: string
+  message: ReactNode
   confirmText?: string
   cancelText?: string
   icon?: ReactNode

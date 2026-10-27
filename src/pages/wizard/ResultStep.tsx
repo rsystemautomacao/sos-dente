@@ -60,7 +60,7 @@ const ResultStep = () => {
               </span>
             </div>
           </div>
-          <p className="result-message">{result.message}</p>
+          <p className="result-message"><strong>{result.message}</strong></p>
         </Card>
 
         {result.doList.length > 0 && (
@@ -69,13 +69,13 @@ const ResultStep = () => {
               <IconCheck size={20} className="check-icon" />
               O que fazer:
             </h3>
-            <ul className="instructions-list">
+            <ol className="instructions-list instructions-list--numbered">
               {result.doList.map((item, index) => (
                 <li key={index} className="instruction-item">
                   {item}
                 </li>
               ))}
-            </ul>
+            </ol>
           </Card>
         )}
 
@@ -101,7 +101,7 @@ const ResultStep = () => {
             Orientações Finais
           </h3>
           <p className="alert-message">
-            <strong>Atenção!</strong> Toda situação de traumatismo dentário requer avaliação profissional o mais rápido possível. As condutas de emergência aumentam muito as chances de sucesso no tratamento.
+            <strong>Procure um dentista o mais rápido possível.</strong> Todo trauma no dente precisa ser avaliado.
           </p>
         </Card>
 

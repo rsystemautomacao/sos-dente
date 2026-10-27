@@ -26,32 +26,21 @@ const UnknownToothModal = ({ isOpen, onClose, onContinue }: UnknownToothModalPro
         </div>
 
         <div className="unknown-tooth-modal-body">
-          <ExpandableModalContent maxHeight="250px">
+          <ExpandableModalContent maxHeight="360px">
             <div className="unknown-tooth-alert">
               <IconAlertTriangle size={24} className="alert-icon" />
-              <h3>Melhor Não Reimplantar</h3>
+              <h3>Não recoloque o dente na boca.</h3>
             </div>
-            
+
             <div className="unknown-tooth-info">
-              <p>
-                <strong>Como não sabemos se é dente de leite ou permanente,</strong> 
-                é mais seguro <strong>NÃO reimplantar</strong> o dente até chegar ao dentista.
-              </p>
-              
-              <p>
-                O dentista poderá identificar corretamente o tipo de dente e decidir 
-                a melhor abordagem para o tratamento.
-              </p>
-              
+              <p>Não se sabe se é de leite ou permanente.</p>
+
               <div className="unknown-tooth-actions">
                 <h4>O que fazer:</h4>
-                <ul>
-                  <li>Mantenha a calma</li>
-                  <li>Guarde o dente em leite ou soro fisiológico</li>
-                  <li>NÃO tente recolocar na boca</li>
-                  <li><strong>Procure um dentista em até 30 minutos</strong> (se for dente permanente, dá tempo de reimplantar com bom prognóstico)</li>
-                  <li>O dentista avaliará e decidirá o tratamento</li>
-                </ul>
+                <ol>
+                  <li>Guarde em leite ou soro.</li>
+                  <li><strong>Vá ao dentista em até 30 minutos.</strong></li>
+                </ol>
               </div>
             </div>
           </ExpandableModalContent>

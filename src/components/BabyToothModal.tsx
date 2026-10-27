@@ -26,32 +26,24 @@ const BabyToothModal = ({ isOpen, onClose, onContinue }: BabyToothModalProps) =>
         </div>
 
         <div className="baby-tooth-modal-body">
-          <ExpandableModalContent maxHeight="250px">
+          <ExpandableModalContent maxHeight="360px">
             <div className="baby-tooth-alert">
               <IconAlertTriangle size={24} className="alert-icon" />
-              <h3>Não Reimplante Dentes de Leite</h3>
+              <h3>Dente de leite: não recoloque na boca.</h3>
             </div>
-            
+
             <div className="baby-tooth-info">
-              <p>
-                Em geral, crianças de 0 a 5 anos estão na fase dos dentes de leite. 
-                Estes dentes <strong>NÃO devem ser reimplantados</strong> quando saem completamente da boca em casos de trauma.
-              </p>
-              
-              <p>
-                O reimplante de dentes de leite pode causar danos ao dente permanente 
-                que está se formando internamente na região.
-              </p>
-              
               <div className="baby-tooth-actions">
                 <h4>O que fazer:</h4>
-                <ul>
-                  <li>Mantenha a calma</li>
-                  <li>Limpe a área com água</li>
-                  <li>Procure um dentista o quanto antes</li>
-                  <li>O dentista avaliará se há danos à gengiva</li>
-                </ul>
+                <ol>
+                  <li>Limpe a região com água.</li>
+                  <li>Procure um dentista logo.</li>
+                </ol>
               </div>
+
+              <p className="baby-tooth-reason">
+                Motivo: recolocar pode machucar o dente permanente que está nascendo.
+              </p>
             </div>
           </ExpandableModalContent>
         </div>

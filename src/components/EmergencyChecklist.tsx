@@ -216,7 +216,7 @@ const EmergencyChecklist = ({ isOpen, onClose }: EmergencyChecklistProps) => {
         onClose={() => setShowDentalConfirm(false)}
         onConfirm={handleDentalConfirm}
         title="Problema Dental Identificado"
-        message="Baseado nas suas respostas, este parece ser um caso de trauma dental. Você pode seguir sendo auxiliado pelo nosso sistema. Vamos iniciar a avaliação específica para trauma dental."
+        message="Parece ser um trauma no dente. Vamos continuar com as perguntas sobre o dente."
         confirmText="Iniciar Avaliação Dental"
         cancelText="Cancelar"
       />
@@ -226,7 +226,7 @@ const EmergencyChecklist = ({ isOpen, onClose }: EmergencyChecklistProps) => {
         onClose={() => setShowHospitalConfirm(false)}
         onConfirm={handleHospitalConfirm}
         title="Emergência Hospitalar Identificada"
-        message="Baseado nas suas respostas, este caso requer atendimento hospitalar imediato. Vamos ligar para o SAMU (192) agora para garantir o atendimento adequado."
+        message={<strong>Isso é uma emergência. Ligue 192 (SAMU) agora.</strong>}
         confirmText="Ligar 192 (SAMU)"
         cancelText="Cancelar"
       />
