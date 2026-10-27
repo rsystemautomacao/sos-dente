@@ -11,6 +11,7 @@ import { openNearbyDentists, openNearbyUPAs, isIOS } from '../../services/maps'
 import { generateTraumaPDF, TraumaData } from '../../services/pdfGenerator'
 import analytics from '../../services/analytics'
 import { logger } from '../../utils/logger'
+import { TRAUMA_LABELS } from '../../constants/traumaLabels'
 import toast from 'react-hot-toast'
 
 const MapsStep = () => {
@@ -137,6 +138,13 @@ const MapsStep = () => {
       <div className="maps-content">
         <Card className="trauma-summary">
           <h3 className="trauma-summary-title">Resumo do Trauma</h3>
+          {traumaType && (
+            <div className="trauma-highlight">
+              <span className="trauma-highlight-label">Tipo de trauma identificado</span>
+              <span className="trauma-highlight-term">{TRAUMA_LABELS[traumaType].technical}</span>
+              <span className="trauma-highlight-plain">{TRAUMA_LABELS[traumaType].plain}</span>
+            </div>
+          )}
           <div className="trauma-summary-list">
             <div className="trauma-summary-row">
               <span className="trauma-summary-label">Faixa Etária</span>
@@ -160,15 +168,6 @@ const MapsStep = () => {
                 </span>
               </div>
             )}
-            <div className="trauma-summary-row">
-              <span className="trauma-summary-label">Tipo de Trauma</span>
-              <span className="trauma-summary-value">
-                {traumaType === 'fracture' ? 'Fratura' :
-                 traumaType === 'avulsion' ? 'Avulsão' :
-                 traumaType === 'luxation' ? 'Luxação' :
-                 traumaType === 'bleeding' ? 'Sangramento' : 'Outro'}
-              </span>
-            </div>
             {accidentTimeRange && (
               <div className="trauma-summary-row">
                 <span className="trauma-summary-label">Tempo do Acidente</span>

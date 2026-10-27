@@ -1,4 +1,6 @@
 import type jsPDF from 'jspdf'
+import type { TraumaType } from '../store/useWizardStore'
+import { TRAUMA_LABELS } from '../constants/traumaLabels'
 
 export interface TraumaData {
   ageGroup: string | null
@@ -144,13 +146,9 @@ export class PDFGenerator {
     this.doc.setFont('helvetica', 'normal')
     this.doc.setTextColor(50, 50, 50)
 
-    const traumaTypeMap: { [key: string]: string } = {
-      'fracture': 'Fratura',
-      'avulsion': 'Avulsão',
-      'luxation': 'Luxação',
-      'bleeding': 'Sangramento',
-      'other': 'Outro'
-    }
+    const traumaLabel = data.traumaType && data.traumaType in TRAUMA_LABELS
+      ? TRAUMA_LABELS[data.traumaType as TraumaType]
+      : null
 
     const genderMap: { [key: string]: string } = {
       'female': 'Feminino',
@@ -178,7 +176,7 @@ export class PDFGenerator {
       { label: 'Faixa Etária:', value: ageMap[data.ageGroup || ''] || data.ageGroup || 'Não informado' },
       { label: 'Sexo:', value: genderMap[data.gender || ''] || data.gender || 'Não informado' },
       ...(data.toothType ? [{ label: 'Tipo de Dente:', value: data.toothType === 'baby' ? 'Dente de Leite' : data.toothType === 'permanent' ? 'Dente Permanente' : 'Não Identificado' }] : []),
-      { label: 'Tipo de Trauma:', value: traumaTypeMap[data.traumaType || ''] || data.traumaType || 'Não informado' },
+      { label: 'Tipo de Trauma:', value: traumaLabel ? `${traumaLabel.technical} (${traumaLabel.plain})` : data.traumaType || 'Não informado' },
       ...(data.accidentTimeRange ? [{ label: 'Tempo do Acidente:', value: timeRangeMap[data.accidentTimeRange] || data.accidentTimeRange }] : []),
       ...(data.accidentLocation ? [{ label: 'Local do Acidente:', value: data.accidentLocation }] : []),
       ...(data.observations ? [{ label: 'Observações:', value: data.observations }] : [])
